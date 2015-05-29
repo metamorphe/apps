@@ -10,20 +10,13 @@
 //= require THREEx.WindowResize
 //= require ShaderLib
 //= require UniformUtils
-//= require metamorphehalf/extend_three
 //= require metamorphehalf/webenv
 //= require dat.gui.min
 //= require metamorphehalf/webcache
 //= require metamorphehalf/write_binary_stl
 //= require metamorphehalf/file_saver.min
 //= require metamorphehalf/image_preview.js
-//= require metamorphehalf/BumpBox
-//= require metamorphehalf/LambertBumpBox
-//= require metamorphehalf/ShaderBumpBox
 //= require metamorphehalf/Filters
-//= require metamorphehalf/TactileModel
-//= require metamorphehalf/TactileController
-//= require metamorphehalf/TactileEnvironment
 
 //= require ui_alert
 
