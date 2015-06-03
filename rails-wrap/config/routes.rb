@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
 
+  get 'jig/designer'
+
   devise_for :users
   resources :user, :only => ["show"]
 
