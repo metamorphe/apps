@@ -1,7 +1,9 @@
 Rails.application.routes.draw do
 
-  get 'jig/designer'
+  namespace :jig do
+    get 'designer', :as => "designer"
 
+  end
   devise_for :users
   resources :user, :only => ["show"]
 
@@ -9,6 +11,8 @@ Rails.application.routes.draw do
   get 'threejs/height_displacement', :as => "pic2stl"
   get 'threejs/environment', :as => "three_env"
   get 'threejs/plane_box', :as => "plane_box"
+  get 'threejs/peg', :as => "peg_designer"
+  get 'threejs/weaver', :as => "weaver"
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

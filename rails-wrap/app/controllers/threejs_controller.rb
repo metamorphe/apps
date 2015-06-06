@@ -10,5 +10,10 @@ class ThreejsController < ApplicationController
   def plane_box
   	render :layout => "full_screen"
   end
-
+  def peg
+    render :layout => "full_screen"
+  end
+  def weaver
+    render :layout => "full_screen"
+  end
 end

@@ -46,8 +46,16 @@ WebEnv.prototype = {
 		this.camera.lookAt(this.scene.position);	
 		
 		// RENDERER
-		if ( Detector.webgl ) this.renderer = new THREE.WebGLRenderer( {antialias:true} );
+		if ( Detector.webgl ){
+			this.renderer = new THREE.WebGLRenderer( {antialias:true} );
+        	this.renderer.setClearColor(new THREE.Color(0xEEEEEE, 1.0));
+        	this.renderer.setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
+        	this.renderer.shadowMapEnabled = true;
+
+		}
 		else  this.renderer = new THREE.CanvasRenderer(); 
+
+		  // create a render and set the size
 		this.renderer.setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
 		container.appendChild( this.renderer.domElement );
 		
@@ -91,15 +99,34 @@ WebEnv.prototype = {
 		// light.position.set(0, 100, -340);
 		// this.scene.add(light);
 
+		var groundGeom = new THREE.PlaneGeometry(100, 100, 4, 4);
+        var groundMesh = new THREE.Mesh(groundGeom, new THREE.MeshBasicMaterial({color: 0x555555}));
+        groundMesh.rotation.x = -Math.PI / 2;
+        groundMesh.position.y = -20;
+        this.scene.add(groundMesh);
+
 		var directionalLight = new THREE.DirectionalLight(0xFFFFFF);
-      	 directionalLight.position.set(1, 1, 1).normalize();
+      	 directionalLight.position.set(0.5, 1, 1).normalize();
       	this.scene.add(directionalLight);
 
-		// SKYBOX
-		var skyBoxGeometry = new THREE.CubeGeometry( 200000, 200000, 100000 );
-		var skyBoxMaterial = new THREE.MeshBasicMaterial( { color: 0x9999ff, side: THREE.BackSide } );
-		var skyBox = new THREE.Mesh( skyBoxGeometry, skyBoxMaterial );
-		this.scene.add(skyBox);
+
+      	 // add subtle ambient lighting
+        var ambientLight = new THREE.AmbientLight(0x0c0c0c);
+        this.scene.add(ambientLight);
+
+        // add spotlight for the shadows
+        var spotLight = new THREE.SpotLight(0xffffff);
+        spotLight.position.set(-30, 60, 60);
+        spotLight.castShadow = true;
+        this.scene.add(spotLight);
+
+
+
+		// // SKYBOX
+		// var skyBoxGeometry = new THREE.CubeGeometry( 200000, 200000, 100000 );
+		// var skyBoxMaterial = new THREE.MeshBasicMaterial( { color: 0x9999ff, side: THREE.BackSide } );
+		// var skyBox = new THREE.Mesh( skyBoxGeometry, skyBoxMaterial );
+		// this.scene.add(skyBox);
 	}
 }
 

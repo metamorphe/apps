@@ -5,6 +5,7 @@
 //= require Detector
 //= require Stats
 //= require controls/OrbitControls
+//= require TubeGeometry
 //= require KeyboardState
 //= require THREEx.FullScreen
 //= require THREEx.WindowResize
@@ -17,6 +18,8 @@
 //= require metamorphehalf/file_saver.min
 //= require metamorphehalf/image_preview.js
 //= require metamorphehalf/Filters
+//= require csg
+//= require ThreeCSG
 
 //= require ui_alert
 
