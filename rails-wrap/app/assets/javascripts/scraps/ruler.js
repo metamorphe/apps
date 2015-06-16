@@ -21,3 +21,8 @@ Ruler.convert = function(v, unit){
 Ruler.gauge2mm = function(v){
 	return 0.127 * Math.pow(92, (36 - v) / 39);
 }
+
+
+Ruler.gauge2pts = function(v){
+	return Ruler.mm2pts(Ruler.gauge2mm(v));
+}

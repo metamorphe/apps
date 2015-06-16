@@ -48,4 +48,18 @@ Object.size = function(obj) {
     return size;
 };
 
+function FancyPrint(){}
+FancyPrint.range = function(prefix, arr){
+    var min = _.min(arr);
+    var max = _.max(arr);
+    console.log(prefix, ": [", min.toFixed(2), ", ", max.toFixed(2), "] -->", (max-min).toFixed(2));
+}
 // var params = getSearchParameters();
+function poly(a, b, c, x){ return Math.pow(x, 2) * a + x * b + c}
+function norm(arr){
+    var min = _.min(arr); 
+    var max = _.max(arr);
+    var range = max - min;
+    return _(arr).map(function(el){ return (el - min) / range; });
+}
+

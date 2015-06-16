@@ -14,6 +14,17 @@ function Jig(){
 };
 
 Jig.BASE_MATERIAL = new THREE.MeshLambertMaterial({color: 0x7777ff});
+Jig.METAL_MATERIAL = new THREE.MeshPhongMaterial({color: 0xC0C0C0,
+		emissive: 0x111111, 
+		shininess: 20,
+		specular: '#a9fcff',
+     	ambient: new THREE.Color( 0xffffff ),
+        specular: new THREE.Color( 0x111111 ),
+        emissive: new THREE.Color( 0x000000 ),
+        side: THREE.DoubleSide,
+        shininess: 100, 
+        wireframe: false
+	});
 
 // new THREE.MeshPhongMaterial({
 //         specular: '#a9fcff',
@@ -32,6 +43,7 @@ function WeaveController(env, gui){
 	var scope = this;
 	this.jig = new Jig();
 	this.frame_gauge = 24;
+	this.weaving_gauge = 18;
 	this.frame_num = 3;
 	this.tolerance = 0.05;
 
@@ -45,15 +57,17 @@ function WeaveController(env, gui){
 	gui.add(this, "filename");
 
 	var radiusController = gui.add(this, "frame_gauge", 10,  30).step(1);
+	var weaveRadiusController = gui.add(this, "weaving_gauge", 10,  30).step(1);
 	var frameNumController = gui.add(this, "frame_num", 2,  9).step(1);
 	frameNumController.onChange(function(){ scope.update(); });
 
 
 	var toleranceController = gui.add(this, "tolerance", -0.1, 0.1).step(0.01);
+	
+
 	radiusController.onChange(function(){ scope.update(); });
+	weaveRadiusController.onChange(function(){ scope.update(); });
 	toleranceController.onChange(function(){ scope.update(); });
-
-
 
 	var resolutionController = gui.add(this.jig, "resolution", 4, 50).step(1);
 	resolutionController.onChange(function(){ scope.update(); });
@@ -66,7 +80,7 @@ function WeaveController(env, gui){
 WeaveController.prototype = {
 	update: function(){
 		env.scene.remove(this.peg.mesh);
-		this.peg = new WeaveModule(this.frame_num, this.frame_gauge, this.frame_gauge + 4);
+		this.peg = new WeaveModule(this.frame_num, this.frame_gauge, this.weaving_gauge);
 		env.scene.add( this.peg.mesh);
 	}, 
 	export: function(){
@@ -91,26 +105,36 @@ WeaveController.prototype = {
 var weave_wires;     
 var vise;             
 function WeaveModule(num_wires, frame_gauge, weave_gauge){
-
+	console.log("Frame:", frame_gauge, "Weave:", weave_gauge);
 	var weave_diameter = Ruler.gauge2mm(weave_gauge);
 	var frame_diameter = Ruler.gauge2mm(frame_gauge);
+
 	var spacing = frame_diameter + weave_diameter;
+	
 	var wire = new Wire(frame_gauge);
 
-
 	this.wires = [];
-	var offset = num_wires * frame_diameter + (num_wires - 2) * weave_diameter;
-	wire.mesh.position.z -= offset/2;
+
+	var offset = (num_wires -1)  * (frame_diameter  + weave_diameter);
+
+	// wire.mesh.position.z -= offset/2;
 	for(var i = 0; i < num_wires; i++){
 		var wireMesh = new Wire(frame_gauge).mesh;
-		wireMesh.position.z -= offset/2;
+		
 		wireMesh.position.z += spacing * i
 		this.wires.push(wireMesh);
 	}
+	for(var i in this.wires)
+		this.wires[i].position.z -= offset/2;
 
 	this.jig = new THREE.Object3D();
+	for(var i in this.wires)
+		this.jig.add(this.wires[i]);
+
+
 	var vise_height = 5;
 	var vise_girth = frame_diameter * 2;
+
 	vise = new WeaveVise(offset + frame_diameter * 4, vise_height, vise_girth)
 	var vise = vise.holify(this.wires);
 
@@ -120,7 +144,7 @@ function WeaveModule(num_wires, frame_gauge, weave_gauge){
 	var bsp_pattern = new ThreeBSP(patternMesh.geometry);
 	var bsp_vise = new ThreeBSP(vise.geometry);
 	var result = bsp_vise.union(bsp_pattern);
-	
+
 	this.jig.add(result.toMesh(Jig.BASE_MATERIAL));
 	this.mesh = this.jig;
 }              
@@ -137,6 +161,7 @@ WeaveModule.prototype = {
 //  `8b8' `8d8'  Y88888P YP   YP    YP    Y88888P      YP    Y888888P `8888Y' Y88888P 
                                                                                    
 function WeaveVise(w, h, d){
+	// dimenions are total
 	this.vise = new THREE.BoxGeometry(w, h, d);
 	this.mesh = new THREE.Mesh(this.vise, Jig.BASE_MATERIAL);
 	this.mesh.rotation.y += Math.PI/2; 
@@ -182,20 +207,24 @@ WirePattern.prototype = {
 	setPattern: function(arr){
 		this.pattern = arr;
 	}, 
-	generateMesh: function(h, offset){
+	generateMesh: function(h, offset_girth){
 		var geom = [];
 		var depth = 0.5;
-		var spacing = this.weave_diameter/2;
-		var width = this.frame_diameter + spacing;
+
+		var spacing = this.weave_diameter;
+		var width = this.frame_diameter;
+		var y_spacing = 0.1;
 
 		// var spacing = h * 0.04
-		var spacing_y_total = spacing * (this.pattern.length + 1);
+		var spacing_y_total = y_spacing * (this.pattern.length + 2);
+
 		var height = (h - spacing_y_total) / this.pattern.length;
-		var y = h/2 - spacing_y_total/2;
+		
+		var y = (this.pattern.length - 3) * (height + y_spacing) ;
 		// var y = spacing + h/2;
 		for(var i = 0; i < this.pattern.length; i++){
 			var row = this.pattern[i];
-			var z = (width * row.length + (spacing * row.length - 1)) / 2 ; 
+			var z = (row.length - 2) * (spacing + width ); 
 			
 			for(var j in row){
 				if(row[j]){
@@ -203,14 +232,14 @@ WirePattern.prototype = {
 					var mesh = new THREE.Mesh(new THREE.BoxGeometry(depth, height, width), Jig.BASE_MATERIAL);
 					mesh.position.z = z;
 					mesh.position.y = y;
-					mesh.position.x = offset;
+					mesh.position.x = offset_girth;
 					// console.log("ADDED",i, rowObj.children.length);
 					geom.push(mesh);
 				}
 				z -= width + spacing;
 				
 			}
-			y -= height + spacing;
+			y -= height + y_spacing;
 		}
 		return Proxy.unionize(geom, Jig.BASE_MATERIAL);
 	}
@@ -250,7 +279,7 @@ this.path = new CustomSinCurve( 10 );
 	    8,     //radiusSegments
 	    false  //closed
 	);
-	this.mesh = new THREE.Mesh(this.geometry, Jig.BASE_MATERIAL);
+	this.mesh = new THREE.Mesh(this.geometry, Jig.METAL_MATERIAL);
 }
 
 

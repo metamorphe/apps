@@ -38,11 +38,20 @@ WebEnv.prototype = {
 		
 		// CAMERA
 		var SCREEN_WIDTH = $(".threejs_container").width(), SCREEN_HEIGHT = $(window).height();
-		var VIEW_ANGLE = 45, ASPECT = SCREEN_WIDTH / SCREEN_HEIGHT, NEAR = 0.1, FAR = 200000;
+		var VIEW_ANGLE = 45, ASPECT = SCREEN_WIDTH / SCREEN_HEIGHT, NEAR = 0.1, FAR = 1000;
 		this.camera = new THREE.PerspectiveCamera( VIEW_ANGLE, ASPECT, NEAR, FAR);
+
 		// this.camera = new THREE.OrthographicCamera( - ASPECT * VIEW_SIZE / 2,  ASPECT * VIEW_SIZE / 2,  VIEW_SIZE / 2,  -VIEW_SIZE / 2, -1000, 1000);
 		this.scene.add(this.camera);
-		this.camera.position.set(0, 50, -100);
+
+		// camera.position.x = -20;
+  //       camera.position.y = 30;
+  //       camera.position.z = 40;
+  //       camera.lookAt(new THREE.Vector3(10, 0, 0));
+
+
+		this.camera.position.set(-20, 30, 40);
+		// this.camera.position.set(0, 50, -100);
 		this.camera.lookAt(this.scene.position);	
 		
 		// RENDERER
@@ -105,6 +114,9 @@ WebEnv.prototype = {
         groundMesh.position.y = -20;
         this.scene.add(groundMesh);
 
+         var ambientLight = new THREE.AmbientLight(0x0c0c0c);
+        this.scene.add(ambientLight);
+
 		var directionalLight = new THREE.DirectionalLight(0xFFFFFF);
       	 directionalLight.position.set(0.5, 1, 1).normalize();
       	this.scene.add(directionalLight);
@@ -119,6 +131,8 @@ WebEnv.prototype = {
         spotLight.position.set(-30, 60, 60);
         spotLight.castShadow = true;
         this.scene.add(spotLight);
+
+
 
 
 

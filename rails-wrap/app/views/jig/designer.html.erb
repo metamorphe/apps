@@ -1,30 +1,17 @@
 <script type="text/javascript">
+// .d8888.  .o88b. d8888b. d888888b d8888b. d888888b 
+// 88'  YP d8P  Y8 88  `8D   `88'   88  `8D `~~88~~' 
+// `8bo.   8P      88oobY'    88    88oodD'    88    
+//   `Y8b. 8b      88`8b      88    88~~~      88    
+// db   8D Y8b  d8 88 `88.   .88.   88         88    
+// `8888Y'  `Y88P' 88   YD Y888888P 88         YP    
+                                                  
+
   var factory;
-  var config = {
-    	size: 35,
-    	feature_size: 5, 
-    	feature_gap: 5
-  };
-  
   $(function(){
-    loadTexture(35, 5, 5);
     attachHandlers();
+    factory = new JigFactory($("#generator"), "/leaf.svg");
   });
-
-
-  function loadTexture(size, feature_size, feature_gap){
-  	console.log("Making texture: ", size, feature_size, feature_gap);
-  	config.size = size;
-  	config.feature_size = feature_size;
-  	config.feature_gap = feature_gap;
-  	if(typeof factory === "undefined"){
-  		factory = new TextureGenerator($('#generator'), config);
-	}  	
-	else{
-		factory.reload(config);
-	}
-	$("#fill-factor-label").html(" " + (factory.density() * 100).toFixed(0) + "%");
-  }
 
   function attachHandlers(){
     $('.download').click(function(){
@@ -34,99 +21,18 @@
 		    $(this).attr('href', factory.export(TextureGenerator.PNG) ).attr('download', 'mytexture.png');
     });
     
-    $('#plus').click(function(){
-      factory.paper.view.zoom += 0.1;
-    $('#minus').click(function(){
-      if(factory.paper.view.zoom > 0.2)
-        factory.paper.view.zoom -= 0.1
-    });;
-    });
-    $("#step").change(function(){
-    	$("#step-label").html($(this).val());
-    });
-    $("input[type='range']").mousemove(function(){
-    	$("#"+ $(this).attr('id') +"-label").html(" " + $(this).val() + " mm");
-    });
-  
-
-  $(".control").click(function(){
-  	action = $(this).attr("name");
-  	step = parseFloat($("#step").val());
-  	console.log("Action logged", action);
-  	switch(action){
-  		case "up":
-  			factory.texture.position.y -= step;
-	  		break;
-  		case "down":
-  			factory.texture.position.y += step;
-	  		break;
-  		case "left":
-  			factory.texture.position.x -= step;
-	  		break;
-  		case "right":
-  			factory.texture.position.x += step;	
-	  		break;
-  	}
-  	factory.paper.view.update();
-  });
-  $("#generate").click(function(){
-  	var feature_size = parseFloat($("#feature-size").val());
-  	var feature_gap = parseFloat($("#feature-gap").val());
-  	var size = parseFloat($("#plane-size").val());
-  	loadTexture(size, feature_size, feature_gap);
-  });
 }
 </script>
 
-<div class="row">
- 
+<!-- 
+db   db d888888b .88b  d88. db      
+88   88 `~~88~~' 88'YbdP`88 88      
+88ooo88    88    88  88  88 88      
+88~~~88    88    88  88  88 88      
+88   88    88    88  88  88 88booo. 
+YP   YP    YP    YP  YP  YP Y88888P  
+-->
+                                    
 
-  <div class="col-xs-6">
-     <div id="svg-loader"></div>
-    <p id="zoom"> 
-      <button type="button" id="minus" class="btn btn-default btn-xs">
-        <%= glyph("minus") %>
-      </button>
-      <button type="button" id="plus" class="btn btn-default btn-xs">
-        <%= glyph("plus") %>
-      </button>
-    </p>
-    <p id="dimensions"></p> 
-    <div id="generator"></div> 
+<div id="generator"></div> 
 
-    <a name="svg" style="margin-top: 8px" class="download btn btn-primary pull-right">Download SVG</a>
-    <a name="png" style="margin-top: 8px" class="download btn btn-primary pull-right">Download PNG</a>
-  </div>
-
-   <div class="col-xs-6">  
-
-   	<label> Fill factor: </label><span id="fill-factor-label">  </span><br/>
-
-   	<label> Plane size: </label><span id="plane-size-label"> 35 mm</span><br/>
-   	<input id="plane-size" type="range" min="0" value="35" max="70" step="0.1"/>
-   	
-   	<label> Feature size: </label><span id="feature-size-label"> 5 mm</span><br/>
-   	<input id="feature-size" type="range" min="0" value="5" max="70" step="0.1"/>
-   	
-   	<label> Feature gap: </label><span id="feature-gap-label"> 5 mm </span><br/>
-   	<input id="feature-gap" type="range" min="0" value="5" max="70" step="0.1"/>
-   	
-   	<br/>
-   	<button id="generate" class="btn btn-danger btn-default"> Generate! </button>
-   	<hr/>
-   	<p id="controls">
-	   	<h4> Adjust texture position </h4>
-	   	<label>Direction: </label>
-	   	<% controls = ["arrow-up",  "arrow-left", "arrow-down", "arrow-right"] %>
-	   	<% controls.each do |c| %>
-	      <button type="button" name=<%= "#{c.split('-')[1]}" %> class="control btn btn-default">
-	        <%= glyph(c) %>
-	      </button>
-	     <% end %>
-	     <br/>
-	     <label> Step Size: </label> <span id="step-label"> 10 </span><br/>
-	     <input id="step" class="form-control" type="range" value="10" min="1" max="10" step="1"/> 
-   
-    </p>
-  </div>
-</div>

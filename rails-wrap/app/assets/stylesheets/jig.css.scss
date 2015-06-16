@@ -5,7 +5,7 @@
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
 /*
-*= require normalize-rails
+* require normalize-rails
 *= require_self
 */
 .thumbnail .legend{
@@ -35,7 +35,10 @@
 input{
 	text-align: right;
 }
+
 #generator{
+	margin: 0 auto;
+	margin-top: 100px;
 	height: 506px;
 	width: 506px;
 	border: #DDD solid 3px;
@@ -61,4 +64,15 @@ table img{
 	margin: 8px auto;
 	border: none;
 	width: 100% !important;
+}
+
+
+.dg {
+
+       font: 400 14px Verdana, Arial, sans-serif;
+       text-shadow: white 0 0 0;
+} 
+
+.dg .c select {
+   color: black !important;	
 }

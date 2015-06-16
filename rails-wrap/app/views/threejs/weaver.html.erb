@@ -19,14 +19,14 @@ var controller;
 $(function(){
   
   env = new WebEnv($("#ThreeJS"));
-  var originMesh = new THREE.Mesh(new THREE.SphereGeometry(1), lambertMaterial);
+  var originMesh = new THREE.Mesh(new THREE.SphereGeometry(0.5, 100, 100), lambertMaterial);
   env.scene.add(originMesh);
 
   
 
   var gui = new dat.GUI();
   controller = new WeaveController(env, gui);
-  dim = new DimensionsPreview(env.container);
+  // dim = new DimensionsPreview(env.container);
 });
 
 $(window).resize(function(){
