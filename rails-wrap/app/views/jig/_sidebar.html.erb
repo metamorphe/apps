@@ -9,45 +9,51 @@
       | &nbsp; <span class="glyphicon glyphicon-paperclip"></span> 1.5 m 
      
     </div>
-    <label> Gauge: </label> 
-    <select id="materials" class="form-control">
-      <option data-gauge="17" data-color="#666" > None </option>
-      <option data-gauge="14" data-color="#ADB2BD" > 14AWG - ALUMINUM </option>
-      <option data-gauge="18" data-color="#C0C0C0" > 18AWG - SILVER </option>
-      <option data-gauge="20" data-color="#C0C0C0" > 20AWG - SILVER </option>
-      <option data-gauge="20" data-color="#CDAD00" > 20AWG - GOLD </option>
-      <option data-gauge="24" data-color="#ADB2BD" > 24AWG - SILVER </option>
-      <option data-gauge="28" data-color="#CDAD00" > 28AWG - GOLD </option>
-      <option data-gauge="32" data-color="#B5A642" > 32AWG - BRASS </option>
-    </select>  
-    
+    <div id="wirepath_controller">
 
-    <div class="row">
-    <label class="col-xs-12"> Termination Points </label>
-    <div class="col-xs-6">
-     <select class="form-control">
-      <option> Extend </option>
-      <option> Spiral </option>
-      <option> Coil Loop </option>
-      <option> Simple Loop </option>
-     </select>  
-    </div>
-    <div class="col-xs-6">
-     <select class="form-control">
-      <option> Extend </option>
-      <option> Spiral </option>
-      <option> Coil Loop </option>
-      <option> Simple Loop </option>
-     </select>  
-    </div>
-  </div>
-  <label> Weight: </label> 
-     <select class="form-control">
-      <option> Uniform </option>
-      <option> Tapered </option>
-      <option> Unitapered</option>
-     </select>  
+      <label> Gauge: </label> 
+      <select id="materials" class="form-control">
+        <option data-gauge="17" data-color="#999" > None </option>
+        <option data-gauge="14" data-color="#ADB2BD" > 14AWG - ALUMINUM </option>
+        <option data-gauge="18" data-color="#C0C0C0" > 18AWG - SILVER </option>
+        <option data-gauge="20" data-color="#C0C0C0" > 20AWG - SILVER </option>
+        <option data-gauge="20" data-color="#CDAD00" > 20AWG - GOLD </option>
+        <option data-gauge="24" data-color="#ADB2BD" > 24AWG - SILVER </option>
+        <option data-gauge="28" data-color="#CDAD00" > 28AWG - GOLD </option>
+        <option data-gauge="32" data-color="#B5A642" > 32AWG - BRASS </option>
+      </select>  
+      
+      <div class="row">
+      <label class="col-xs-12"> Termination Points </label>
+      
+      <div class="col-xs-6">
+        <select id="termination-a" class="form-control">
+        <option value="0"> None </option>
+        <option value="1"> Extend </option>
+        <option value="2"> Spiral </option>
+        <option value="3"> Coil Loop </option>
+        <option value="4"> Simple Loop </option>
+       </select>  
+      </div>
 
+      <div class="col-xs-6">
+       <select id="termination-b" class="form-control">
+        <option value="0"> None </option>
+        <option value="1"> Extend </option>
+        <option value="2"> Spiral </option>
+        <option value="3"> Coil Loop </option>
+        <option value="4"> Simple Loop </option>
+       </select>  
+      </div>
+    </div>
+    <label> Weight: </label> 
+       <select id="weight-profile" class="form-control">
+        <option value="0"> None </option>
+        <option value="1"> Uniform </option>
+        <option value="2"> Tapered </option>
+        <option value="3"> Unitapered</option>
+       </select>  
+    </div>
     <footer>
       <%= button_tag :id=> "coil_button", :class => "btn btn-danger btn-sm" do %>
         <span class="glyphicon glyphicon-upload"> </span> Upload Design

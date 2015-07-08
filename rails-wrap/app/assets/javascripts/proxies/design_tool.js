@@ -15,7 +15,6 @@ function JigDesigner(container, svg){
 
 }
 
-
 var point_manip = null;
 
 JigDesigner.prototype = {
@@ -51,8 +50,15 @@ JigDesigner.prototype = {
 		    	paper.view.update();
 		    	item.position = paper.view.center;
 
-    			scope.anchortool.setSVG(item);
-		    	scope.anchortool.selectAll(false);
+    			scope.toolbox.tools.anchortool.setSVG(item);
+    			scope.wirepaths = new Wires();
+
+    			_.each(Utility.unpackChildren(item, []), function(value, key, arr){
+    				var w  = new WirePath(scope.paper, value);
+    				scope.wirepaths.add(w.id, w);
+    			});
+
+		    	scope.toolbox.tools.anchortool.selectAll(false);
 	    }});
 	},
 	init: function(){
@@ -70,7 +76,10 @@ JigDesigner.prototype = {
 		this.width = this.paper.view.size.width;
 		this.paper.view.zoom = 2.5;	
 		var scope = this; 
-		scope.anchortool = new AnchorPointTool(this.paper);
+
+		this.toolbox = new Toolbox($("#toolbox"));
+		this.toolbox.add("anchortool", new AnchorPointTool(this.paper));
+
 		this.update();
 		
 		return this;

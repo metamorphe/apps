@@ -8,8 +8,8 @@ Utility.unpackChildren = function(parent, arr){
 		return arr;
 	}
 	else{
-		for(var i in parent.children){
-			this.unpackChildren(parent.children[i], arr);
+		for(var i = 0; i < parent.children.length; i++){
+			Utility.unpackChildren(parent.children[i], arr);
 		}
 	}
 	return arr;

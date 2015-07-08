@@ -18,16 +18,10 @@
   });
 
   function attachHandlers(){
+    WirePath.DOM = $("#wirepath_controller");
     $("#zoom-in").click(function(){zoom.in();});
     $("#zoom-out").click(function(){zoom.out();});
-    $("#materials").change(function(){
-      var matIdx = parseInt($(this).val());
-      var style = materials.at(matIdx).getStyle();
-      if(factory.anchortool.selectedStroke){
-        factory.anchortool.selectedStroke.style = style;
-        factory.paper.view.update();
-      }
-    });
+    var sb = new SidebarController();
 
     $('.download').click(function(){
     	if($(this).attr("name") == "svg")
@@ -35,6 +29,48 @@
 	    else if($(this).attr("name") == "png")
 		    $(this).attr('href', factory.export(TextureGenerator.PNG) ).attr('download', 'mytexture.png');
     });
+  }
+
+  function SidebarController(){
+    $("#materials").change(function(){
+      var matIdx = parseInt($(this).val());
+      var material = materials.at(matIdx);
+      console.log(material);
+      if(factory.activePath){
+        factory.wirepaths.at(factory.activePath).material = material;
+
+        factory.wirepaths.at(factory.activePath).update();
+        factory.wirepaths.at(factory.activePath).updateDOM();
+        factory.paper.view.update();
+      }
+    });
+
+    $("#termination-a").change(function(){
+      var terminationType = parseInt($(this).val());
+      if(factory.activePath){
+        var path = factory.wirepaths.at(factory.activePath);
+        path.terminationA = terminationType;
+        path.update().updateDOM();
+      }
+    });
+    $("#termination-b").change(function(){
+      var terminationType = parseInt($(this).val());
+      if(factory.activePath){
+        var path = factory.wirepaths.at(factory.activePath);
+        path.terminationA = terminationType;
+        path.update().updateDOM();
+      }
+    });
+     $("#weight-profile").change(function(){
+      var profileType = parseInt($(this).val());
+      if(factory.activePath){
+        var path = factory.wirepaths.at(factory.activePath);
+        path.weight_profile = profileType;
+        path.update().updateDOM();
+      }
+    });
+    
+
   }
 
 

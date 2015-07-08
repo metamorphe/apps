@@ -11,6 +11,8 @@
 //= require proxies/jigfactory
 //= require proxies/design_tool
 //= require proxies/zoom
-//= require proxies/AnchorPointTool
+//= require proxies/Tools/Toolbox
+//= require proxies/Tools/AnchorPointTool
 //= require proxies/Material
+//= require proxies/WirePath
 //= require clipper
