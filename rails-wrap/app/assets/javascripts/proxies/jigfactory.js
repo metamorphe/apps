@@ -14,7 +14,8 @@ function JigFactory(container, svg){
 	this.container = container;
 	this.svg = svg;
 	this.gui = new dat.GUI();
-	this.product = "LaserBase";
+	this.gauge = 14;
+	this.product = "Base";
 	this.controllers_defined = false;
 
 	// this.factor = 500 / Ruler.convert(config.size, "mm");
@@ -23,8 +24,10 @@ function JigFactory(container, svg){
 	productController = this.gui.add(this, "product", ["LaserHammer", "LaserBase", "Hammer", "Base"]);
 
 	this.gui.add(this.paper.view, "zoom", 0.2, 4).step(0.1);
+	var gaugeController = this.gui.add(this, "gauge", 10, 30).step(1);
 	var scope = this;
 	productController.onChange(function(){ scope.update();});
+	gaugeController.onChange(function(){ scope.update();});
 	this.gui.add(this, "export");
 }
 
@@ -87,6 +90,46 @@ JigFactory.prototype = {
 		}
 		paper.view.update();
 	},
+	hammer_gen: function(){
+		outside = jigpath.offset_outerwall();
+        inside = jigpath.offset_innerwall();
+
+		var w = jigpath.weightFunction();
+        jigpath.colorize(this.gauge);
+		paper.project.activeLayer.addChild(jigpath.group);
+		jigpath.group.fillColor = new paper.Color(1);
+		this.addBackground();
+	},
+	base_gen: function(){
+		// reference paths
+		ref_o = jigpath.offset(jigpath.outer, 0);
+		ref_i = jigpath.offset(jigpath.hole, 0 );
+
+		// OUTSIDE WALL
+		outside = jigpath.offset_outerwall();
+       	o_path = new paper.CompoundPath();
+       	o_path.addChildren(outside);
+       	o_path.fillColor = new paper.Color(0);
+
+       	jigpath.colorizePath(outside[0], outside[1], ref_i, ref_o, this.gauge);
+
+       	//  INSIDE WALL
+        inside = jigpath.offset_innerwall();
+       	i_path = new paper.CompoundPath();
+       	i_path.addChildren(inside);
+       	i_path.fillColor = new paper.Color(0);
+
+       	jigpath.colorizePath(inside[1], inside[0], ref_i, ref_o, this.gauge);
+
+
+
+		// paper.project.activeLayer.addChildren(o_path);
+		paper.project.activeLayer.addChildren(i_path);
+		jigpath.group.fillColor = new paper.Color(0);
+
+		// add black background
+		this.addBackground();
+	},
 	laser_hammer_gen: function(){
         path_a = jigpath.offset(jigpath.outer, 0);
 		path_b = jigpath.offset(jigpath.hole, 0 );
@@ -97,56 +140,22 @@ JigFactory.prototype = {
 		path.strokeWidth = 0.001;
 		path.strokeColor = "red";
 	},
-	hammer_gen: function(){
-		outside = jigpath.offset_outerwall();
-        inside = jigpath.offset_innerwall();
-
-		var w = jigpath.weightFunction();
-        jigpath.colorize(14);
-		paper.project.activeLayer.addChild(jigpath.group);
-		jigpath.group.fillColor = new paper.Color(1);
-		this.addBackground();
-	},
 	laser_base_gen: function(){
 		outside = jigpath.offset_outerwall();
         inside = jigpath.offset_innerwall();
 
        	o_path = new paper.CompoundPath();
        	o_path.addChildren(outside);
-       	// o_path.fillColor = new paper.Color(1.0);
        	o_path.strokeColor = "red";
        	o_path.strokeWidth = 0.001;
 
        	i_path = new paper.CompoundPath();
        	i_path.addChildren(inside);
-       	// i_path.fillColor = new paper.Color(1.0);
    		i_path.strokeColor = "red";
    		i_path.strokeWidth = 0.001;
 
 		paper.project.activeLayer.addChildren(o_path);
 		paper.project.activeLayer.addChildren(i_path);
-
-		// jigpath.group.fillColor = new paper.Color(0);
-		// this.addBackground();
-	},
-	base_gen: function(){
-		outside = jigpath.offset_outerwall();
-        inside = jigpath.offset_innerwall();
-
-       	o_path = new paper.CompoundPath();
-       	o_path.addChildren(outside);
-       	o_path.fillColor = new paper.Color(1.0);
-
-
-       	i_path = new paper.CompoundPath();
-       	i_path.addChildren(inside);
-       	i_path.fillColor = new paper.Color(1.0);
-
-		paper.project.activeLayer.addChildren(o_path);
-		paper.project.activeLayer.addChildren(i_path);
-
-		jigpath.group.fillColor = new paper.Color(0);
-		this.addBackground();
 	},
 	importSVG: function(callback){
 		var scope = this;
@@ -219,7 +228,7 @@ JigPath.WALL_HEIGHT = 5; //mm
 JigPath.RESOLUTION = 1;
 JigPath.SCALE = 100;
 JigPath.TOLERANCE = 0.5;
-JigPath.WALL_THICKNESS = 8;
+JigPath.WALL_THICKNESS = 20;
 
 JigPath.GOOD_MAX_MEDIAL_STRAIN = -0.5;
 
@@ -348,7 +357,81 @@ JigPath.prototype = {
 		norm_medial_diffs = norm(medial_diffs);
 
 		return {magnitude: magnitude, values: _.object(positions, norm_medial_diffs)};		
+		// return {magnitude: _.max(norm_weights), values: _.object(positions, norm_weights)};		
 	}, 
+
+	colorizePath: function(path_inner, path_outer, ref_i, ref_o, gauge){
+		path_outer.fillColor = '#e9e9ff';
+		// ref_i.strokeColor = 'green';
+		// ref_o.strokeColor = 'magenta';
+
+
+		var data = this.medial_diffs(gauge);
+		var magnitude = - data.magnitude;
+		
+
+		// Calculate magnitudes
+		var diameter = Ruler.gauge2mm(gauge);
+		var wall_height = JigPath.WALL_HEIGHT;
+
+		var wall_color_ratio = (wall_height - diameter) / wall_height;
+		var hammer_ratio = magnitude / diameter;
+
+		
+		var n = path_inner.length;
+
+		lines = [];
+		var intersections;
+		for(var i = 0; i < n; i += JigPath.RESOLUTION){
+			var point = path_inner.getPointAt(i);
+			var normal = path_inner.getNormalAt(i);
+			var tangent = path_inner.getTangentAt(i);
+			normal.length =  -1 * 30;
+
+			var result = new paper.Point(point.x + normal.x, point.y + normal.y);
+			var line = new paper.Path({
+		        segments: [point, result],
+		        strokeColor: '#00A8E1',
+		        visible: false
+		    });
+
+			var intersectionA = getFirst(point, line.getIntersections(path_outer));
+			var intersectionW0 = getFirst(point, line.getIntersections(ref_o));
+			var intersectionW1 = getFirst(point, line.getIntersections(ref_i));
+
+			line.remove();
+
+		   //      var b = intersections[j].point;
+		   if(intersectionA != -1 && intersectionW0 != -1 && intersectionW1 != -1){		      
+		      	var width = subPoints(point, intersectionA);
+		 		var rect_width = point.getDistance(intersectionA);
+		 		var rect_height = JigPath.RESOLUTION * 1.5;
+		 		var rectangle = new paper.Rectangle(point.x, point.y, rect_width, rect_height);
+		 		var rectangle_path = new paper.Path.Rectangle(rectangle);
+
+		 		// GET APPR. COLOR
+		 		var idx = ref_i.getOffsetOf(intersectionW1);
+		 		// console.log("IDX", idx);
+
+		 		var closestIDX = closest_in_array(_(data.values).keys(), idx);
+
+		 		// ADD REACTANGLE
+		 		rectangle_path.fillColor = new paper.Color(data.values[closestIDX] * diameter) ;
+		 		
+		 		tangent.length = rect_height/2;
+		 		rectangle_path.rotate(width.angle + 180 , point);
+		 		rectangle_path.position.x += tangent.x;
+		 		rectangle_path.position.y += tangent.y;
+		 	}
+		 	else{
+		 		line.visible = false;
+		 	}
+		}
+
+
+		paper.view.update();
+		console.log("EXTRUDE: ", magnitude);
+	},
 	colorize: function(gauge){
 
 
@@ -411,8 +494,26 @@ JigPath.prototype = {
 		console.log("EXTRUDE: ", magnitude);
 	}
 }
+function closest_in_array(arr, goal){
+	var closestIDX = arr.reduce(function (prev, curr) {
+					  return (Math.abs(curr - goal) < Math.abs(prev - goal) ? curr : prev);
+					});
+	return closestIDX;
+}
+function getFirst(pt, intersections){
+	if (intersections.length == 0) return -1;
+	var min_idx = -1;
+	var min_dist = 1000000000;
+	for(var i in intersections){
 
-
+		var dist = pt.getDistance(intersections[i].point);
+		if(dist < min_dist){
+			min_dist = dist;
+			min_idx = i;
+		}
+	}
+	return intersections[min_idx].point;
+}
 
 JigPath.clone = function(path){
 	console.log(JigPath.sample(path, JigPath.RESOLUTION));

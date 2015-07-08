@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>2.5D - <%= params[:action].humanize %></title>
+  <title>Proxies - <%= params[:action].humanize %></title>
   <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
   <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
   <!-- <%=params[:controller]%> -->
@@ -52,15 +52,11 @@
 	        <li class="<%= params[:action] == "home" ? "active" : "" %>">
 	        	<a href="/"> Home</a>
 	        </li>
-	        <li class="<%= params[:action] == "jig" ? "active" : "" %>">
-	        	<%= link_to "Jig Designer", jig_designer_path %>
+	        <li class="<%= params[:action] == "interface" ? "active" : "" %>">
+	        	<%= link_to "Jig Interface", jig_interface_path %>
 	        </li>
-	        <li class="<%= params[:action] == "jig" ? "active" : "" %>">
-	        	<%= link_to "Peg Designer", peg_designer_path %>
-	        </li>
-	          <li class="<%= params[:action] == "threejs" ? "active" : "" %>">
-	        	<%= link_to "Weave Designer", weaver_path %>
-	        </li>
+
+	        
 	        <li class="dropdown">
 	          <a href="#" class="dropdown-toggle" data-toggle="dropdown">
 	          	
@@ -69,6 +65,15 @@
 	          <span class="caret"></span></a>
 
 	          <ul class="dropdown-menu" role="menu">
+	          	<li class="<%= params[:action] == "designer" ? "active" : "" %>">
+	        	<%= link_to "Jig Designer", jig_designer_path, :class=> "navbar-link" %>
+		        </li>
+		        <li class="<%= params[:action] == "peg" ? "active" : "" %>">
+		        	<%= link_to "Peg Designer", peg_designer_path, :class=> "navbar-link" %>
+		        </li>
+		          <li class="<%= params[:action] == "threejs" ? "active" : "" %>">
+		        	<%= link_to "Weave Designer", weaver_path, :class=> "navbar-link" %>
+		        </li>
 	          	<li><%= link_to "pic2stl", pic2stl_path , :class=> "navbar-link" %> </li>
         		<li><%= link_to "planebox", plane_box_path, :class=> "navbar-link"  %> </li>
         		<li><%= link_to "threejs_env", three_env_path , :class=> "navbar-link" %> </li>

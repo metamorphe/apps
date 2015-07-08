@@ -6,6 +6,11 @@
 //= require dat.gui.min
 //= require paper-full.min
 //= require scraps/ruler
+//= require proxies/utility
 //= require proxies/jiggenerator
 //= require proxies/jigfactory
+//= require proxies/design_tool
+//= require proxies/zoom
+//= require proxies/AnchorPointTool
+//= require proxies/Material
 //= require clipper

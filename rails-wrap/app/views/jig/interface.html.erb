@@ -1,3 +1,4 @@
+
 <script type="text/javascript">
 // .d8888.  .o88b. d8888b. d888888b d8888b. d888888b 
 // 88'  YP d8P  Y8 88  `8D   `88'   88  `8D `~~88~~' 
@@ -7,21 +8,38 @@
 // `8888Y'  `Y88P' 88   YD Y888888P 88         YP    
                                                   
 
-  var factory;
+  var factory, zoom, materials;
   $(function(){
     attachHandlers();
-    factory = new JigFactory($("#generator"), "/leaf.svg");
+    factory = new JigDesigner($("#sandbox"), "/fancyloop.svg");
+    zoom = new Zoom(factory.paper.view.zoom, factory.paper);
+    materials = new Materials($("#materials"));
+
   });
+
   function attachHandlers(){
+    $("#zoom-in").click(function(){zoom.in();});
+    $("#zoom-out").click(function(){zoom.out();});
+    $("#materials").change(function(){
+      var matIdx = parseInt($(this).val());
+      var style = materials.at(matIdx).getStyle();
+      if(factory.anchortool.selectedStroke){
+        factory.anchortool.selectedStroke.style = style;
+        factory.paper.view.update();
+      }
+    });
+
     $('.download').click(function(){
     	if($(this).attr("name") == "svg")
 	      $(this).attr('href', 'data:text/svg,' + factory.export(TextureGenerator.SVG) ).attr('download', 'mytexture.svg');
 	    else if($(this).attr("name") == "png")
 		    $(this).attr('href', factory.export(TextureGenerator.PNG) ).attr('download', 'mytexture.png');
     });
-    
-}
+  }
+
+
 </script>
+
 
 <!-- 
 db   db d888888b .88b  d88. db      
@@ -31,7 +49,13 @@ db   db d888888b .88b  d88. db
 88   88    88    88  88  88 88booo. 
 YP   YP    YP    YP  YP  YP Y88888P  
 -->
-                                    
+<div id="interface-container" class="row">   
 
-<div id="generator"></div> 
+ 
+  <%= render :partial => "toolbox" %>
+            
+  <div id="sandbox" class="col-xs-8">
+    <!-- <canvas id="sandboxy" resize></canvas> -->
+  </div>
+  <%= render :partial => "sidebar" %>
 

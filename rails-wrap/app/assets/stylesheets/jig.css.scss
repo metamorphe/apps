@@ -6,6 +6,8 @@
 // You can use Sass (SCSS) here: http://sass-lang.com/
 /*
 * require normalize-rails
+*= require interface
+*= require font
 *= require_self
 */
 .thumbnail .legend{
@@ -42,6 +44,10 @@ input{
 	height: 506px;
 	width: 506px;
 	border: #DDD solid 3px;
+	cursor: pointer;
+}
+#sandbox canvas{
+	cursor: pointer;
 }
 #svg-loader{
 	display: none;

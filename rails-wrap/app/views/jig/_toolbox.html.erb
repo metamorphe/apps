@@ -1,0 +1,38 @@
+ <div id="toolbox" class="shadowed">
+      <%= button_tag :class => "btn btn-default" do %>
+        <span class="icon-primary-cursor"></span>
+      <% end %>
+      <%= button_tag :class => "btn btn-default" do %>
+        <span class="icon-path-draw"></span>
+      <% end %>
+
+      <div class="btn-group" role="group" aria-label="pen-tools">
+       <%= button_tag :class => "btn btn-default" do %>
+        <span class="icon-pen-tool"></span>
+        <% end %>
+        <%= button_tag :class => "btn btn-default" do %>
+        <span class="icon-pen-add-tool"></span>
+        <% end %>
+        <%= button_tag :class => "btn btn-default" do %>
+        <span class="icon-pen-remove-tool"></span>
+        <% end %>
+      </div>
+      <% button_tag :class => "btn btn-default" do %>
+        <span class="icon-noun_68342_cc"></span>
+      <% end %>
+      <% button_tag :class => "btn btn-default" do %>
+        <span class="icon-bezier-select"></span>
+      <% end %>
+      <% button_tag :class => "btn btn-default" do %>
+        <span class="icon-anchor-select"></span>
+      <% end %>
+      <div class="btn-group pull-right" role="group" id="zoom-ui" aria-label="zoom-tools">
+        <%= button_tag :id=>"zoom-in", :class=>"btn btn-md btn-default" do %>
+          <span class="glyphicon glyphicon-zoom-in"></span>
+        <% end %>
+      
+        <%= button_tag :id=>"zoom-out", :class=>"btn btn-md btn-default" do %>
+          <span class="glyphicon glyphicon-zoom-out"></span>
+        <% end %>
+      </div>
+  </div>    
