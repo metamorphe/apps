@@ -13,6 +13,9 @@
 //= require proxies/zoom
 //= require proxies/Tools/Toolbox
 //= require proxies/Tools/AnchorPointTool
+//= require proxies/Tools/VectorTool
+//= require proxies/StatsController
 //= require proxies/Material
+//= require proxies/Wires
 //= require proxies/WirePath
 //= require clipper

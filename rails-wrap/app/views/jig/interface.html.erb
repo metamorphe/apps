@@ -15,10 +15,15 @@
     zoom = new Zoom(factory.paper.view.zoom, factory.paper);
     materials = new Materials($("#materials"));
 
+    StatsController.DOM = $('#stat-box');
+    stats = new StatsController(factory);
+
+
   });
 
   function attachHandlers(){
     WirePath.DOM = $("#wirepath_controller");
+
     $("#zoom-in").click(function(){zoom.in();});
     $("#zoom-out").click(function(){zoom.out();});
     var sb = new SidebarController();
@@ -32,10 +37,11 @@
   }
 
   function SidebarController(){
+
     $("#materials").change(function(){
       var matIdx = parseInt($(this).val());
       var material = materials.at(matIdx);
-      console.log(material);
+      
       if(factory.activePath){
         factory.wirepaths.at(factory.activePath).material = material;
 
@@ -57,7 +63,7 @@
       var terminationType = parseInt($(this).val());
       if(factory.activePath){
         var path = factory.wirepaths.at(factory.activePath);
-        path.terminationA = terminationType;
+        path.terminationB = terminationType;
         path.update().updateDOM();
       }
     });

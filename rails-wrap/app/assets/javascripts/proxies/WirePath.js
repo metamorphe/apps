@@ -1,16 +1,3 @@
-function Wires(){
-	this.wires = {}
-}
-
-Wires.prototype = {
-	add: function(key, val){
-		this.wires[key] = val;
-	}, 
-	at: function(key){
-		return this.wires[key];
-	}
-}
-
 WirePath.termination = {
 	NONE: 0, 
 	EXTEND: 1,
@@ -39,12 +26,40 @@ function WirePath(paper, path){
 	this.update();
 	this.initDOM();
 }
-
+WirePath.COIL_LOOP_WIDTH = 2;
 WirePath.prototype = {
 	update: function(){
 		console.log("updating color");
 		var style = this.material.getStyle();
 		this.path.style = style;
+		
+
+		if(this.terminationB == WirePath.termination.SIMPLE_LOOP){
+			var start = this.path.localToGlobal(this.path.getPointAt(0));
+			var tangent2f = this.path.getTangentAt(0);
+			var loopWidth = Ruler.mm2pts(WirePath.COIL_LOOP_WIDTH)/2 + Ruler.mm2pts(this.material.diameter)/2;
+			tangent2f.length = loopWidth;
+
+			var path = new paper.Path.Circle({
+			    center: [start.x - tangent2f.x, start.y - tangent2f.y],
+			    radius: Ruler.mm2pts(WirePath.COIL_LOOP_WIDTH),
+			    strokeColor: this.material.color,
+			    strokeWidth: Ruler.mm2pts(this.material.diameter)
+			});
+		}
+		if(this.terminationA == WirePath.termination.SIMPLE_LOOP){
+			var start = this.path.localToGlobal(this.path.getPointAt(this.path.length));
+			var tangent2f = this.path.getTangentAt(this.path.length);
+			var loopWidth = Ruler.mm2pts(WirePath.COIL_LOOP_WIDTH)/2 + Ruler.mm2pts(this.material.diameter)/2;
+			tangent2f.length = loopWidth;
+
+			var path = new paper.Path.Circle({
+			    center: [start.x + tangent2f.x, start.y + tangent2f.y],
+			    radius: Ruler.mm2pts(WirePath.COIL_LOOP_WIDTH),
+			    strokeColor: this.material.color,
+			    strokeWidth: Ruler.mm2pts(this.material.diameter)
+			});
+		}
 
 		this.paper.view.update();
 		return this;

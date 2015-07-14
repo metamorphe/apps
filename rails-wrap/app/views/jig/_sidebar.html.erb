@@ -4,9 +4,12 @@
     </div>
     <div id="stat-box">
      
-      <span class="glyphicon glyphicon-print"></span> 4 hr 30 min &nbsp;
-      | &nbsp; <span class="glyphicon glyphicon-time"></span> 30 min &nbsp;
-      | &nbsp; <span class="glyphicon glyphicon-paperclip"></span> 1.5 m 
+      <span class="glyphicon glyphicon-print"></span> <span id="print-time"> 4 hr 30 min </span>&nbsp;
+      | &nbsp; <span class="glyphicon glyphicon-time"></span> <span id="make-time"> 30 min </span>&nbsp;
+      | &nbsp; <span class="glyphicon glyphicon-paperclip"></span> <span id="bom-length"> 1.5 m </span>
+      <%= button_tag :id=>"calculate-stats", :class=> "pull-right btn-xs btn btn-danger" do %>
+        <span class="glyphicon glyphicon-repeat">
+      <% end %>
      
     </div>
     <div id="wirepath_controller">

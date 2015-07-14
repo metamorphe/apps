@@ -42,6 +42,7 @@ JigDesigner.prototype = {
 	
 	importSVG: function(callback){
 		var scope = this;
+		console.log(scope);
 		this.paper.project.importSVG(this.svg, {
 	    	onLoad: function(item) { 
 		    	scope.svgSym = item;
@@ -50,7 +51,7 @@ JigDesigner.prototype = {
 		    	paper.view.update();
 		    	item.position = paper.view.center;
 
-    			scope.toolbox.tools.anchortool.setSVG(item);
+    			scope.toolbox.tools.anchortool.toolholder.setSVG(item);
     			scope.wirepaths = new Wires();
 
     			_.each(Utility.unpackChildren(item, []), function(value, key, arr){
@@ -58,7 +59,8 @@ JigDesigner.prototype = {
     				scope.wirepaths.add(w.id, w);
     			});
 
-		    	scope.toolbox.tools.anchortool.selectAll(false);
+		    	scope.toolbox.tools.anchortool.toolholder.selectAll(false);
+		    	paper.tool = null;
 	    }});
 	},
 	init: function(){
@@ -77,9 +79,9 @@ JigDesigner.prototype = {
 		this.paper.view.zoom = 2.5;	
 		var scope = this; 
 
-		this.toolbox = new Toolbox($("#toolbox"));
-		this.toolbox.add("anchortool", new AnchorPointTool(this.paper));
-
+	    this.toolbox = new Toolbox(this.paper, $("#toolbox"));	
+	    this.toolbox.add("anchortool", $('#anchor-tool'), new AnchorPointTool(this.paper));
+		this.toolbox.add("vectortool", $('#vector-tool'),  new VectorTool(this.paper));
 		this.update();
 		
 		return this;
