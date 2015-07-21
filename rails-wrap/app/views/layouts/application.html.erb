@@ -68,6 +68,9 @@
 	          	<li class="<%= params[:action] == "designer" ? "active" : "" %>">
 	        	<%= link_to "Jig Designer", jig_designer_path, :class=> "navbar-link" %>
 		        </li>
+		        	<li class="<%= params[:action] == "form" ? "active" : "" %>">
+	        	<%= link_to "Form Designer", jig_form_path, :class=> "navbar-link" %>
+		        </li>
 		        <li class="<%= params[:action] == "peg" ? "active" : "" %>">
 		        	<%= link_to "Peg Designer", peg_designer_path, :class=> "navbar-link" %>
 		        </li>

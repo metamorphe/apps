@@ -18,6 +18,7 @@ Toolbox.prototype={
 	},
 	add:function(name, dom, tool){
 		var scope = this;
+		tool.tool.toolholder = tool;
 		this.tools[name] = {dom: dom, toolholder: tool};
 		dom.click(function(){
 			console.log("Enabling", name);

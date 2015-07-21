@@ -14,6 +14,7 @@
 //= require proxies/Tools/Toolbox
 //= require proxies/Tools/AnchorPointTool
 //= require proxies/Tools/VectorTool
+//= require proxies/Tools/TransformTool
 //= require proxies/StatsController
 //= require proxies/Material
 //= require proxies/Wires

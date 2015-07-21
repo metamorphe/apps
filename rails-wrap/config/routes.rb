@@ -3,6 +3,7 @@ Rails.application.routes.draw do
   namespace :jig do
     get 'designer', :as => "designer"
     get 'interface', :as => "interface"
+    get 'form', :as => "form"
 
   end
   devise_for :users

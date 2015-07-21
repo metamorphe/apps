@@ -40,6 +40,7 @@ function VectorTool(paper){
 		if(scope.selectedStroke){
 			scope.selectedStroke.position.x += event.delta.x;
 			scope.selectedStroke.position.y += event.delta.y;
+
 		}
 		scope.update();
 	}		

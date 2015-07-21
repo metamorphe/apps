@@ -17,7 +17,24 @@
 
     StatsController.DOM = $('#stat-box');
     stats = new StatsController(factory);
-
+    $('#sandbox canvas').on("drop", function(event){
+      event.preventDefault();  
+      event.stopPropagation();
+      var filename = event.originalEvent.dataTransfer.getData("text");
+      console.log("Dropped!", filename );
+      factory.addSVG(filename);
+    }).on("dragover", function(event) {
+      event.preventDefault();  
+      event.stopPropagation();
+      $(this).addClass('dragging');
+    }).on("dragleave", function(event) {
+      event.preventDefault();  
+      event.stopPropagation();
+      $(this).removeClass('dragging');
+    });
+    $('img').on('dragstart', function(event){
+      event.originalEvent.dataTransfer.setData("text", $(this).attr('src'));
+    });
 
   });
 
@@ -100,4 +117,4 @@ YP   YP    YP    YP  YP  YP Y88888P
     <!-- <canvas id="sandboxy" resize></canvas> -->
   </div>
   <%= render :partial => "sidebar" %>
-
+<%= render 'collection'%>

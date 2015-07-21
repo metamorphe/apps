@@ -39,7 +39,30 @@ JigDesigner.prototype = {
 		
 		paper.view.update();
 	},
-	
+	addSVG: function(filename, position, callback){
+		var scope = this;
+		this.paper.project.importSVG(filename, {
+	    	onLoad: function(item) { 
+		    	
+		    	paper.project.activeLayer.addChild(item);
+
+		    	paper.view.update();
+		    	item.position = paper.view.center;
+
+    			scope.toolbox.tools.anchortool.toolholder.setSVG(item);
+    			// scope.wirepaths = new Wires();
+
+    			_.each(Utility.unpackChildren(item, []), function(value, key, arr){
+    				var w  = new WirePath(scope.paper, value);
+    				scope.wirepaths.add(w.id, w);
+    			});
+
+		    	scope.toolbox.tools.anchortool.toolholder.selectAll(false);
+		    	// paper.tool = null;
+		    	item.selected = true;
+		    	$('#transform-tool').click().focus();
+	    }});
+	},
 	importSVG: function(callback){
 		var scope = this;
 		console.log(scope);
@@ -60,7 +83,8 @@ JigDesigner.prototype = {
     			});
 
 		    	scope.toolbox.tools.anchortool.toolholder.selectAll(false);
-		    	paper.tool = null;
+		    	// paper.tool = null;
+		    	$('#transform-tool').click().focus();
 	    }});
 	},
 	init: function(){
@@ -82,6 +106,7 @@ JigDesigner.prototype = {
 	    this.toolbox = new Toolbox(this.paper, $("#toolbox"));	
 	    this.toolbox.add("anchortool", $('#anchor-tool'), new AnchorPointTool(this.paper));
 		this.toolbox.add("vectortool", $('#vector-tool'),  new VectorTool(this.paper));
+		this.toolbox.add("transformtool", $('#transform-tool'),  new TransformTool(this.paper));
 		this.update();
 		
 		return this;
