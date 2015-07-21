@@ -31,7 +31,10 @@ Material.prototype = {
 	getStyle: function(){
 		return {
 			strokeColor: this.color,
-			strokeWidth: Ruler.mm2pts(this.diameter)
+			strokeWidth: Ruler.mm2pts(this.diameter), 
+			shadowColor: new paper.Color(0.2, 0.2, 0.2), 
+			shadowBlur: 12, 
+			shadowOffset: new paper.Point(2, 2)
 		};
 	}, 
 	equals: function(m){
