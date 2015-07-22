@@ -253,6 +253,11 @@ JigDesigner.prototype = {
 		this.current_save = last_event;
 		
 	}, 
+	clear_history: function(){
+		storage.clear();
+		this.clear();
+		this.save();
+	},
 	fast_forward: function(){
 		save_events = $.map(storage.keys(), function(el, i){
 			flag = el.split('_')[0];

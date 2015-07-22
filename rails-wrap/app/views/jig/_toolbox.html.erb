@@ -1,4 +1,9 @@
- <div id="toolbox" class="shadowed">
+<style>
+#toolbox .btn-group{
+  margin-right: 5px;
+}
+</style> 
+<div id="toolbox" class="shadowed">
       <%= button_tag :id => "vector-tool", :class => "btn btn-default" do %>
         <span class="icon-primary-cursor"></span>
       <% end %>
@@ -26,6 +31,7 @@
       <% button_tag :class => "btn btn-default" do %>
         <span class="icon-anchor-select"></span>
       <% end %>
+    
 
       <div class="btn-group pull-right" role="group">
         <%= button_tag :id=>"revert", :class=>"btn btn-md btn-default" do %>
@@ -47,12 +53,18 @@
 
 
       <div class="btn-group pull-right" role="group" id="zoom-ui" aria-label="zoom-tools">
-        <%= button_tag :id=>"zoom-in", :class=>"btn btn-md btn-default" do %>
-          <span class="glyphicon glyphicon-zoom-in"></span>
-      <% end %>
+       
       
-      <%= button_tag :id=>"zoom-out", :class=>"btn btn-md btn-default" do %>
+      <%= button_tag :id=>"zoom-out", :class=>"btn btn-md btn-warning" do %>
         <span class="glyphicon glyphicon-zoom-out"></span>
       <% end %>
+       <%= button_tag :id=>"zoom-in", :class=>"btn btn-md btn-warning" do %>
+          <span class="glyphicon glyphicon-zoom-in"></span>
+      <% end %>
+      </div>
+        <div class="btn-group pull-right" role="group">
+        <%= button_tag :id=>"clear-history", :class=>"btn btn-md btn-danger" do %>
+          <span class="glyphicon glyphicon-ban-circle"></span>
+        <% end %>
       </div>
   </div>    
