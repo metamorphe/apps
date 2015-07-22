@@ -31,10 +31,10 @@ function HillJig(container, svg){
 HillJig.prototype = {
 	removeConnectors: function(){
 		var scope = this;
-		var connectors = _.filter(this.wirepaths.wires, function(el){
+		this.connectors = _.filter(this.wirepaths.wires, function(el){
 			return el.is_connector;
 		});
-		_.each(connectors, function(el){
+		_.each(this.connectors, function(el){
 			el.path.remove();
 		});
 		scope.paper.project.view.update();
