@@ -22,7 +22,7 @@ function WirePath(paper, path){
 	if(!_.isUndefined(this.path.parent)){
 		this.path.parent.applyMatrix = true;
 	}
-
+	this.is_connector = path.name.indexOf('connector') > -1 || path.name.indexOf('three') > -1;
 	this.paper = paper;
 	this.terminationA = WirePath.termination.NONE;
 	this.terminationB = WirePath.termination.NONE;

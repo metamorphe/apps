@@ -9,11 +9,13 @@ function HillJig(container, svg){
 	this.gauge = 14;
 	this.product = "HillJig";
 	this.controllers_defined = false;
-	this.loadFromLocalStorage = false;
-
+	this.loadFromLocalStorage = true;
+	this.loadedFromLocal = false;
+	this.wirepaths = new Wires();
 	// this.factor = 500 / Ruler.convert(config.size, "mm");
 	this.init();
 	var loadLSController = this.gui.add(this, "loadFromLocalStorage");
+	var removeConnectors = this.gui.add(this, "removeConnectors");
 	productController = this.gui.add(this, "product", ["HillJig"]);
 
 	this.gui.add(this.paper.view, "zoom", 0.2, 4).step(0.1);
@@ -22,70 +24,20 @@ function HillJig(container, svg){
 	productController.onChange(function(){ scope.update();});
 	gaugeController.onChange(function(){ scope.update();});
 	loadLSController.onChange(function(){ scope.loadingFromLocalStorage(); });
-	this.gui.add(this, "export");
-	this.wirepaths = new Wires();
+
 }
 
 
 HillJig.prototype = {
-	loadingFromLocalStorage: function(){
-		this.clear();
-
-		save_events = $.map(storage.keys(), function(el, i){
-			flag = el.split('_')[0];
-			time = parseInt(el.split('_')[1]);
-			if(flag == "saveevent")
-				return time;
-		});	
-
-		if(_.isEmpty(save_events)){
-			console.log("No save events to revert to...");
-			return;
-		}
-
-		console.log("save events", save_events);
-		last_event =  _.max(save_events);
-
-		console.log("loading json", last_event);
-
-		this.loadJSON(storage.get('saveevent_' + last_event))
-
-	},
-
-	loadJSON: function(json, callback){
-		console.log("Loading json", json);
-		this.art_layer = new paper.Group();
-
-
+	removeConnectors: function(){
 		var scope = this;
-		var item = this.paper.project.importJSON(json); 
-		
-		var layer = item[0];
-
-		for(var i = 0; i < layer.children.length; i ++){
-			console.log(i);
-			var group = layer.children[i];
-
-			_.each(Utility.unpackChildren(group, []), function(value, key, arr){
-				var w  = new WirePath(scope.paper, value);
-
-				scope.wirepaths.add(w.id, w);
-				console.log("loading ", w.path.name)
-				factory.activePath = w.id;
-			});
-	  		// paper.project.activeLayer.addChild(group);	
-		}
-		scope.art_layer.addChild(layer);
-		var b = scope.art_layer.bounds;
-		scope.art_layer.position = new paper.Point(0 + b.width/2 + 20, 0 + b.height/2 + 20);
-		
-		// this.container.height(b.height)
-		// 			.width(b.width);
-		// scope.paper.view.size.height = b.height + 40;
-		// scope.paper.view.size.width = b.width + 40;
-		scope.paper.view.zoom = 4.5;
-		scope.paper.view.center = new paper.Point(0 + b.width/2 + 20, 0 + b.height/2 + 20);
-		scope.paper.view.update();
+		var connectors = _.filter(this.wirepaths.wires, function(el){
+			return el.is_connector;
+		});
+		_.each(connectors, function(el){
+			el.path.remove();
+		});
+		scope.paper.project.view.update();
 	},
 	addBackground: function(){
 		var rectangle = new paper.Rectangle(new paper.Point(0, 0), new paper.Point(paper.view.size.width * paper.view.zoom, paper.view.size.height * paper.view.zoom));
@@ -118,7 +70,15 @@ HillJig.prototype = {
 				} else scope.base_gen();		   
 			}
 		} else{
-
+			
+			if(this.product == "HillJig"){
+				if(!this.loadedFromLocal){
+					console.log("Loading from local")
+					this.paper.project.clear();
+					this.loadingFromLocalStorage();
+					this.loadedFromLocal = true;
+				}
+			}
 		};
 
 		paper.view.update();
@@ -145,8 +105,6 @@ HillJig.prototype = {
 
        	jigpath.colorizePath(inside[1], inside[0], ref_i, ref_o, this.gauge);
 
-
-
 		// paper.project.activeLayer.addChildren(o_path);
 		paper.project.activeLayer.addChildren(i_path);
 		jigpath.group.fillColor = new paper.Color(0);
@@ -154,7 +112,6 @@ HillJig.prototype = {
 		// add black background
 		this.addBackground();
 	},
-	
 	importSVG: function(callback){
 		var scope = this;
 		this.paper.project.importSVG(this.svg, {
@@ -194,26 +151,56 @@ HillJig.prototype = {
 		
 		return this;
 	},
-	clear: function(){
-		this.paper.project.clear();
-	},
-	export: function(mode){
-		// var prev = this.paper.view.zoom;
-		// this.paper.view.zoom = 1;
-		
-		// if(mode == HillJig.SVG)
-			exp = this.paper.project.exportSVG({asString: true});
-		// else if(mode == HillJig.PNG)
-			// exp = this.canvas[0].toDataURL("image/png");
-		// else 
-			// exp = "No mode was specified";
-		saveAs(new Blob([exp], {type:"application/svg+xml"}), "export.svg")
-	
-		// console.log(exp);
-		// this.paper.view.zoom = prev;
+	loadingFromLocalStorage: function(){
+		// this.clear();
 
-		return exp;
-	}
+		save_events = $.map(storage.keys(), function(el, i){
+			flag = el.split('_')[0];
+			time = parseInt(el.split('_')[1]);
+			if(flag == "saveevent")
+				return time;
+		});	
+
+		if(_.isEmpty(save_events)){
+			console.log("No save events to revert to...");
+			return;
+		}
+
+		console.log("save events", save_events);
+		last_event =  _.max(save_events);
+
+		console.log("loading json", last_event);
+
+		this.loadJSON(storage.get('saveevent_' + last_event))
+
+	},
+
+	loadJSON: function(json, callback){
+		this.art_layer = new paper.Group();
+
+
+		var scope = this;
+		var item = this.paper.project.importJSON(json); 
+		
+		var layer = item[0];
+
+		for(var i = 0; i < layer.children.length; i ++){
+			var group = layer.children[i];
+
+			_.each(Utility.unpackChildren(group, []), function(value, key, arr){
+				var w  = new WirePath(scope.paper, value);
+				
+				scope.wirepaths.add(w.id, w);
+			});
+	  	}
+		scope.art_layer.addChild(layer);
+		var b = scope.art_layer.bounds;
+		scope.art_layer.position = new paper.Point(0 + b.width/2 + 20, 0 + b.height/2 + 20);
+		
+		scope.paper.view.zoom = 4.5;
+		scope.paper.view.center = new paper.Point(0 + b.width/2 + 20, 0 + b.height/2 + 20);
+		scope.paper.view.update();
+	},
 }
 
 
