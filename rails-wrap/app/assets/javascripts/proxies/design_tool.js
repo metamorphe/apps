@@ -70,7 +70,7 @@ JigDesigner.prototype = {
 
 	    	
 			scope.toolbox.tools.anchortool.toolholder.setSVG(item);
-			group.position = paper.view.center;
+			// group.position = paper.view.center;
 
 			_.each(Utility.unpackChildren(group, []), function(value, key, arr){
 				var w  = new WirePath(scope.paper, value);

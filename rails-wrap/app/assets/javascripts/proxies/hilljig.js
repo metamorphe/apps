@@ -54,22 +54,38 @@ HillJig.prototype = {
 
 	loadJSON: function(json, callback){
 		console.log("Loading json", json);
+		this.art_layer = new paper.Group();
+
+
 		var scope = this;
 		var item = this.paper.project.importJSON(json); 
 		
 		var layer = item[0];
+
 		for(var i = 0; i < layer.children.length; i ++){
 			console.log(i);
 			var group = layer.children[i];
 
 			_.each(Utility.unpackChildren(group, []), function(value, key, arr){
 				var w  = new WirePath(scope.paper, value);
+
 				scope.wirepaths.add(w.id, w);
 				console.log("loading ", w.path.name)
 				factory.activePath = w.id;
 			});
-	  		paper.project.activeLayer.addChild(group);	
+	  		// paper.project.activeLayer.addChild(group);	
 		}
+		scope.art_layer.addChild(layer);
+		var b = scope.art_layer.bounds;
+		scope.art_layer.position = new paper.Point(0 + b.width/2 + 20, 0 + b.height/2 + 20);
+		
+		// this.container.height(b.height)
+		// 			.width(b.width);
+		// scope.paper.view.size.height = b.height + 40;
+		// scope.paper.view.size.width = b.width + 40;
+		scope.paper.view.zoom = 4.5;
+		scope.paper.view.center = new paper.Point(0 + b.width/2 + 20, 0 + b.height/2 + 20);
+		scope.paper.view.update();
 	},
 	addBackground: function(){
 		var rectangle = new paper.Rectangle(new paper.Point(0, 0), new paper.Point(paper.view.size.width * paper.view.zoom, paper.view.size.height * paper.view.zoom));
@@ -172,7 +188,7 @@ HillJig.prototype = {
 		this.paper.setup(this.canvas[0]);
 		this.height = this.paper.view.size.height;
 		this.width = this.paper.view.size.width;
-		this.paper.view.zoom = 1;	
+		this.paper.view.zoom = 5;	
 		var scope = this; 
 		this.update();
 		
