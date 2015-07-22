@@ -8,6 +8,7 @@
 //= require paper-full.min
 //= require scraps/ruler
 //= require proxies/utility
+//= require proxies/hilljig
 //= require proxies/jiggenerator
 //= require proxies/jigfactory
 //= require proxies/design_tool

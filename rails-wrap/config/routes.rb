@@ -2,6 +2,7 @@ Rails.application.routes.draw do
 
   namespace :jig do
     get 'designer', :as => "designer"
+    get 'generator', :as => "generator"
     get 'interface', :as => "interface"
     get 'form', :as => "form"
 

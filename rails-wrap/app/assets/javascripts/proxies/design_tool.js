@@ -66,17 +66,16 @@ JigDesigner.prototype = {
 		
 		var layer = item[0];
 		for(var i = 0; i < layer.children.length; i ++){
-			console.log(i);
 			var group = layer.children[i];
 
 	    	
 			scope.toolbox.tools.anchortool.toolholder.setSVG(item);
-			// group.position = paper.view.center;
+			group.position = paper.view.center;
 
 			_.each(Utility.unpackChildren(group, []), function(value, key, arr){
 				var w  = new WirePath(scope.paper, value);
 				scope.wirepaths.add(w.id, w);
-				console.log("loading ", w.path.name)
+				console.log("loading ", w.path.name);
 				factory.activePath = w.id;
 			});
 		}

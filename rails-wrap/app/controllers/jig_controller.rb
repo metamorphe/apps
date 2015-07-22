@@ -2,6 +2,10 @@ class JigController < ApplicationController
   def designer
   	render :layout => "full_screen"
   end
+
+  def generator
+    render :layout => "full_screen"
+  end
   def form
   	@files = get_primitives()
   	render :layout => "full_screen"
