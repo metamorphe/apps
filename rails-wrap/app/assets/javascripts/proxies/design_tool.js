@@ -4,7 +4,9 @@
 //     88     88    88  ooo 88   88 88~~~~~   `Y8b.    88    88  ooo 88 V8o88 88~~~~~ 88`8b   
 // db. 88    .88.   88. ~8~ 88  .8D 88.     db   8D   .88.   88. ~8~ 88  V888 88.     88 `88. 
 // Y8888P  Y888888P  Y888P  Y8888D' Y88888P `8888Y' Y888888P  Y888P  VP   V8P Y88888P 88   YD 
-                                                                                           
+JigDesigner.SVG = 0;
+JigDesigner.JSON = 1;  
+JigDesigner.EXPORT_DEFAULT = JigDesigner.SVG;                                                                                        
                              
 function JigDesigner(container, svg){
 	this.paper;
@@ -13,9 +15,19 @@ function JigDesigner(container, svg){
 	this.gauge = 14;
 	this.init();
 
+	save_events = $.map(storage.keys(), function(el, i){
+			flag = el.split('_')[0];
+			time = parseInt(el.split('_')[1]);
+			if(flag == "saveevent")
+				return time;
+		});	
+
+	latest_event =  _.max(save_events);
+	this.current_save = latest_event;
+
 }
 
-var point_manip = null;
+// var point_manip = null;
 
 JigDesigner.prototype = {
 	addBackground: function(){
@@ -39,15 +51,57 @@ JigDesigner.prototype = {
 		
 		paper.view.update();
 	},
-	addSVG: function(filename, position, callback){
+	clear: function(){
+		// paper.project.activeLayer.removeChildren();
+		this.paper.project.clear();
+		this.wirepaths.clear();
+		this.paper.view.update();
+	},
+	loadJSON: function(json, callback){
+		console.log("Loading json", json);
 		var scope = this;
-		this.paper.project.importSVG(filename, {
+		// this.paper.project.activeLayer.removeChildren();
+
+		var item = this.paper.project.importJSON(json); 
+		
+		var layer = item[0];
+		for(var i = 0; i < layer.children.length; i ++){
+			console.log(i);
+			var group = layer.children[i];
+
+	    	
+			scope.toolbox.tools.anchortool.toolholder.setSVG(item);
+			// group.position = paper.view.center;
+
+			_.each(Utility.unpackChildren(group, []), function(value, key, arr){
+				var w  = new WirePath(scope.paper, value);
+				scope.wirepaths.add(w.id, w);
+				console.log("loading ", w.path.name)
+				factory.activePath = w.id;
+			});
+		}
+    	scope.toolbox.tools.anchortool.toolholder.selectAll(false);
+    	paper.tool = null;
+    	
+    	item.selected = true;
+    	$('#transform-tool').click().focus();
+    	
+  		paper.project.activeLayer.addChild(group);
+	
+	},
+	addSVG: function(filenamer, position, callback){
+		console.log("position", position);
+		var scope = this;
+		this.paper.project.importSVG(filenamer, {
 	    	onLoad: function(item) { 
 		    	
 		    	paper.project.activeLayer.addChild(item);
-
+		   
 		    	paper.view.update();
-		    	item.position = paper.view.center;
+		    	if(_.isUndefined(position))
+			    	item.position = paper.view.center;
+			    else
+			    	item.position = position;
 
     			scope.toolbox.tools.anchortool.toolholder.setSVG(item);
     			// scope.wirepaths = new Wires();
@@ -55,10 +109,14 @@ JigDesigner.prototype = {
     			_.each(Utility.unpackChildren(item, []), function(value, key, arr){
     				var w  = new WirePath(scope.paper, value);
     				scope.wirepaths.add(w.id, w);
+    				console.log("filename", filenamer);
+    				w.path.name = filenamer;
+    				factory.activePath = w.id;
     			});
 
 		    	scope.toolbox.tools.anchortool.toolholder.selectAll(false);
 		    	// paper.tool = null;
+		    	
 		    	item.selected = true;
 		    	$('#transform-tool').click().focus();
 	    }});
@@ -69,6 +127,7 @@ JigDesigner.prototype = {
 		this.paper.project.importSVG(this.svg, {
 	    	onLoad: function(item) { 
 		    	scope.svgSym = item;
+		    	;
 		    	paper.project.activeLayer.addChild(item);
 
 		    	paper.view.update();
@@ -79,6 +138,7 @@ JigDesigner.prototype = {
 
     			_.each(Utility.unpackChildren(item, []), function(value, key, arr){
     				var w  = new WirePath(scope.paper, value);
+    				w.path.name = scope.svg;
     				scope.wirepaths.add(w.id, w);
     			});
 
@@ -111,17 +171,152 @@ JigDesigner.prototype = {
 		
 		return this;
 	},
-	export: function(mode){
+	save: function(){
+		var s = Math.floor(Date.now() / 1000);
+		var timestamp_key = "saveevent_" + s;
+		console.log("Timestamp", timestamp_key);
+		storage.set(timestamp_key, this.export(JigDesigner.JSON, false));
+		this.current_save = s;
+	},
+	redo: function(){
+		var save_events = $.map(storage.keys(), function(el, i){
+			flag = el.split('_')[0];
+			time = parseInt(el.split('_')[1]);
+			if(flag == "saveevent")
+				return time;
+		});	
+		var scope = this;
+		var rel_events = _.filter(save_events, function(t){
+			return t > scope.current_save; 
+		});
+		// console.log(save_events, rel_events, this.current_save);
+		
+		if(_.isEmpty(rel_events)){ 
+			console.log("Can't redo...");
+			return;
+		}
+		this.clear();
+		rel_event = _.min(rel_events);
+		console.log("redoing", rel_event);
+	
+		this.loadJSON(storage.get('saveevent_' + rel_event));
+		this.current_save = rel_event;
+		
+
+	},
+	undo: function(){
+		var save_events = $.map(storage.keys(), function(el, i){
+			flag = el.split('_')[0];
+			time = parseInt(el.split('_')[1]);
+			if(flag == "saveevent")
+				return time;
+		});	
+		var scope = this;
+		var rel_events = _.filter(save_events, function(t){
+			return t < scope.current_save; 
+		});
+		
+		if(_.isEmpty(rel_events)){ 
+			console.log("Can't undo...");
+			return;
+		}
+		this.clear();
+		rel_event = _.max(rel_events);
+
+		// console.log("undoing", rel_event);
+		
+		this.loadJSON(storage.get('saveevent_' + rel_event));
+		this.current_save = rel_event;
+		
+
+	}, 
+	revert: function(){
+		save_events = $.map(storage.keys(), function(el, i){
+			flag = el.split('_')[0];
+			time = parseInt(el.split('_')[1]);
+			if(flag == "saveevent")
+				return time;
+		});	
+
+		if(_.isEmpty(save_events)){
+			console.log("No save events to revert to...");
+			return;
+		}
+
+		console.log("save events", save_events);
+		last_event =  _.min(save_events);
+
+		this.clear();
+		console.log("loading json", last_event);
+
+		this.loadJSON(storage.get('saveevent_' + last_event))
+		this.current_save = last_event;
+		
+	}, 
+	fast_forward: function(){
+		save_events = $.map(storage.keys(), function(el, i){
+			flag = el.split('_')[0];
+			time = parseInt(el.split('_')[1]);
+			if(flag == "saveevent")
+				return time;
+		});	
+
+		if(_.isEmpty(save_events)){
+			console.log("No save events to revert to...");
+			return;
+		}
+
+		console.log("save events", save_events);
+		last_event =  _.max(save_events);
+
+		this.clear();
+		console.log("loading json", last_event);
+
+		this.loadJSON(storage.get('saveevent_' + last_event))
+		this.current_save = last_event;
+		
+	}, 
+	export: function(mode, downloadFlag){
 		// var prev = this.paper.view.zoom;
 		// this.paper.view.zoom = 1;
+		// default
+		var exp;
+		var filename = $('#filename').val();
+		if(filename == ""){	filename = "export"; }
+		filename = filename.split('.')[0];
+
+		if(_.isUndefined(mode))
+			mode = JigDesigner.EXPORT_DEFAULT;
+
+		if(_.isUndefined(downloadFlag))
+			downloadFlag = true;
+
 		
-		// if(mode == JigFactory.SVG)
-		exp = this.paper.project.exportSVG({asString: true});
-		// else if(mode == JigFactory.PNG)
+		if(mode == JigDesigner.SVG){
+			console.log("Exporting file as SVG");
+			exp = this.paper.project.exportSVG({
+				asString: true,
+				precision: 5
+			});
+			if(downloadFlag)
+				saveAs(new Blob([exp], {type:"application/svg+xml"}), filename + ".svg")
+		}
+		else if(mode == JigDesigner.JSON){
+
+			console.log("Exporting file as JSON");
+			exp = this.paper.project.exportJSON({
+				asString: true,
+				precision: 5
+			});
+			if(downloadFlag)
+				saveAs(new Blob([exp], {type:"application/json"}), filename + ".json")
+		}
+
+
 			// exp = this.canvas[0].toDataURL("image/png");
 		// else 
 			// exp = "No mode was specified";
-		saveAs(new Blob([exp], {type:"application/svg+xml"}), "export.svg")
+		
 	
 		// console.log(exp);
 		// this.paper.view.zoom = prev;

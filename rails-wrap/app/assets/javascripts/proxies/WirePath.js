@@ -50,10 +50,10 @@ WirePath.prototype = {
 
 			var path = new paper.Path.Circle({
 			    center: [start.x - tangent2f.x, start.y - tangent2f.y],
-			    radius: Ruler.mm2pts(WirePath.COIL_LOOP_WIDTH),
-			    strokeColor: this.material.color,
-			    strokeWidth: Ruler.mm2pts(this.material.diameter)
+			    radius: Ruler.mm2pts(WirePath.COIL_LOOP_WIDTH)
 			});
+			
+			path.style = this.material.getStyle();
 		}
 		if(this.terminationA == WirePath.termination.SIMPLE_LOOP){
 			var start = this.path.localToGlobal(this.path.getPointAt(this.path.length));
@@ -94,9 +94,7 @@ WirePath.prototype = {
 	    selectionRectangle = new paper.Path.Rectangle(b);
 	    
 	   	selectionRectangle.position = b.center.clone();
-	   	// selectionRectangle.x = b.center.x;
-	   	// selectionRectangle.y = b.center.y;
-
+	 
 	    selectionRectangle.pivot = selectionRectangle.position;
 	    selectionRectangle.insert(2, new paper.Point(b.center.x, b.top));
 	    selectionRectangle.insert(2, new paper.Point(b.center.x, b.top-25));
@@ -113,15 +111,7 @@ WirePath.prototype = {
 
 		selectionRectangle.position = this.path.bounds.center.clone();
 				
-        console.log("Event point", new paper.Point(this.path.bounds.left, this.path.bounds.bottom));
-        console.log("Centers", this.path.bounds.center);
-	    this.init_size = new paper.Point(b.left, b.bottom).subtract(b.center).length;
-	    // console.log("Distances")
-	   
-	          // var diag = event.point.subtract(scope.activeSelectionRectangle.bounds.center).length;
-
-
-	    console.log(this.init_size);
+        this.init_size = new paper.Point(b.left, b.bottom).subtract(b.center).length;
 	    return selectionRectangle;
 	}
 }

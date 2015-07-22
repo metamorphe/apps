@@ -16,6 +16,9 @@
 // require turbolinks
 // require_self
 
+if (!Date.now) {
+    Date.now = function() { return new Date().getTime(); }
+}
 
 function GET() {
       var prmstr = window.location.search.substr(1);

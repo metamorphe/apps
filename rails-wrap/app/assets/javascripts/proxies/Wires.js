@@ -3,6 +3,9 @@ function Wires(){
 }
 
 Wires.prototype = {
+	clear: function(){
+		this.wires = {};
+	},
 	add: function(key, val){
 		this.wires[key] = val;
 	}, 

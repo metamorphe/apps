@@ -9,9 +9,7 @@ WebStorage.prototype = {
 		else
 			console.log("Sorry, no web storage supported :(. ")
 	},
-	check_valid: function(){
-		return this.store ? true: false;
-	},
+	// store|parse_routine are callbacks
 	cache: function(k, store_routine, parse_routine){
 		if(storage.includes(k)){
 			console.log("In storage: ", k);
@@ -30,8 +28,13 @@ WebStorage.prototype = {
 		return this.get(k);
 	},
 	set: function(k, v){
-		if(typeof k === "undefined") return; // don't store undefined
+		if(typeof k === "undefined"){
+			throw "Attempt to store undefined key";
+			return; // don't store undefined
+		}
+
 		if(!this.check_valid) return;
+
 		try {
 		  this.store.setItem(k, v)
 		} catch (e) {
@@ -43,7 +46,21 @@ WebStorage.prototype = {
 		  	console.log(e);
 		  }
 		}
-	}, 
+	},
+	keys: function(){
+		var keys = [];
+		for ( var i = 0, len = this.store.length; i < len; ++i ) {
+		  keys.push(this.store.key(i));
+		}
+		return keys;
+	},  
+	values: function(){
+		var values = [];
+		for ( var i = 0, len = this.store.length; i < len; ++i ) {
+		  values.push(this.get(this.store.key(i)));
+		}
+		return values;
+	},  
 	get: function(k){
 		if(!this.check_valid) return;
 		return this.store.getItem(k)
@@ -57,5 +74,8 @@ WebStorage.prototype = {
 		console.log("Clearing sessionStorage.")
 		for(var i in this.store)
 			this.store.removeItem(i);
+	}, 
+	check_valid: function(){
+		return this.store ? true: false;
 	}
 }

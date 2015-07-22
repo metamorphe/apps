@@ -8,21 +8,34 @@
 // `8888Y'  `Y88P' 88   YD Y888888P 88         YP    
                                                   
 
-  var factory, zoom, materials;
+  var factory, zoom, materials, storage;
   $(function(){
     attachHandlers();
+    storage = new WebStorage();
+    
+    // storage.cache("cow", function(){
+       storage.set("cow", "moo");
+    // }, function(value){
+      // console.log(value);
+    // });
+
+    console.log("Checking", storage.get("cow"));
+
     factory = new JigDesigner($("#sandbox"), "/fancyloop.svg");
     zoom = new Zoom(factory.paper.view.zoom, factory.paper);
     materials = new Materials($("#materials"));
 
     StatsController.DOM = $('#stat-box');
     stats = new StatsController(factory);
+
+    // DROP LOGIC
     $('#sandbox canvas').on("drop", function(event){
       event.preventDefault();  
       event.stopPropagation();
       var filename = event.originalEvent.dataTransfer.getData("text");
-      console.log("Dropped!", filename );
-      factory.addSVG(filename);
+      var position = paper.view.viewToProject(new paper.Point(event.originalEvent.x, event.originalEvent.y));
+      console.log("Dropped!", filename , position, event);
+      factory.addSVG(filename, position);
     }).on("dragover", function(event) {
       event.preventDefault();  
       event.stopPropagation();
@@ -32,9 +45,12 @@
       event.stopPropagation();
       $(this).removeClass('dragging');
     });
+
     $('img').on('dragstart', function(event){
       event.originalEvent.dataTransfer.setData("text", $(this).attr('src'));
     });
+
+    // END DROP LOGIC
 
   });
 
@@ -92,6 +108,28 @@
         path.update().updateDOM();
       }
     });
+     $('#save-progress').click(function(){
+      factory.save();
+     });
+     $('#undo').click(function(){
+      factory.undo();
+     });
+     $('#redo').click(function(){
+      factory.redo();
+     });
+     $('#revert').click(function(){
+      factory.revert();
+     });
+     $('#fast-forward').click(function(){
+      factory.fast_forward();
+     });
+
+     $('#save-svg').click(function(){
+      factory.export(JigDesigner.SVG);
+     });
+     $('#save-json').click(function(){
+      factory.export(JigDesigner.JSON);
+     });
     
 
   }

@@ -3,6 +3,7 @@
 # You can use CoffeeScript in this file: http://coffeescript.org/
 //= require underscore
 //= require metamorphehalf/file_saver.min
+//= require metamorphehalf/webcache
 //= require dat.gui.min
 //= require paper-full.min
 //= require scraps/ruler

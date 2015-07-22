@@ -33,8 +33,8 @@ Material.prototype = {
 			strokeColor: this.color,
 			strokeWidth: Ruler.mm2pts(this.diameter), 
 			shadowColor: new paper.Color(0.2, 0.2, 0.2), 
-			shadowBlur: 12, 
-			shadowOffset: new paper.Point(2, 2)
+			shadowBlur: Ruler.mm2pts(this.diameter) * 2, 
+			shadowOffset: new paper.Point(Ruler.mm2pts(this.diameter)/2, Ruler.mm2pts(this.diameter)/2)
 		};
 	}, 
 	equals: function(m){

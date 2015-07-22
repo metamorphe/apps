@@ -40,10 +40,11 @@ function TransformTool(paper){
 		var hitResult = paper.project.hitTest(event.point, hitOptions);
 		
 		if (!hitResult){
-			console.log("no hit")
 			if(!_.isNull(scope.activeSelectionRectangle)){
 	        	scope.activeSelectionRectangle.remove();
 	        	scope.activeSelectionRectangle = null;
+	        	scope.selectAll(false);
+				scope.selectedStroke = null;
 	        }
 			scope.selectedStroke = null;
 			return;
@@ -70,6 +71,18 @@ function TransformTool(paper){
 				scope.selectedStroke = path;
 			}
 			
+			if(hitResult.type == "stroke" && path.name != "selection rectangle"){
+				
+				console.log("wire select");
+				var selected = hitResult.item.selected;
+
+				// toggle selection
+				hitResult.item.selected = true;
+
+				scope.selectedStroke = hitResult.item;
+				factory.activePath = scope.selectedStroke.id;
+				factory.wirepaths.at(factory.activePath).updateDOM();
+			}
 
 			if (hitResult.type == 'segment') {
 				if(scope.activeSelectionRectangle != null && path.name == "selection rectangle")
@@ -96,17 +109,18 @@ function TransformTool(paper){
 	
 	this.tool.onMouseUp = function(event){
 		selectionRectangleScale = null;
-    	selectionRectangleRotation = null;		
+    	selectionRectangleRotation = null;
+    	scope.update();		
 	}
-	this.tool.onMouseMove = function(event){
-		paper.project.activeLayer.selected = false;
-		if (event.item)
-		{
-			event.item.selected = true;
-		}
-	    if(scope.activeSelectionRectangle)
-	        scope.activeSelectionRectangle.selected = true;
-	}
+	// this.tool.onMouseMove = function(event){
+	// 	paper.project.activeLayer.selected = false;
+	// 	if (event.item)
+	// 	{
+	// 		event.item.selected = true;
+	// 	}
+	//     if(scope.activeSelectionRectangle)
+	//         scope.activeSelectionRectangle.selected = true;
+	// }
 
 	this.tool.onMouseDrag = function(event){
 		if (selectionRectangleScale!=null)
@@ -119,7 +133,6 @@ function TransformTool(paper){
 			var rect_ratio = ratio;
 			rect_ratio /= scope.activeSelectionRectangle.prevScale.x;
 			
-	        console.log("ratio", ratio, "diag", diag, "init", scope.activeSelectionRectangle.wire.init_size);
 	        scaling = new paper.Point(ratio, ratio);
 	        rect_scaling = new paper.Point(rect_ratio, rect_ratio);
 
@@ -144,6 +157,7 @@ function TransformTool(paper){
 		  scope.selectedStroke.position.x += event.delta.x;
 		  scope.selectedStroke.position.y += event.delta.y;
 		}
+		scope.update();
 	}		
 }
 

@@ -26,13 +26,33 @@
       <% button_tag :class => "btn btn-default" do %>
         <span class="icon-anchor-select"></span>
       <% end %>
+
+      <div class="btn-group pull-right" role="group">
+        <%= button_tag :id=>"revert", :class=>"btn btn-md btn-default" do %>
+          <span class="glyphicon glyphicon-refresh"></span>
+        <% end %>
+         <%= button_tag :id=>"undo", :class=>"btn btn-md btn-default" do %>
+          <span class="glyphicon glyphicon-arrow-left"></span>
+        <% end %>
+         <%= button_tag :id=>"save-progress", :class=>"btn btn-md btn-default" do %>
+          <span class="glyphicon glyphicon-floppy-disk"></span>
+        <% end %>
+         <%= button_tag :id=>"redo", :class=>"btn btn-md btn-default" do %>
+          <span class="glyphicon glyphicon-arrow-right"></span>
+        <% end %>
+         <%= button_tag :id=>"fast-forward", :class=>"btn btn-md btn-default" do %>
+          <span class="glyphicon glyphicon-repeat"></span>
+        <% end %>
+      </div>
+
+
       <div class="btn-group pull-right" role="group" id="zoom-ui" aria-label="zoom-tools">
         <%= button_tag :id=>"zoom-in", :class=>"btn btn-md btn-default" do %>
           <span class="glyphicon glyphicon-zoom-in"></span>
-        <% end %>
+      <% end %>
       
-        <%= button_tag :id=>"zoom-out", :class=>"btn btn-md btn-default" do %>
-          <span class="glyphicon glyphicon-zoom-out"></span>
-        <% end %>
+      <%= button_tag :id=>"zoom-out", :class=>"btn btn-md btn-default" do %>
+        <span class="glyphicon glyphicon-zoom-out"></span>
+      <% end %>
       </div>
   </div>    
