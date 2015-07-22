@@ -15,7 +15,6 @@ var hitOptions = {
 	tolerance: 5
 };
 
-// var selectionRectangle = null;
 var selectionRectangleScale=null;
 var selectionRectangleScaleNormalized=null;
 var selectionRectangleRotation=null;
@@ -72,8 +71,6 @@ function TransformTool(paper){
 			}
 			
 
-
-
 			if (hitResult.type == 'segment') {
 				if(scope.activeSelectionRectangle != null && path.name == "selection rectangle")
 				{
@@ -107,8 +104,8 @@ function TransformTool(paper){
 		{
 			event.item.selected = true;
 		}
-	    if(selectionRectangle)
-	        selectionRectangle.selected = true;
+	    if(scope.activeSelectionRectangle)
+	        scope.activeSelectionRectangle.selected = true;
 	}
 
 	this.tool.onMouseDrag = function(event){
@@ -162,46 +159,3 @@ TransformTool.prototype = {
 		this.svg = svg;
 	}
 }
-
-
-
-
-
-// function initSelectionRectangle(path) {
-//     if(selectionRectangle!=null)
-//         selectionRectangle.remove();
-//     var reset = path.rotation==0 && path.scaling.x==1 && path.scaling.y==1;
-//     var bounds;
-//     if(reset)
-//     {
-//         console.log('reset');
-//         bounds = path.bounds;
-//         path.pInitialBounds = path.bounds;
-//     }
-//     else
-//     {
-//         console.log('no reset');
-//         bounds = path.pInitialBounds;
-//     }
-//     console.log('bounds: ' + bounds);
-//     b = bounds.clone().expand(10,10);
-    
-//     selectionRectangle = new Path.Rectangle(b);
-//     selectionRectangle.pivot = selectionRectangle.position;
-//     selectionRectangle.insert(2, new Point(b.center.x, b.top));
-//     selectionRectangle.insert(2, new Point(b.center.x, b.top-25));
-//     selectionRectangle.insert(2, new Point(b.center.x, b.top));
-//     if(!reset)
-//     {
-//         selectionRectangle.position = path.bounds.center;
-//         selectionRectangle.rotation = path.rotation;
-//         selectionRectangle.scaling = path.scaling;
-//     }
-
-//     selectionRectangle.strokeWidth = 1;
-//     selectionRectangle.strokeColor = 'blue';
-//     selectionRectangle.name = "selection rectangle";
-//     selectionRectangle.selected = true;
-//     selectionRectangle.ppath = path;
-//     selectionRectangle.ppath.pivot = selectionRectangle.pivot;
-// }

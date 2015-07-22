@@ -102,7 +102,7 @@ WirePath.prototype = {
 	    selectionRectangle.insert(2, new paper.Point(b.center.x, b.top-25));
 	    selectionRectangle.insert(2, new paper.Point(b.center.x, b.top));
 	    selectionRectangle.strokeWidth = 1;
-	    selectionRectangle.strokeColor = 'blue';
+	    selectionRectangle.strokeColor = '#00A8E1';
 	    selectionRectangle.name = "selection rectangle";
 	    selectionRectangle.selected = true;
 	    selectionRectangle.ppath = this.path;
