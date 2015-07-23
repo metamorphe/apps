@@ -26,17 +26,249 @@ function HillJig(container, svg){
 	loadLSController.onChange(function(){ scope.loadingFromLocalStorage(); });
 
 }
+var MountainPath = {};
+MountainPath.RESOLUTION = 1;
+MountainPath.WALL_HEIGHT = 5; //mm                                            
+ 
+MountainPath.SCALE = 100;
+MountainPath.TOLERANCE = 0.1;
+MountainPath.WALL_THICKNESS = 20;
+
+MountainPath.make = function(path){ 
+	var n = path.length;
+	console.log("making mountain path", n);
+	var init_curve = path.getPointAt(0).clone();
+	var init_angle = path.getPointAt(0).clone().subtract(path.getPointAt(MountainPath.RESOLUTION)).angle;
+	var init_idx = 0;
+	var mini_n = 0;
+
+	console.log("ang", init_angle);
+	for(var i = MountainPath.RESOLUTION * 2; i < n; i += MountainPath.RESOLUTION){
+			var normalizedPosition = i/n;
+
+			var point = path.getPointAt(i);
+			var normal = path.getNormalAt(i);
+			var tangent = path.getTangentAt(i);
+
+			// var curvature = path.getCurvatureAt(i);
+			// console.log(curvature);
+
+			var width = path.style.strokeWidth;
+			normal.length = width/2;
 
 
+			//mountain path
+			var result = new paper.Point(point.x + normal.x, point.y + normal.y);
+			var result2 = new paper.Point(point.x - normal.x, point.y - normal.y);
+			var line = new paper.Path({
+		        segments: [result2, result],
+		        strokeWidth: width + 2 +  width * MountainPath.TOLERANCE,
+		        strokeColor: new paper.Color(normalizedPosition * MountainPath.MAX_MOUNTAIN_PATH_HEIGHT_RATIO),
+		        // visible: false
+		    });
+		    //mountain end
+		
+		    var vector = init_curve.clone().subtract(point);
+		    var diff = init_angle - vector.angle;
+		    if(Math.abs(diff) > 180){
+		    	MountainPath.mini_path(path, init_idx, i, mini_n);
+		    	var q = new paper.Path.Circle(point, 1);
+		    	q.fillColor = 'yellow';
+		    	q.visible = false;
+		    	init_angle = vector.angle;
+		    	init_idx = i;
+		    	mini_n ++;
+		    }
+		   
+
+	}
+}
+
+MountainPath.MAX_MOUNTAIN_PATH_HEIGHT_RATIO = 0.8;
+MountainPath.mini_path = function(path, n0, n1, mini_n){
+	var n = path.length;
+	var norm_n0 = n0/n;
+	var norm_n1 = n1/n;
+	var max_height = norm_n1 * MountainPath.MAX_MOUNTAIN_PATH_HEIGHT_RATIO;
+
+	var pts = [];
+	for(var i = n0; i < n1; i+=MountainPath.RESOLUTION){
+		pts.push(path.getPointAt(i).clone());
+	}
+	
+	var mini = new paper.Path(pts);
+	mini.style.strokeColor = "yellow";
+	mini.style.strokeWidth = path.style.strokeWidth;
+	mini.closed = false;
+	mini.visible = false;
+
+	console.log(mini_n);
+
+	MountainPath.mountain_make(mini, max_height + 0.2);
+	paper.view.update();
+	return mini;
+}
+MountainPath.custom_offset = function(path, value){
+	var pts = [];
+	for(var i = 0; i < path.length; i+=MountainPath.RESOLUTION){
+		var pt = path.getPointAt(i);
+		var normal = path.getNormalAt(i);
+		
+		normal.length = value;
+
+		var result = new paper.Point(pt.x - normal.x, pt.y - normal.y);
+		
+		// var c = new paper.Path.Circle(pt.clone(), 1);
+		// c.fillColor = 'black';
+
+		// var c = new paper.Path.Circle(result, 1);
+		// c.fillColor = 'blue';
+		pts.push(result);
+	}
+	var p = new paper.Path(pts);
+	p.closed = false;
+	return p;
+}
+// previous_paths = [];
+// var made_path_idx = 0;
+MountainPath.mountain_make = function(path, gray){
+	console.log("mm", path);
+	path_width = path.style.strokeWidth;
+	
+	path_e = MountainPath.offset(path, -path_width/2 - path_width * MountainPath.TOLERANCE );
+	path_b = MountainPath.offset(path, (-path_width/2) -15);
+	var original_end = path.firstSegment.point;
+	console.log("original_end", original_end);
+	// paper.view.update();
+	// if(!_.isUndefined(path_e))
+		// path_e.remove();
+	if(!_.isUndefined(path_b)){
+		console.log("first", path_b.firstSegment.point);
+		console.log("last", path_b.lastSegment.point);
+		var c = new paper.Path.Circle(path_b.lastSegment.point, 2);
+		c.style.fillColor = "red";	
+		var c = new paper.Path.Circle(path_b.firstSegment.point, 2);
+		c.style.fillColor = "blue";
+		var orig = path_b.getNearestPoint(original_end);
+		curve = path_b.getLocationOf(orig);
+		console.log("loc", curve);
+		console.log("off", path_b.getOffsetOf(orig), path_b.length, path_b.segments.length);
+		path_b.selected = true;
+		path_b.closed = false;
+		console.log(curve.segment.index, path_b.closed);
+
+
+		// path_b.removeSegments(curve.segment.index - 10, curve.segment.index + 10);
+		
+		var c = new paper.Path.Circle(orig, 2);
+		c.style.fillColor = "yellow";
+		path_b.remove();
+		// path_e.addSegments(path_b.segments);
+	}
+	inside = [path_e, path_b];
+    // c_path = new paper.CompoundPath();
+    // c_path.addChildren(inside);
+    // c_path.fillColor = new paper.Color(gray);
+
+}
+MountainPath.subtract = function(a, b){
+		console.log(a, a.length)
+		var clipType = ClipperLib.ClipType.ctIntersection;
+		var _a = JigPath.sample(a, MountainPath.RESOLUTION);
+		var _b = JigPath.sample(b, MountainPath.RESOLUTION);
+		var subj = [_a];
+		var clips = [_b];
+		ClipperLib.JS.ScaleUpPaths(subj, JigPath.SCALE);
+		ClipperLib.JS.ScaleUpPaths(clips, JigPath.SCALE);
+
+		var solution = new ClipperLib.Paths();
+		var c = new ClipperLib.Clipper();
+	  	c.AddPaths(subj, ClipperLib.PolyType.ptSubject, true);
+	  	c.AddPaths(clips, ClipperLib.PolyType.ptClip, true);
+	  	c.Execute(ClipperLib.ClipType.ctDifference, solution);
+	  	console.log(solution);
+		var ps = [];
+		for(var i in solution){
+			var p = MountainPath.to_paper_path(solution[i]);
+			p.strokeColor = 'magenta';
+			ps.push(p);
+			console.log("Sub_path", p, p.length);
+			p.strokeWidth = 2;
+		}
+		
+		paper.view.update();
+		return ps[0];
+}
+
+
+MountainPath.offset = function(path, delta){
+		var _p = JigPath.sample(path, MountainPath.RESOLUTION);
+
+
+		paths = [_p];
+		var offset_paths = new ClipperLib.Paths();
+
+		var miterLimit = 2;
+		var arcTolerance = 0.25;
+		delta *= JigPath.SCALE;
+		
+		ClipperLib.JS.ScaleUpPaths(paths, JigPath.SCALE);
+		var co = new ClipperLib.ClipperOffset(miterLimit, arcTolerance);
+		co.AddPaths(paths, ClipperLib.JoinType.jtSquare, ClipperLib.EndType.etClosedPolygon);
+		co.Execute(offset_paths, delta);
+
+		var ps = [];
+		for(var i in offset_paths){
+			var p = MountainPath.to_paper_path(offset_paths[i]);
+			p.strokeColor = 'green';
+			p.sendToBack();
+			ps.push(p);
+		}
+		
+		paper.view.update();
+		return ps[0];
+}
+
+MountainPath.to_paper_path = function(pts){
+	var path = new paper.Path();
+	path.strokeColor = 'black';
+	pts.forEach(function(currentValue, index, array){
+		path.add(new paper.Point(currentValue.X/MountainPath.SCALE, currentValue.Y/MountainPath.SCALE));
+	});
+	path.closed = true;
+	return path;
+}
+var testPath;
+
+MountainPath.addBackground = function(path){
+	var b = path.bounds.clone().expand(20, 20);
+	backgroundRect = new paper.Path.Rectangle(b);
+	backgroundRect.style.fillColor = 'black';
+	backgroundRect.sendToBack();
+	backgroundRect.position = b.center.clone();
+	console.log("Width", Ruler.pts2mm(b.width), "Height", Ruler.pts2mm(b.height)) 
+}
 HillJig.prototype = {
 	removeConnectors: function(){
 		var scope = this;
 		this.connectors = _.filter(this.wirepaths.wires, function(el){
 			return el.is_connector;
 		});
+		this.paths = _.filter(this.wirepaths.wires, function(el){
+			return !el.is_connector;
+		});
+
 		_.each(this.connectors, function(el){
 			el.path.remove();
 		});
+		this.paths[1].path.remove();
+		_.each([this.paths[0]], function(el){
+			// MountainPath.mountain_make(el.path);
+			testPath = el.path;
+			MountainPath.make(el.path);
+			// MountainPath.addBackground(el.path);
+		});
+
 		scope.paper.project.view.update();
 	},
 	addBackground: function(){
@@ -50,25 +282,8 @@ HillJig.prototype = {
 		if(typeof this.paper == "undefined") return;
 
 		if(!this.loadFromLocalStorage){
-			console.log("Importing", this.svg);
-			
-			var scope = this;
-			this.paper.project.activeLayer.removeChildren();
-
-			
-			if(this.product == "HillJig"){
-				if(_.isUndefined(scope.svgSym)){
-					this.importSVG(function(){
-						scope.base_gen();
-						if(scope.controllers_defined == 0){
-							var wTController = scope.gui.add(jigpath, "wall_thickness", 4, 20).step(0.1);
-							wTController.onChange(function(){ if(scope.product == "HillJig") scope.update(); });
-							scope.controllers_defined = true;
-							
-						}
-					});
-				} else scope.base_gen();		   
-			}
+			console.log("TODO: Importing from file", this.svg);
+		
 		} else{
 			
 			if(this.product == "HillJig"){
@@ -82,35 +297,6 @@ HillJig.prototype = {
 		};
 
 		paper.view.update();
-	},
-	
-	base_gen: function(){
-		// reference paths
-		ref_o = jigpath.offset(jigpath.outer, 0);
-		ref_i = jigpath.offset(jigpath.hole, 0 );
-
-		// OUTSIDE WALL
-		outside = jigpath.offset_outerwall();
-       	o_path = new paper.CompoundPath();
-       	o_path.addChildren(outside);
-       	o_path.fillColor = new paper.Color(0);
-
-       	jigpath.colorizePath(outside[0], outside[1], ref_i, ref_o, this.gauge);
-
-       	//  INSIDE WALL
-        inside = jigpath.offset_innerwall();
-       	i_path = new paper.CompoundPath();
-       	i_path.addChildren(inside);
-       	i_path.fillColor = new paper.Color(0);
-
-       	jigpath.colorizePath(inside[1], inside[0], ref_i, ref_o, this.gauge);
-
-		// paper.project.activeLayer.addChildren(o_path);
-		paper.project.activeLayer.addChildren(i_path);
-		jigpath.group.fillColor = new paper.Color(0);
-
-		// add black background
-		this.addBackground();
 	},
 	importSVG: function(callback){
 		var scope = this;
@@ -145,7 +331,7 @@ HillJig.prototype = {
 		this.paper.setup(this.canvas[0]);
 		this.height = this.paper.view.size.height;
 		this.width = this.paper.view.size.width;
-		this.paper.view.zoom = 5;	
+		this.paper.view.zoom = 3;	
 		var scope = this; 
 		this.update();
 		
@@ -171,7 +357,8 @@ HillJig.prototype = {
 
 		console.log("loading json", last_event);
 
-		this.loadJSON(storage.get('saveevent_' + last_event))
+		this.loadJSON(storage.get('saveevent_' + last_event));
+		this.removeConnectors();
 
 	},
 
@@ -197,334 +384,59 @@ HillJig.prototype = {
 		var b = scope.art_layer.bounds;
 		scope.art_layer.position = new paper.Point(0 + b.width/2 + 20, 0 + b.height/2 + 20);
 		
-		scope.paper.view.zoom = 4.5;
+		scope.paper.view.zoom = 3;
 		scope.paper.view.center = new paper.Point(0 + b.width/2 + 20, 0 + b.height/2 + 20);
 		scope.paper.view.update();
 	},
-}
+	export: function(mode, downloadFlag){
+		// var prev = this.paper.view.zoom;
+		// this.paper.view.zoom = 1;
+		// default
+		var exp;
+		var filename = $('#filename').val();
+		if(_.isUndefined(filename) || filename == ""){	filename = "export"; }
+		filename = filename.split('.')[0];
 
+		if(_.isUndefined(mode))
+			mode = JigDesigner.EXPORT_DEFAULT;
 
-//    d88b d888888b  d888b  d8888b.  .d8b.  d888888b db   db 
-//    `8P'   `88'   88' Y8b 88  `8D d8' `8b `~~88~~' 88   88 
-//     88     88    88      88oodD' 88ooo88    88    88ooo88 
-//     88     88    88  ooo 88~~~   88~~~88    88    88~~~88 
-// db. 88    .88.   88. ~8~ 88      88   88    88    88   88 
-// Y8888P  Y888888P  Y888P  88      YP   YP    YP    YP   YP 
+		if(_.isUndefined(downloadFlag))
+			downloadFlag = true;
 
-JigPath.WALL_HEIGHT = 5; //mm                                            
-                                                          
-JigPath.RESOLUTION = 1;
-JigPath.SCALE = 100;
-JigPath.TOLERANCE = 0.5;
-JigPath.WALL_THICKNESS = 20;
-
-JigPath.GOOD_MAX_MEDIAL_STRAIN = -0.5;
-
-//R^2 = 0.7502
-JigPath.LAT_POLY_STRAIN = function(medial_strain){ return poly(0.6251, -0.7328, 0.0052, medial_strain)}
-//R^2 = 0.7391
-JigPath.LAT_LIN_STRAIN = function(medial_strain){ return poly(0, -1.1722, 0.0276, medial_strain); }
-// R^2 = 0.8608
-JigPath.MED_POLY_STRAIN = function(lateral_strain){ return poly(0.7631, -1.3928, -0.0297, lateral_strain);}
-// R^2 = 0.7391
-JigPath.MED_LIN_STRAIN = function(lateral_strain){ return poly(0, -0.6305, -0.1469, lateral_strain);}
-
-
-
-function JigPath(compoundPath){
-	this.group = compoundPath;
-	this.hole = compoundPath.children[0];
-	this.outer = compoundPath.children[1];
-	this.wall_thickness = JigPath.WALL_THICKNESS;
-}
-
-
-JigPath.prototype = {
-	offset: function(path, delta){
-		var _p = JigPath.sample(path, JigPath.RESOLUTION);
-
-		paths = [_p];
-		var offset_paths = new ClipperLib.Paths();
-
-		var miterLimit = 2;
-		var arcTolerance = 0.25;
-		delta *= JigPath.SCALE;
 		
-		ClipperLib.JS.ScaleUpPaths(paths, JigPath.SCALE);
-		var co = new ClipperLib.ClipperOffset(miterLimit, arcTolerance);
-		co.AddPaths(paths, ClipperLib.JoinType.jtRound, ClipperLib.EndType.etClosedPolygon);
-		co.Execute(offset_paths, delta);
-
-		var ps = [];
-		for(var i in offset_paths){
-			var p = JigPath.to_paper_path(offset_paths[i]);
-			p.strokeColor = new paper.Color(0, 0, 0);
-			ps.push(p);
+		if(mode == JigDesigner.SVG){
+			console.log("Exporting file as SVG");
+			exp = this.paper.project.exportSVG({
+				asString: true,
+				precision: 5
+			});
+			if(downloadFlag)
+				saveAs(new Blob([exp], {type:"application/svg+xml"}), filename + ".svg")
 		}
-		
-		paper.view.update();
-		return ps[0];
-	}, 
-	offset_outerwall: function(){
-		path_a = this.offset(this.outer, this.wall_thickness + JigPath.TOLERANCE);
-		path_b = this.offset(this.outer, 0 + JigPath.TOLERANCE);
+		else if(mode == JigDesigner.JSON){
 
-		return [path_a, path_b]
-	},
-	offset_innerwall: function(){
-		path_a = this.offset(this.hole, 0 - JigPath.TOLERANCE);
-		path_b = this.offset(this.hole, -this.wall_thickness - JigPath.TOLERANCE);
-		return [path_a, path_b]
-	}, 
-	weightFunction: function(){
-		weight = {};
-
-
-		path_a = this.offset(this.outer, 0);
-		path_a.fillColor = '#e9e9ff';
-
-		path_b = this.offset(this.hole, 0);
-		var n = path_b.length;
-
-		var intersections;
-		for(var i = 0; i < n; i += JigPath.RESOLUTION){
-			var point = path_b.getPointAt(i);
-			var normal = path_b.getNormalAt(i);
-			normal.length = 30;
-
-			var result = new paper.Point(point.x + normal.x, point.y + normal.y);
-			var line = new paper.Path({
-		        segments: [point, result],
-		        strokeColor: '#00A8E1',
-		        visible: false
-		    });
-
-			var intersections = line.getIntersections(path_a);
-
-		    for(var j in intersections){
-		        var b = intersections[j].point;	
-		 		weight[i] = point.getDistance(b);
-		    }
-		}
-		path_a.remove();
-		path_b.remove();
-		paper.view.update();
-		return weight;
-	}, 
-	medial_diffs: function(gauge){
-		var diameter = Ruler.gauge2mm(gauge)
-		var min_width = diameter;
-		var max_width = JigPath.LAT_POLY_STRAIN(JigPath.GOOD_MAX_MEDIAL_STRAIN) * diameter + diameter; //  ∆L = LS * D 
-		var range_width = max_width - min_width;
-		FancyPrint.range("GAUGE " + gauge, [min_width, max_width])
-
-		// // extract posweights
-		weightpos = this.weightFunction();
-		var positions = _.keys(weightpos).map(function(i){ return parseInt(i);});
-		var weights = _.values(weightpos);
-
-
-		// // normalize weight function
-		FancyPrint.range("WEIGHT STATS", weights);
-		norm_weights = norm(weights); 
-		FancyPrint.range("NORM WEIGHTS", norm_weights);
-
-
-		// // convert to lateral strain problem
-		var desired_weight, lateral_strain, medial_strain;
-
-		medial_diffs = _(norm_weights).map(function(el){
-			desired_width = el * range_width + min_width;
-			lateral_strain = (desired_width - min_width) / min_width;
-			medial_strain = JigPath.MED_POLY_STRAIN(lateral_strain);
-			return medial_strain * min_width;
-		});
-
-		FancyPrint.range("MEDIAL_DIFFS (mm)", medial_diffs);
-		var magnitude = _.min(medial_diffs);
-		norm_medial_diffs = norm(medial_diffs);
-
-		return {magnitude: magnitude, values: _.object(positions, norm_medial_diffs)};		
-		// return {magnitude: _.max(norm_weights), values: _.object(positions, norm_weights)};		
-	}, 
-
-	colorizePath: function(path_inner, path_outer, ref_i, ref_o, gauge){
-		path_outer.fillColor = '#e9e9ff';
-		// ref_i.strokeColor = 'green';
-		// ref_o.strokeColor = 'magenta';
-
-
-		var data = this.medial_diffs(gauge);
-		var magnitude = - data.magnitude;
-		
-
-		// Calculate magnitudes
-		var diameter = Ruler.gauge2mm(gauge);
-		var wall_height = JigPath.WALL_HEIGHT;
-
-		var wall_color_ratio = (wall_height - diameter) / wall_height;
-		var hammer_ratio = magnitude / diameter;
-
-		
-		var n = path_inner.length;
-
-		lines = [];
-		var intersections;
-		for(var i = 0; i < n; i += JigPath.RESOLUTION){
-			var point = path_inner.getPointAt(i);
-			var normal = path_inner.getNormalAt(i);
-			var tangent = path_inner.getTangentAt(i);
-			normal.length =  -1 * 30;
-
-			var result = new paper.Point(point.x + normal.x, point.y + normal.y);
-			var line = new paper.Path({
-		        segments: [point, result],
-		        strokeColor: '#00A8E1',
-		        visible: false
-		    });
-
-			var intersectionA = getFirst(point, line.getIntersections(path_outer));
-			var intersectionW0 = getFirst(point, line.getIntersections(ref_o));
-			var intersectionW1 = getFirst(point, line.getIntersections(ref_i));
-
-			line.remove();
-
-		   //      var b = intersections[j].point;
-		   if(intersectionA != -1 && intersectionW0 != -1 && intersectionW1 != -1){		      
-		      	var width = subPoints(point, intersectionA);
-		 		var rect_width = point.getDistance(intersectionA);
-		 		var rect_height = JigPath.RESOLUTION * 1.5;
-		 		var rectangle = new paper.Rectangle(point.x, point.y, rect_width, rect_height);
-		 		var rectangle_path = new paper.Path.Rectangle(rectangle);
-
-		 		// GET APPR. COLOR
-		 		var idx = ref_i.getOffsetOf(intersectionW1);
-		 		// console.log("IDX", idx);
-
-		 		var closestIDX = closest_in_array(_(data.values).keys(), idx);
-
-		 		// ADD REACTANGLE
-		 		rectangle_path.fillColor = new paper.Color(data.values[closestIDX] * diameter) ;
-		 		
-		 		tangent.length = rect_height/2;
-		 		rectangle_path.rotate(width.angle + 180 , point);
-		 		rectangle_path.position.x += tangent.x;
-		 		rectangle_path.position.y += tangent.y;
-		 	}
-		 	else{
-		 		line.visible = false;
-		 	}
+			console.log("Exporting file as JSON");
+			exp = this.paper.project.exportJSON({
+				asString: true,
+				precision: 5
+			});
+			if(downloadFlag)
+				saveAs(new Blob([exp], {type:"application/json"}), filename + ".json")
 		}
 
 
-		paper.view.update();
-		console.log("EXTRUDE: ", magnitude);
-	},
-	colorize: function(gauge){
-
-
-		var data = this.medial_diffs(gauge);
-		var magnitude = - data.magnitude;
+			// exp = this.canvas[0].toDataURL("image/png");
+		// else 
+			// exp = "No mode was specified";
 		
+	
+		// console.log(exp);
+		// this.paper.view.zoom = prev;
 
-		// Calculate magnitudes
-		var diameter = Ruler.gauge2mm(gauge);
-		var wall_height = JigPath.WALL_HEIGHT;
-
-		var wall_color_ratio = (wall_height - diameter) / wall_height;
-		var hammer_ratio = magnitude / diameter;
-
-
-
-		
-		path_a = this.offset(this.outer, 0 + JigPath.TOLERANCE);
-		path_a.fillColor = '#e9e9ff';
-		path_b = this.offset(this.hole, 0 - JigPath.TOLERANCE);
-		var n = path_b.length;
-
-		lines = [];
-		var intersections;
-		for(var i = 0; i < n; i += JigPath.RESOLUTION){
-			var point = path_b.getPointAt(i);
-			var normal = path_b.getNormalAt(i);
-			var tangent = path_b.getTangentAt(i);
-			normal.length = 30;
-
-			var result = new paper.Point(point.x + normal.x, point.y + normal.y);
-			var line = new paper.Path({
-		        segments: [point, result],
-		        strokeColor: '#00A8E1',
-		        visible: false
-		    });
-
-			var intersections = line.getIntersections(path_a);
-			
-		    for(var j in intersections){
-
-		        var b = intersections[j].point;		      
-		      	var width = subPoints(point, b);
-		 		var rect_width = point.getDistance(b);
-		 		var rect_height = JigPath.RESOLUTION * 1.5;
-		 		var rectangle = new paper.Rectangle(point.x, point.y, rect_width, rect_height);
-		 		var rectangle_path = new paper.Path.Rectangle(rectangle);
-		 		rectangle_path.fillColor = new paper.Color((1 - data.values[i]) * hammer_ratio + wall_color_ratio) ;
-		 		tangent.length = rect_height/2;
-		 		rectangle_path.rotate(width.angle + 180 , point);
-		 		rectangle_path.position.x += tangent.x;
-		 		rectangle_path.position.y += tangent.y;
-		    }
-		}
-		path_a.remove();
-		path_b.remove();
-		paper.view.update();
-
-
-		console.log("EXTRUDE: ", magnitude);
+		return exp;
 	}
 }
-function closest_in_array(arr, goal){
-	var closestIDX = arr.reduce(function (prev, curr) {
-					  return (Math.abs(curr - goal) < Math.abs(prev - goal) ? curr : prev);
-					});
-	return closestIDX;
-}
-function getFirst(pt, intersections){
-	if (intersections.length == 0) return -1;
-	var min_idx = -1;
-	var min_dist = 1000000000;
-	for(var i in intersections){
 
-		var dist = pt.getDistance(intersections[i].point);
-		if(dist < min_dist){
-			min_dist = dist;
-			min_idx = i;
-		}
-	}
-	return intersections[min_idx].point;
-}
-
-JigPath.clone = function(path){
-	console.log(JigPath.sample(path, JigPath.RESOLUTION));
-	return JigPath.to_paper_path(JigPath.sample(path, JigPath.RESOLUTION));
-}
-JigPath.to_paper_path = function(pts){
-	var path = new paper.Path();
-	path.strokeColor = 'black';
-	pts.forEach(function(currentValue, index, array){
-		path.add(new paper.Point(currentValue.X/JigPath.SCALE, currentValue.Y/JigPath.SCALE));
-	});
-	path.closed = true;
-	return path;
-}
-JigPath.sample = function(paper_path, resolution){
-	var n = paper_path.length;
-	var p = []; 
-	for(var i = 0; i < n; i += resolution){
-		var point = paper_path.getPointAt(i);
-		p.push({X: point.x, Y: point.y});
-	}
-	return p;
-}
 
 //    d88b d888888b  d888b   .o88b. db      d888888b d8888b. d8888b. d88888b d8888b. 
 //    `8P'   `88'   88' Y8b d8P  Y8 88        `88'   88  `8D 88  `8D 88'     88  `8D 

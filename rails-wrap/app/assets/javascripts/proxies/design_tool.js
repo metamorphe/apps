@@ -106,10 +106,11 @@ JigDesigner.prototype = {
     			// scope.wirepaths = new Wires();
 
     			_.each(Utility.unpackChildren(item, []), function(value, key, arr){
+    				value.name = filenamer;
     				var w  = new WirePath(scope.paper, value);
     				scope.wirepaths.add(w.id, w);
     				console.log("filename", filenamer);
-    				w.path.name = filenamer;
+    				
     				factory.activePath = w.id;
     			});
 
