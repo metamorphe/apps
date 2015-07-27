@@ -8,9 +8,9 @@
 //= require paper-full.min
 //= require scraps/ruler
 //= require proxies/utility
+//= require proxies/jig_clipper
 //= require proxies/hilljig
-//= require proxies/jiggenerator
-//= require proxies/jigfactory
+//= require proxies/mountain_path
 //= require proxies/design_tool
 //= require proxies/zoom
 //= require proxies/Tools/Toolbox
