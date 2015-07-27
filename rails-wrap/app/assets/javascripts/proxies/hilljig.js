@@ -24,7 +24,7 @@ function HillJig(container, svg){
 	productController.onChange(function(){ scope.update();});
 	gaugeController.onChange(function(){ scope.update();});
 	loadLSController.onChange(function(){ scope.loadingFromLocalStorage(); });
-
+	$('.close-button').click();
 }
 var MountainPath = {};
 MountainPath.RESOLUTION = 1;
@@ -44,7 +44,7 @@ MountainPath.make = function(path){
 
 	console.log("ang", init_angle);
 	for(var i = MountainPath.RESOLUTION * 2; i < n; i += MountainPath.RESOLUTION){
-			var normalizedPosition = i/n;
+			var normalizedPosition = 1 - i/n;
 
 			var point = path.getPointAt(i);
 			var normal = path.getNormalAt(i);
@@ -58,8 +58,8 @@ MountainPath.make = function(path){
 
 
 			//mountain path
-			var result = new paper.Point(point.x + normal.x, point.y + normal.y);
-			var result2 = new paper.Point(point.x - normal.x, point.y - normal.y);
+			var result = new paper.Point(point.x + 1.2 * normal.x, point.y + 1.2 * normal.y);
+			var result2 = new paper.Point(point.x - 2 * normal.x, point.y - 2 * normal.y);
 			var line = new paper.Path({
 		        segments: [result2, result],
 		        strokeWidth: width + 2 +  width * MountainPath.TOLERANCE,
@@ -70,22 +70,28 @@ MountainPath.make = function(path){
 		
 		    var vector = init_curve.clone().subtract(point);
 		    var diff = init_angle - vector.angle;
-		    if(Math.abs(diff) > 180){
+		    // console.log(init_angle, diff);
+		    // console.log(Math.abs(diff) > 170);
+		    if(Math.abs(diff) > 175){
 		    	MountainPath.mini_path(path, init_idx, i, mini_n);
-		    	var q = new paper.Path.Circle(point, 1);
-		    	q.fillColor = 'yellow';
-		    	q.visible = false;
+		    	// var q = new paper.Path.Circle(point, 1);
+		    	// q.fillColor = 'yellow';
+		    	// q.visible = false;
+		    	// console.log(q);
 		    	init_angle = vector.angle;
 		    	init_idx = i;
 		    	mini_n ++;
 		    }
-		   
-
 	}
+	//the last one
+	if(n != init_idx)
+		MountainPath.mini_path(path, init_idx, n, mini_n);
+
 }
 
 MountainPath.MAX_MOUNTAIN_PATH_HEIGHT_RATIO = 0.8;
 MountainPath.mini_path = function(path, n0, n1, mini_n){
+	console.log("N", n0, n1);
 	var n = path.length;
 	var norm_n0 = n0/n;
 	var norm_n1 = n1/n;
@@ -102,12 +108,14 @@ MountainPath.mini_path = function(path, n0, n1, mini_n){
 	mini.closed = false;
 	mini.visible = false;
 
-	console.log(mini_n);
+	// console.log(mini_n);
 
-	MountainPath.mountain_make(mini, max_height + 0.2);
+	MountainPath.mountain_make(mini, (1-max_height) + 0.2);
 	paper.view.update();
 	return mini;
 }
+
+
 MountainPath.custom_offset = function(path, value){
 	var pts = [];
 	for(var i = 0; i < path.length; i+=MountainPath.RESOLUTION){
@@ -129,47 +137,56 @@ MountainPath.custom_offset = function(path, value){
 	p.closed = false;
 	return p;
 }
-// previous_paths = [];
-// var made_path_idx = 0;
+
 MountainPath.mountain_make = function(path, gray){
-	console.log("mm", path);
+	// console.log("mm", path);
 	path_width = path.style.strokeWidth;
 	
-	path_e = MountainPath.offset(path, -path_width/2 - path_width * MountainPath.TOLERANCE );
+	path_e = MountainPath.offset(path, (-path_width/2) -path_width * MountainPath.TOLERANCE);
 	path_b = MountainPath.offset(path, (-path_width/2) -15);
-	var original_end = path.firstSegment.point;
-	console.log("original_end", original_end);
-	// paper.view.update();
-	// if(!_.isUndefined(path_e))
-		// path_e.remove();
-	if(!_.isUndefined(path_b)){
-		console.log("first", path_b.firstSegment.point);
-		console.log("last", path_b.lastSegment.point);
-		var c = new paper.Path.Circle(path_b.lastSegment.point, 2);
-		c.style.fillColor = "red";	
-		var c = new paper.Path.Circle(path_b.firstSegment.point, 2);
-		c.style.fillColor = "blue";
-		var orig = path_b.getNearestPoint(original_end);
-		curve = path_b.getLocationOf(orig);
-		console.log("loc", curve);
-		console.log("off", path_b.getOffsetOf(orig), path_b.length, path_b.segments.length);
-		path_b.selected = true;
-		path_b.closed = false;
-		console.log(curve.segment.index, path_b.closed);
+	var original_start = path.firstSegment.point;
+	var original_end = path.segments[path.segments.length - 1].point;
+	
+	if(!_.isUndefined(path_e)){
 
-
-		// path_b.removeSegments(curve.segment.index - 10, curve.segment.index + 10);
 		
-		var c = new paper.Path.Circle(orig, 2);
-		c.style.fillColor = "yellow";
-		path_b.remove();
-		// path_e.addSegments(path_b.segments);
+		if(!_.isUndefined(path_b)){
+			MountainPath.path_reorder(path_e, original_end);
+			console.log("closed", path_e.closed);
+			path_e.closed = false;
+			console.log(path_e.position);
+			path_e.strokeColor = "black";
+			path_e.bringToFront();
+			path_e.strokeWidth = 2;
+		}
+		path_e.style = {
+			fillColor: new paper.Color(gray), 
+			strokeWidth: 0
+		}
 	}
-	inside = [path_e, path_b];
-    // c_path = new paper.CompoundPath();
-    // c_path.addChildren(inside);
-    // c_path.fillColor = new paper.Color(gray);
+	if(!_.isUndefined(path_b)){
+			MountainPath.path_reorder(path_b, original_start, true);
+			
+			path_b.closed = false;
+			path_e.removeSegments(0, path_e.firstSegment.index + 5);
+			path_b.removeSegments(0, path_b.firstSegment.index + 5);
+			path_b.reverse();
+			path_e.addSegments(path_b.removeSegments());
+			path_e.closePath();
 
+			
+	}
+
+
+}
+MountainPath.path_reorder = function(path, ref_pt){
+
+	var orig = path.getNearestPoint(ref_pt);
+	curve = path.getLocationOf(orig);
+	
+  	wrap_around = path.removeSegments(0, curve.segment.index - 1);
+  	path.addSegments(wrap_around);
+  	return path;
 }
 MountainPath.subtract = function(a, b){
 		console.log(a, a.length)
@@ -261,12 +278,12 @@ HillJig.prototype = {
 		_.each(this.connectors, function(el){
 			el.path.remove();
 		});
-		this.paths[1].path.remove();
+		// this.paths[1].path.remove();
 		_.each([this.paths[0]], function(el){
 			// MountainPath.mountain_make(el.path);
 			testPath = el.path;
 			MountainPath.make(el.path);
-			// MountainPath.addBackground(el.path);
+			MountainPath.addBackground(el.path);
 		});
 
 		scope.paper.project.view.update();
