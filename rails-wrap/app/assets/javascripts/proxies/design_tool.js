@@ -4,9 +4,7 @@
 //     88     88    88  ooo 88   88 88~~~~~   `Y8b.    88    88  ooo 88 V8o88 88~~~~~ 88`8b   
 // db. 88    .88.   88. ~8~ 88  .8D 88.     db   8D   .88.   88. ~8~ 88  V888 88.     88 `88. 
 // Y8888P  Y888888P  Y888P  Y8888D' Y88888P `8888Y' Y888888P  Y888P  VP   V8P Y88888P 88   YD 
-JigDesigner.SVG = 0;
-JigDesigner.JSON = 1;  
-JigDesigner.EXPORT_DEFAULT = JigDesigner.SVG;                                                                                        
+                                                                                      
                              
 function JigDesigner(container, svg){
 	this.paper;
@@ -175,7 +173,7 @@ JigDesigner.prototype = {
 		var s = Math.floor(Date.now() / 1000);
 		var timestamp_key = "saveevent_" + s;
 		console.log("Timestamp", timestamp_key);
-		storage.set(timestamp_key, this.export(JigDesigner.JSON, false));
+		storage.set(timestamp_key, JigExporter.export(this.paper, this.canvas, JigExporter.JSON, false));
 		this.current_save = s;
 	},
 	redo: function(){
@@ -280,53 +278,6 @@ JigDesigner.prototype = {
 		this.loadJSON(storage.get('saveevent_' + last_event))
 		this.current_save = last_event;
 		
-	}, 
-	export: function(mode, downloadFlag){
-		// var prev = this.paper.view.zoom;
-		// this.paper.view.zoom = 1;
-		// default
-		var exp;
-		var filename = $('#filename').val();
-		if(filename == ""){	filename = "export"; }
-		filename = filename.split('.')[0];
-
-		if(_.isUndefined(mode))
-			mode = JigDesigner.EXPORT_DEFAULT;
-
-		if(_.isUndefined(downloadFlag))
-			downloadFlag = true;
-
-		
-		if(mode == JigDesigner.SVG){
-			console.log("Exporting file as SVG");
-			exp = this.paper.project.exportSVG({
-				asString: true,
-				precision: 5
-			});
-			if(downloadFlag)
-				saveAs(new Blob([exp], {type:"application/svg+xml"}), filename + ".svg")
-		}
-		else if(mode == JigDesigner.JSON){
-
-			console.log("Exporting file as JSON");
-			exp = this.paper.project.exportJSON({
-				asString: true,
-				precision: 5
-			});
-			if(downloadFlag)
-				saveAs(new Blob([exp], {type:"application/json"}), filename + ".json")
-		}
-
-
-			// exp = this.canvas[0].toDataURL("image/png");
-		// else 
-			// exp = "No mode was specified";
-		
-	
-		// console.log(exp);
-		// this.paper.view.zoom = prev;
-
-		return exp;
 	}
 }
                                                               

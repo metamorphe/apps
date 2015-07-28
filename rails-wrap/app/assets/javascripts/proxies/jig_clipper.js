@@ -4,7 +4,7 @@
 //     88     88    88  ooo 8b      88         88    88~~~   88~~~   88~~~~~ 88`8b   
 // db. 88    .88.   88. ~8~ Y8b  d8 88booo.   .88.   88      88      88.     88 `88. 
 // Y8888P  Y888888P  Y888P   `Y88P' Y88888P Y888888P 88      88      Y88888P 88   YD 
-JigClipper.RESOLUTION = 1;
+JigClipper.RESOLUTION = 10;
 JigClipper.WALL_HEIGHT = 5; //mm                                            
  
 JigClipper.SCALE = 100;
@@ -99,12 +99,16 @@ JigClipper.offset = function(path, delta){
 		co.Execute(offset_paths, delta);
 
 		var ps = [];
+		console.log("offset path length", offset_paths.length)
+		
 		for(var i in offset_paths){
 			var p = JigClipper.to_paper_path(offset_paths[i]);
-			ps.push(p);
+			console.log(p.length)
+			if(p.length > 10)
+				ps.push(p);
 		}
 		
 		paper.view.update();
-		return ps[0];
+		return ps;
 }
 

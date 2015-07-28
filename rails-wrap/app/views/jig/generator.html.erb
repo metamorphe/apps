@@ -15,14 +15,7 @@
     factory = new HillJig($("#sandbox"), "/leaf.svg");
   });
   function attachHandlers(){
-    $('.download').click(function(){
-    	if($(this).attr("name") == "svg")
-	      $(this).attr('href', 'data:text/svg,' + factory.export(TextureGenerator.SVG) ).attr('download', 'mytexture.svg');
-	    else if($(this).attr("name") == "png")
-		    $(this).attr('href', factory.export(TextureGenerator.PNG) ).attr('download', 'mytexture.png');
-    });
-    
-}
+  }
 </script>
 
 <!-- 
@@ -37,6 +30,12 @@ db   8D    88       88    88booo. 88.
 <style>
 body, html{
   background: white;
+}
+footer#import-export{
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 10px;
 }
 </style>
 
@@ -53,4 +52,5 @@ YP   YP    YP    YP  YP  YP Y88888P
 <div id="interface-container" class="row">   
   <div id="sandbox" class="col-xs-12">
   </div>
+  <%= render :partial => "import_export_footer" %>
 </div>

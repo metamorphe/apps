@@ -41,13 +41,16 @@ HillJig.prototype = {
 			el.path.remove();
 		});
 		// this.paths[1].path.remove();
-		_.each([this.paths[0]], function(el){
-			// MountainPath.mountain_make(el.path);
+		// _.each([this.paths[0]], function(el){
+		_.each(this.paths, function(el){
+			el.path.selected = false;
 			testPath = el.path;
 			MountainPath.make(el.path);
-			MountainPath.addBackground(el.path);
+			// MountainPath.wire_path(el.path);
+			// MountainPath.addBackground(el.path);
+			// el.path.remove();
 		});
-
+		
 		scope.paper.project.view.update();
 	},
 	addBackground: function(){
@@ -163,56 +166,9 @@ HillJig.prototype = {
 		var b = scope.art_layer.bounds;
 		scope.art_layer.position = new paper.Point(0 + b.width/2 + 20, 0 + b.height/2 + 20);
 		
-		scope.paper.view.zoom = 3;
+		scope.paper.view.zoom = 7;
 		scope.paper.view.center = new paper.Point(0 + b.width/2 + 20, 0 + b.height/2 + 20);
 		scope.paper.view.update();
-	},
-	export: function(mode, downloadFlag){
-		// var prev = this.paper.view.zoom;
-		// this.paper.view.zoom = 1;
-		// default
-		var exp;
-		var filename = $('#filename').val();
-		if(_.isUndefined(filename) || filename == ""){	filename = "export"; }
-		filename = filename.split('.')[0];
-
-		if(_.isUndefined(mode))
-			mode = JigDesigner.EXPORT_DEFAULT;
-
-		if(_.isUndefined(downloadFlag))
-			downloadFlag = true;
-
-		
-		if(mode == JigDesigner.SVG){
-			console.log("Exporting file as SVG");
-			exp = this.paper.project.exportSVG({
-				asString: true,
-				precision: 5
-			});
-			if(downloadFlag)
-				saveAs(new Blob([exp], {type:"application/svg+xml"}), filename + ".svg")
-		}
-		else if(mode == JigDesigner.JSON){
-
-			console.log("Exporting file as JSON");
-			exp = this.paper.project.exportJSON({
-				asString: true,
-				precision: 5
-			});
-			if(downloadFlag)
-				saveAs(new Blob([exp], {type:"application/json"}), filename + ".json")
-		}
-
-
-			// exp = this.canvas[0].toDataURL("image/png");
-		// else 
-			// exp = "No mode was specified";
-		
-	
-		// console.log(exp);
-		// this.paper.view.zoom = prev;
-
-		return exp;
 	}
 }
 

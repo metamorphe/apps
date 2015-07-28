@@ -2,6 +2,7 @@
 # All this logic will automatically be available in application.js.
 # You can use CoffeeScript in this file: http://coffeescript.org/
 //= require underscore
+//= require canvas-toBlob
 //= require metamorphehalf/file_saver.min
 //= require metamorphehalf/webcache
 //= require dat.gui.min
@@ -9,6 +10,7 @@
 //= require scraps/ruler
 //= require proxies/utility
 //= require proxies/jig_clipper
+//= require proxies/jig_exporter
 //= require proxies/hilljig
 //= require proxies/mountain_path
 //= require proxies/design_tool
