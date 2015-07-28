@@ -21,7 +21,9 @@ Utility.unpackChildren = function(parent, arr){
 	}
 	return arr;
 }
-
+function shoelace(pta, ptb){
+	return (pta.x - ptb.x) * (pta.y + ptb.y);
+}
 
 function addPoints(pta, ptb){
 	return new paper.Point(pta.x + ptb.x, pta.y + ptb.y);

@@ -27,6 +27,20 @@ function HillJig(container, svg){
 	$('.close-button').click();
 }
 
+function lengthen_path(path){
+	var start = path.getPointAt(0);
+	var tan = path.getTangentAt(0);
+	tan.length = 40;
+	var tail = subPoints(start, tan);
+	path.insert(0, tail);
+
+	var start = path.getPointAt(path.length);
+	var tan = path.getTangentAt(path.length);
+	tan.length = 40;
+	var tail = addPoints(start, tan);
+
+	path.add(tail);
+}
 HillJig.prototype = {
 	removeConnectors: function(){
 		var scope = this;
@@ -45,10 +59,11 @@ HillJig.prototype = {
 		_.each(this.paths, function(el){
 			el.path.selected = false;
 			testPath = el.path;
-			MountainPath.make(el.path);
-			// MountainPath.wire_path(el.path);
+			lengthen_path(testPath);
+			MountainPath.wall_make(el.path);
+			MountainPath.wire_path(el.path);
 			// MountainPath.addBackground(el.path);
-			// el.path.remove();
+			el.path.remove();
 		});
 		
 		scope.paper.project.view.update();
@@ -113,7 +128,7 @@ HillJig.prototype = {
 		this.paper.setup(this.canvas[0]);
 		this.height = this.paper.view.size.height;
 		this.width = this.paper.view.size.width;
-		this.paper.view.zoom = 3;	
+		this.paper.view.zoom = 1;	
 		var scope = this; 
 		this.update();
 		
@@ -166,7 +181,7 @@ HillJig.prototype = {
 		var b = scope.art_layer.bounds;
 		scope.art_layer.position = new paper.Point(0 + b.width/2 + 20, 0 + b.height/2 + 20);
 		
-		scope.paper.view.zoom = 7;
+		scope.paper.view.zoom = 3;
 		scope.paper.view.center = new paper.Point(0 + b.width/2 + 20, 0 + b.height/2 + 20);
 		scope.paper.view.update();
 	}

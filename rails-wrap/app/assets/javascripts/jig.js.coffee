@@ -7,10 +7,12 @@
 //= require metamorphehalf/webcache
 //= require dat.gui.min
 //= require paper-full.min
+//= require numeric.min
 //= require scraps/ruler
 //= require proxies/utility
 //= require proxies/jig_clipper
 //= require proxies/jig_exporter
+//= require proxies/path_features
 //= require proxies/hilljig
 //= require proxies/mountain_path
 //= require proxies/design_tool

@@ -63,9 +63,12 @@ JigDesigner.prototype = {
 		var item = this.paper.project.importJSON(json); 
 		
 		var layer = item[0];
-		for(var i = 0; i < layer.children.length; i ++){
-			var group = layer.children[i];
 
+		var group = layer;
+		if(layer){
+			for(var i = 0; i < layer.children.length; i ++){
+				var group = layer.children[i];
+			}
 	    	
 			scope.toolbox.tools.anchortool.toolholder.setSVG(item);
 			// group.position = paper.view.center;
