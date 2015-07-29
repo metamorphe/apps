@@ -165,6 +165,7 @@ function conv(vec1, vec2){
 }
 
 // LOGIC for wall creation
+entering_loop = false;
 function segment_path(path, clean_pts){
 
 	var start = 0; 
@@ -172,8 +173,13 @@ function segment_path(path, clean_pts){
 	var end, el;
 	for(var i in clean_pts){
 		el = clean_pts[i];	
-		
-		if(count == 3 || el.type == "intersection"){
+		if(el.type == "intersection" && !entering_loop){
+			entering_loop = true;
+		}
+		if(el.type == "intersection" && entering_loop){
+			entering_loop = false;
+		}
+		if(count == 3 || el.type == "intersection" || (entering_loop == false && el.type =="curvature")){
 			end = el.idx;
 			// console.log("PT ID:", i, el.idx, el.type);
 			MountainPath.interior_wall_path(path, parseInt(start), parseInt(end), 1);
@@ -260,13 +266,13 @@ function angle_threshold(path, pts, threshold){
 	var angle0 = path.getTangentAt(el0.idx).angle;
 	pts = _.filter(pts, function(el, i, arr){
 		
-
 		var angle = path.getTangentAt(el.idx).angle;
 		var diff = Math.abs(angle - angle0);
 		// console.log(diff > threshold || i == 0 || i == arr.length - 1, angle - angle0);
 		
 		
-		var curved = (i == 0 || diff > threshold);
+		var curved =  diff > threshold;
+		// var curved = (i == 0 || diff > threshold);
 		// || i == arr.length - 1 
 		if(!curved){
 			el.dom.fillColor = "yellow"; 
@@ -292,3 +298,19 @@ function mapPath(path, fn){
 	}
 	return pts;
 }
+
+// clockwise = _.reduce(pts, function(memo, el, i, arr){
+	// 	if(i == 0 || i + 1 >= arr.length) return memo;
+		
+	// 	var next_pt = arr[i+1];
+	// 	A = subPoints(next_pt, el);
+	// 	B = subPoints(el, prev_pt);
+		
+	// 	var dist = A.cross(B) / (A.length * B.length);	
+	// 	console.log(dist);
+	// 	prev_pt = el;
+	// 	return memo + dist;
+	// }, 0);
+
+	// console.log("N", n0, n1, clockwise, clockwise > 0);
+

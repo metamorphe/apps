@@ -1,5 +1,6 @@
 class JigController < ApplicationController
   def designer
+
   	render :layout => "full_screen"
   end
 
@@ -11,6 +12,7 @@ class JigController < ApplicationController
   	render :layout => "full_screen"
   end
   def interface
+    @design = Design.find(params[:id]).to_json.html_safe
     @files = get_primitives()
   	render :layout => "full_screen"
   end

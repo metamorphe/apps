@@ -8,7 +8,7 @@ function DimensionsPreview(container){
 
 	$(this.dom).css({
 		position: "absolute", 
-		border: "1px solid #00A8E1", 
+		// border: "1px solid #00A8E1", 
 		top: 0, 
 		left: 0, 
 		margin: 5,

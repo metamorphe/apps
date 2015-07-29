@@ -50,6 +50,9 @@ VectorTool.prototype = {
 	update: function(){
 		this.paper.view.update();
 	}, 
+	clear: function(){
+
+	},
 	selectAll: function(flag){
 		this.paper.project.activeLayer.selected = flag;
 	}, 

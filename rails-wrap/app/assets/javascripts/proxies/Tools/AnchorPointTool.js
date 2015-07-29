@@ -38,6 +38,7 @@ function AnchorPointTool(paper){
 				scope.selectedStroke = hitResult.item;
 				factory.activePath = scope.selectedStroke.id;
 				factory.wirepaths.at(factory.activePath).updateDOM();
+				factory.wirepaths.at(factory.activePath).updateHandles();
 			}
 		}else{
 			scope.selectAll(false);
@@ -71,6 +72,9 @@ AnchorPointTool.prototype = {
 	update: function(){
 		this.paper.view.update();
 	}, 
+	clear: function(){
+
+	},
 	selectAll: function(flag){
 		this.paper.project.activeLayer.selected = flag;
 	}, 

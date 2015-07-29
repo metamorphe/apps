@@ -22,6 +22,14 @@ Ruler.gauge2mm = function(v){
 	return 0.127 * Math.pow(92, (36 - v) / 39);
 }
 
+Ruler.mm2gauge = function(v){
+	var c = v / 0.127;
+	return Math.round(-1 * ((39 * Math.log(c) / Math.log(92)) - 36));
+}
+
+Ruler.pts2gauge = function(v){
+	return Ruler.mm2gauge(Ruler.pts2mm(v));
+}
 
 Ruler.gauge2pts = function(v){
 	return Ruler.mm2pts(Ruler.gauge2mm(v));

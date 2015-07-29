@@ -51,17 +51,25 @@
         <% end %>
       </div>
 
-
+      <!-- ZOOM TOOLS -->
       <div class="btn-group pull-right" role="group" id="zoom-ui" aria-label="zoom-tools">
        
       
-      <%= button_tag :id=>"zoom-out", :class=>"btn btn-md btn-warning" do %>
-        <span class="glyphicon glyphicon-zoom-out"></span>
-      <% end %>
-       <%= button_tag :id=>"zoom-in", :class=>"btn btn-md btn-warning" do %>
-          <span class="glyphicon glyphicon-zoom-in"></span>
-      <% end %>
+        <%= button_tag :id=>"zoom-out", :class=>"btn btn-md btn-warning" do %>
+          <span class="glyphicon glyphicon-zoom-out"></span>
+        <% end %>
+         <%= button_tag :id=>"scale", :class=>"btn btn-md btn-warning" do %>
+          <span class="glyphicon glyphicon-tree-conifer"></span>
+        <% end %>
+        
+        <%= button_tag :id=>"zoom-in", :class=>"btn btn-md btn-warning" do %>
+            <span class="glyphicon glyphicon-zoom-in"></span>
+        <% end %>
+      
       </div>
+      <!-- END ZOOM TOOLS -->
+
+
         <div class="btn-group pull-right" role="group">
         <%= button_tag :id=>"clear-history", :class=>"btn btn-md btn-danger" do %>
           <span class="glyphicon glyphicon-ban-circle"></span>

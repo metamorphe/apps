@@ -15,7 +15,7 @@ function HillJig(container, svg){
 	// this.factor = 500 / Ruler.convert(config.size, "mm");
 	this.init();
 	var loadLSController = this.gui.add(this, "loadFromLocalStorage");
-	var removeConnectors = this.gui.add(this, "removeConnectors");
+	var removeConnectors = this.gui.add(this, "hilljig_make");
 	productController = this.gui.add(this, "product", ["HillJig"]);
 
 	this.gui.add(this.paper.view, "zoom", 0.2, 4).step(0.1);
@@ -42,7 +42,7 @@ function lengthen_path(path){
 	path.add(tail);
 }
 HillJig.prototype = {
-	removeConnectors: function(){
+	hilljig_make: function(){
 		var scope = this;
 		this.connectors = _.filter(this.wirepaths.wires, function(el){
 			return el.is_connector;
@@ -62,18 +62,11 @@ HillJig.prototype = {
 			lengthen_path(testPath);
 			MountainPath.wall_make(el.path);
 			MountainPath.wire_path(el.path);
-			// MountainPath.addBackground(el.path);
+			MountainPath.addBackground(factory.wirepaths.bounds().bounds);
 			el.path.remove();
 		});
 		
 		scope.paper.project.view.update();
-	},
-	addBackground: function(){
-		var rectangle = new paper.Rectangle(new paper.Point(0, 0), new paper.Point(paper.view.size.width * paper.view.zoom, paper.view.size.height * paper.view.zoom));
-		var bg = new paper.Path.Rectangle(rectangle);
-		bg.fillColor = new paper.Color(0);
-		bg.sendToBack();	
-
 	},
 	update: function(){
 		if(typeof this.paper == "undefined") return;
@@ -155,7 +148,7 @@ HillJig.prototype = {
 		console.log("loading json", last_event);
 
 		this.loadJSON(storage.get('saveevent_' + last_event));
-		this.removeConnectors();
+		
 
 	},
 
@@ -172,18 +165,27 @@ HillJig.prototype = {
 			var group = layer.children[i];
 
 			_.each(Utility.unpackChildren(group, []), function(value, key, arr){
-				var w  = new WirePath(scope.paper, value);
 				
+				var path = value;
+				var mat = Material.detectMaterial(path);
+				var w  = new WirePath(scope.paper, value);
 				scope.wirepaths.add(w.id, w);
+				w.material = mat;
+				w.update();
+				
 			});
+
 	  	}
 		scope.art_layer.addChild(layer);
 		var b = scope.art_layer.bounds;
 		scope.art_layer.position = new paper.Point(0 + b.width/2 + 20, 0 + b.height/2 + 20);
 		
 		scope.paper.view.zoom = 3;
+		
 		scope.paper.view.center = new paper.Point(0 + b.width/2 + 20, 0 + b.height/2 + 20);
 		scope.paper.view.update();
+		b = scope.wirepaths.bounds();
+		paper.view.zoom *= b.zoomFactor;
 	}
 }
 

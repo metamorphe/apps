@@ -1,8 +1,9 @@
 
 function Toolbox(paper, dom){
-	this.paper = {};
+	this.paper = paper;
 	this.tools = {};
 	this.init();
+	this.paper.tool = null;
 }
 
 Toolbox.prototype={
@@ -22,8 +23,15 @@ Toolbox.prototype={
 		this.tools[name] = {dom: dom, toolholder: tool};
 		dom.click(function(){
 			console.log("Enabling", name);
-			paper.tool = null;
+			scope.clearTool();
 			paper.tool = scope.tools[name].toolholder.tool;
 		});
+	},
+	clearTool: function(){
+		if(!_.isNull(this.paper.tool)){
+			this.paper.tool.toolholder.clear();
+		}
+		this.paper.tool = null;
+		this.paper.view.update();
 	}
 }

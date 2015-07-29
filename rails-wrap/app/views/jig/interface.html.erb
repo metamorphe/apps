@@ -7,35 +7,52 @@
 // db   8D Y8b  d8 88 `88.   .88.   88         88    
 // `8888Y'  `Y88P' 88   YD Y888888P 88         YP    
                                                   
-
+  var design = <%= @design %>;
   var factory, zoom, materials, storage;
   $(function(){
     attachHandlers();
+    dim = new DimensionsPreview($("#sandbox"));
+    dim.dom.css({
+      bottom: 0, 
+      right: 0, 
+      left: "auto", 
+      top: "auto"
+    });
+    dim.set(0, 0, 0);
+
     storage = new WebStorage();
+    factory = new JigDesigner($("#sandbox"));
     
-    // storage.cache("cow", function(){
-       storage.set("cow", "moo");
-    // }, function(value){
-      // console.log(value);
-    // });
-
-    console.log("Checking", storage.get("cow"));
-
-    factory = new JigDesigner($("#sandbox"), "/fancyloop.svg");
+    
     zoom = new Zoom(factory.paper.view.zoom, factory.paper);
     materials = new Materials($("#materials"));
 
     StatsController.DOM = $('#stat-box');
     stats = new StatsController(factory);
+    
+    resp = $.getJSON(design.json.url, function(resp){
+       factory.loadJSON(resp);
+    });
+   
+    dropLogic();
+  });
 
+  function dropLogic(){
     // DROP LOGIC
     $('#sandbox canvas').on("drop", function(event){
       event.preventDefault();  
       event.stopPropagation();
       var filename = event.originalEvent.dataTransfer.getData("text");
       var position = paper.view.viewToProject(new paper.Point(event.originalEvent.x, event.originalEvent.y));
-      console.log("Dropped!", filename , position, event);
-      factory.addSVG(filename, position);
+      
+      var filetype = filename.split('.');
+      filetype = filetype[filetype.length - 1];
+
+      console.log("Dropped!", filename , position, event, filetype);
+      if(filetype == "svg")
+        factory.addSVG(filename, position);
+      else if(filetype == "json")
+        factory.addJSON(filename, position);
     }).on("dragover", function(event) {
       event.preventDefault();  
       event.stopPropagation();
@@ -49,16 +66,24 @@
     $('img').on('dragstart', function(event){
       event.originalEvent.dataTransfer.setData("text", $(this).attr('src'));
     });
-
-    // END DROP LOGIC
-
-  });
-
+  }
   function attachHandlers(){
     WirePath.DOM = $("#wirepath_controller");
+    
 
     $("#zoom-in").click(function(){zoom.in();});
     $("#zoom-out").click(function(){zoom.out();});
+    $("#scale").click(function(){
+      if($(this).hasClass('active')){
+        $(this).removeClass('active');
+        zoom.hide_scale();
+      } else{
+        $(this).addClass('active');
+        zoom.show_scale();
+      }
+    });
+      
+    
     var sb = new SidebarController();
 
     $('.download').click(function(){

@@ -11,11 +11,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150321232729) do
+ActiveRecord::Schema.define(version: 20150728225617) do
 
   create_table "authors", force: true do |t|
     t.integer  "swatch_id"
     t.integer  "feel_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "designs", force: true do |t|
+    t.string   "name"
+    t.string   "bom"
+    t.string   "json"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

@@ -40,17 +40,12 @@ function TransformTool(paper){
 		var hitResult = paper.project.hitTest(event.point, hitOptions);
 		
 		if (!hitResult){
-			if(!_.isNull(scope.activeSelectionRectangle)){
-	        	scope.activeSelectionRectangle.remove();
-	        	scope.activeSelectionRectangle = null;
-	        	scope.selectAll(false);
-				scope.selectedStroke = null;
-	        }
-			scope.selectedStroke = null;
+			scope.clear();
 			return;
 		}
 		
 		if (hitResult) {
+			console.log("MD", hitResult.type, hitResult.item.name);
 			path = hitResult.item;
 
 			if(!_.isNull(scope.activeSelectionRectangle) && scope.activeSelectionRectangle.id != path.id && scope.selectedStroke.id != path.id){
@@ -70,13 +65,14 @@ function TransformTool(paper){
 				scope.paper.project.activeLayer.addChild(scope.activeSelectionRectangle);
 				scope.selectedStroke = path;
 			}
-			
-			if(hitResult.type == "stroke" && path.name != "selection rectangle"){
+			// console.log(hitResult.type == "stroke", hitResult == "segment", path.name != "selection rectangle")
+			if((hitResult.type == "stroke" || hitResult.type == "segment") && path.name != "selection rectangle"){ //&& {
 				
 				console.log("wire select");
 				var selected = hitResult.item.selected;
 
 				// toggle selection
+				scope.selectAll(false);
 				hitResult.item.selected = true;
 
 				scope.selectedStroke = hitResult.item;
@@ -103,7 +99,6 @@ function TransformTool(paper){
 	                segment = hitResult.segment;
 			} 
 		}
-
 	
 	}
 	
@@ -166,6 +161,15 @@ TransformTool.prototype = {
 	update: function(){
 		this.paper.view.update();
 	}, 
+	clear: function(){
+		if(!_.isNull(this.activeSelectionRectangle)){
+        	this.activeSelectionRectangle.remove();
+        	this.activeSelectionRectangle = null;
+        	this.selectAll(false);
+			this.selectedStroke = null;
+        }
+		this.selectedStroke = null;
+	},
 	selectAll: function(flag){
 		this.paper.project.activeLayer.selected = flag;
 	}, 

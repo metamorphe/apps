@@ -6,10 +6,9 @@
 // Y8888P  Y888888P  Y888P  Y8888D' Y88888P `8888Y' Y888888P  Y888P  VP   V8P Y88888P 88   YD 
                                                                                       
                              
-function JigDesigner(container, svg){
+function JigDesigner(container){
 	this.paper;
 	this.container = container;
-	this.svg = svg;
 	this.gauge = 14;
 	this.init();
 
@@ -22,7 +21,7 @@ function JigDesigner(container, svg){
 
 	latest_event =  _.max(save_events);
 	this.current_save = latest_event;
-
+	this.wirepaths = new Wires();
 }
 
 // var point_manip = null;
@@ -42,10 +41,10 @@ JigDesigner.prototype = {
 		var scope = this;
 		this.paper.project.activeLayer.removeChildren();
 		
-			if(_.isUndefined(scope.svgSym)){
-				this.importSVG(function(){
-				});
-			} 	   
+			// if(_.isUndefined(scope.svgSym)){
+			// 	this.importSVG(function(){
+			// 	});
+			// } 	   
 		
 		paper.view.update();
 	},
@@ -56,29 +55,40 @@ JigDesigner.prototype = {
 		this.paper.view.update();
 	},
 	loadJSON: function(json, callback){
-		console.log("Loading json", json);
+		// console.log("Loading json", json);
 		var scope = this;
-		// this.paper.project.activeLayer.removeChildren();
-
+		this.paper.project.activeLayer.removeChildren();
 		var item = this.paper.project.importJSON(json); 
-		
-		var layer = item[0];
-
+	
+		var layer = item[0];	
 		var group = layer;
-		if(layer){
-			for(var i = 0; i < layer.children.length; i ++){
-				var group = layer.children[i];
-			}
-	    	
-			scope.toolbox.tools.anchortool.toolholder.setSVG(item);
-			// group.position = paper.view.center;
 
-			_.each(Utility.unpackChildren(group, []), function(value, key, arr){
-				var w  = new WirePath(scope.paper, value);
-				scope.wirepaths.add(w.id, w);
-				console.log("loading ", w.path.name);
-				factory.activePath = w.id;
-			});
+		scope.toolbox.tools.anchortool.toolholder.setSVG(item);
+			
+
+		if(!_.isUndefined(layer) && !_.isUndefined(layer.children)){
+
+				// for(var i = 0; i < layer.children.length; i ++){
+					// var group = layer.children[i];
+
+			
+	    		group.position = paper.view.center;
+
+				_.each(Utility.unpackChildren(group, []), function(value, key, arr){
+					var path = value;
+					var mat = Material.detectMaterial(path);
+					var w  = new WirePath(scope.paper, path);
+					w.material = mat;
+					w.update();
+
+					scope.wirepaths.add(w.id, w);
+					console.log("loading ", w.path.name);
+					factory.activePath = w.id;
+				});
+			// }
+			// console.log("exited");
+		}else{
+			console.log('no layer detected!');
 		}
     	scope.toolbox.tools.anchortool.toolholder.selectAll(false);
     	paper.tool = null;
@@ -86,7 +96,7 @@ JigDesigner.prototype = {
     	item.selected = true;
     	$('#transform-tool').click().focus();
     	
-  		paper.project.activeLayer.addChild(group);
+  		// paper.project.activeLayer.addChild(group);
 	
 	},
 	addSVG: function(filenamer, position, callback){
@@ -107,9 +117,14 @@ JigDesigner.prototype = {
     			// scope.wirepaths = new Wires();
 
     			_.each(Utility.unpackChildren(item, []), function(value, key, arr){
-    				value.name = filenamer;
+    				var path = value;
+					var mat = Material.detectMaterial(path);
+					path.name = filenamer;
+
     				var w  = new WirePath(scope.paper, value);
     				scope.wirepaths.add(w.id, w);
+    				w.material = mat;
+    				w.update();
     				console.log("filename", filenamer);
     				
     				factory.activePath = w.id;
@@ -128,14 +143,13 @@ JigDesigner.prototype = {
 		this.paper.project.importSVG(this.svg, {
 	    	onLoad: function(item) { 
 		    	scope.svgSym = item;
-		    	;
 		    	paper.project.activeLayer.addChild(item);
 
 		    	paper.view.update();
 		    	item.position = paper.view.center;
 
     			scope.toolbox.tools.anchortool.toolholder.setSVG(item);
-    			scope.wirepaths = new Wires();
+    			
 
     			_.each(Utility.unpackChildren(item, []), function(value, key, arr){
     				var w  = new WirePath(scope.paper, value);
@@ -173,6 +187,7 @@ JigDesigner.prototype = {
 		return this;
 	},
 	save: function(){
+		this.toolbox.clearTool();
 		var s = Math.floor(Date.now() / 1000);
 		var timestamp_key = "saveevent_" + s;
 		console.log("Timestamp", timestamp_key);
@@ -180,6 +195,7 @@ JigDesigner.prototype = {
 		this.current_save = s;
 	},
 	redo: function(){
+		this.toolbox.clearTool();
 		var save_events = $.map(storage.keys(), function(el, i){
 			flag = el.split('_')[0];
 			time = parseInt(el.split('_')[1]);
@@ -206,6 +222,7 @@ JigDesigner.prototype = {
 
 	},
 	undo: function(){
+		this.toolbox.clearTool();
 		var save_events = $.map(storage.keys(), function(el, i){
 			flag = el.split('_')[0];
 			time = parseInt(el.split('_')[1]);
@@ -232,6 +249,7 @@ JigDesigner.prototype = {
 
 	}, 
 	revert: function(){
+		this.toolbox.clearTool();
 		save_events = $.map(storage.keys(), function(el, i){
 			flag = el.split('_')[0];
 			time = parseInt(el.split('_')[1]);
@@ -255,11 +273,13 @@ JigDesigner.prototype = {
 		
 	}, 
 	clear_history: function(){
+		this.toolbox.clearTool();
 		storage.clear();
 		this.clear();
 		this.save();
 	},
 	fast_forward: function(){
+		this.toolbox.clearTool();
 		save_events = $.map(storage.keys(), function(el, i){
 			flag = el.split('_')[0];
 			time = parseInt(el.split('_')[1]);
@@ -283,6 +303,9 @@ JigDesigner.prototype = {
 		
 	}
 }
-                                                              
+                 
+
+
+
                                                               
 

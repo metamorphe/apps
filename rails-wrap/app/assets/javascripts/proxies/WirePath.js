@@ -37,6 +37,10 @@ function WirePath(paper, path){
 }
 WirePath.COIL_LOOP_WIDTH = 2;
 WirePath.prototype = {
+	remove: function(){
+		this.path.remove();
+		this.selection_rectangle.remove();
+	},
 	update: function(){
 		var style = this.material.getStyle();
 		this.path.style = style;
@@ -113,6 +117,11 @@ WirePath.prototype = {
 				
         this.init_size = new paper.Point(b.left, b.bottom).subtract(b.center).length;
 	    return selectionRectangle;
+	}, 
+	updateHandles: function(){
+		// var b = this.path.bounds.clone(0).expand(10);
+		this.selection_rectangle.remove()
+		this.selection_rectangle = this.initSelectionRectangle();
 	}
 }
 

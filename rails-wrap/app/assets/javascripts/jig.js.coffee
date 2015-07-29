@@ -5,6 +5,7 @@
 //= require canvas-toBlob
 //= require metamorphehalf/file_saver.min
 //= require metamorphehalf/webcache
+//= require metamorphehalf/DimensionsPreview
 //= require dat.gui.min
 //= require paper-full.min
 //= require numeric.min

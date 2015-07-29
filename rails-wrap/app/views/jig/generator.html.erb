@@ -7,12 +7,19 @@
 // `8888Y'  `Y88P' 88   YD Y888888P 88         YP    
                                                   
 
-  var factory, storage;
+  var factory, storage, dim;
   $(function(){
     attachHandlers();
+    dim = new DimensionsPreview($("#sandbox"));
+    dim.dom.css({
+      bottom: 0, 
+      top: "auto"
+    });
+    dim.set(0, 0, 0);
     WirePath.DOM = $("#wirepath_controller");
     storage = new WebStorage();
     factory = new HillJig($("#sandbox"), "/leaf.svg");
+   
   });
   function attachHandlers(){
   }

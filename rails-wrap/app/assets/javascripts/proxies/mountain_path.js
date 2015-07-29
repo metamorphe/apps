@@ -43,14 +43,17 @@ MountainPath.wall_make = function(path){
 
 	pts = _.sortBy(pts, function(el, i, arr){ return parseInt(el.idx);});
 	pts = distance_threshold(path, pts, MountainPath.PT_TOLERANCE);
-	pts = angle_threshold(path, pts, 2.0);
+	pts = angle_threshold(path, pts, 1.0);
+	
+	// DEBUG POINTS
 	_.each(pts, function(el, i, arr){ el.dom.remove(); });
+	// _.each(pts, function(el, i, arr){ console.log("#" + (i + 1), el.type, el.idx) });
 
 	segment_path(path, pts);
 }
 var mini;
 MountainPath.interior_wall_path = function(path, n0, n1, mini_n){
-	
+	// console.log(n0, n1);
 	if(_.isNaN(n1)) throw "N1 is isUndefined";
 	if(n1 - n0 < 5) return; 
 
@@ -62,52 +65,22 @@ MountainPath.interior_wall_path = function(path, n0, n1, mini_n){
 	var max_height = norm_n1 * MountainPath.MAX_MOUNTAIN_PATH_HEIGHT_RATIO;
 
 	var pts = [];
-	// var normals = [];
-	// var tangents = [];
 	for(var i = n0; i < n1; i += MountainPath.RESOLUTION){
 		pts.push(path.getPointAt(i).clone());
-		// normals.push(path.getNormalAt(i).clone());
-		// tangents.push(path.getTangentAt(i).clone());
 	}
 
 
 
 
 	prev_pt = pts[0];
-	// clockwise = _.reduce(pts, function(memo, el, i, arr){
-	// 	if(i == 0 || i + 1 >= arr.length) return memo;
 		
-	// 	var next_pt = arr[i+1];
-	// 	A = subPoints(next_pt, el);
-	// 	B = subPoints(el, prev_pt);
-		
-	// 	var dist = A.cross(B) / (A.length * B.length);	
-	// 	console.log(dist);
-	// 	prev_pt = el;
-	// 	return memo + dist;
-	// }, 0);
-
-	// console.log("N", n0, n1, clockwise, clockwise > 0);
-
-	
 
 
 	mini = new paper.Path(pts);
-	mini.closed = false;
-	mini.style.strokeWidth = path.style.strokeWidth;
-	// if(clockwise > 0){
-	// 	mini.style.strokeColor = "yellow";
-		
-	// } else{
-	// 	mini.style.strokeColor = "purple";
-	// }
-	
-	// mini.bringToFront();
-	// mini.style.strokeWidth = 0.1;
-	
-	
-	// mini.style = MountainPath.construction_style(mini_n/n);
+	// mini.closed = false;
+	// mini.style.strokeWidth = path.style.strokeWidth;
 	mini.visible = true;
+	mini.strokeColor = "yellow";
 
 	MountainPath.mountain_make(mini, (1.0 - max_height) + (1.0 - MountainPath.MAX_MOUNTAIN_PATH_HEIGHT_RATIO));
 	paper.view.update();
@@ -166,7 +139,7 @@ MountainPath.mountain_make = function(path, gray){
 MountainPath.wire_path = function(path){ 
 	var n = path.length;
 	console.log("making mountain path", n);
-
+	var group = new paper.Group();
 	for(var i = 0; i < n; i += MountainPath.RESOLUTION){
 			var normalizedPosition = 1 - i/n;
 
@@ -174,19 +147,22 @@ MountainPath.wire_path = function(path){
 			var normal = path.getNormalAt(i);
 		
 			var width = path.style.strokeWidth;
-			normal.length = width/2;
+			normal.length = width/2 + width * MountainPath.TOLERANCE;
 
 			//mountain path
-			var result = new paper.Point(point.x + 1.2 * normal.x, point.y + 1.2 * normal.y);
-			var result2 = new paper.Point(point.x - 2 * normal.x, point.y - 2 * normal.y);
+			var result = addPoints(point, normal);
+			normal.length = normal.length * 2 ;
+			var result2 = subPoints(point, normal);
 			
 			var line = new paper.Path({
 		        segments: [result2, result],
-		        strokeWidth: width + 2 +  width * MountainPath.TOLERANCE,
+		        strokeWidth: width,
 		        strokeColor: new paper.Color(normalizedPosition * MountainPath.MAX_MOUNTAIN_PATH_HEIGHT_RATIO)
 		    });
-		    line.bringToFront();
+			group.addChild(line);
+		  
 	}
+	group.bringToFront();
 }
 
 
@@ -223,11 +199,8 @@ MountainPath.heightmap_style = function(gray){
 }
 
 
-MountainPath.addBackground = function(path){
-	var b = path.bounds.clone().expand(20, 20);
-	backgroundRect = new paper.Path.Rectangle(b);
-	backgroundRect.style.fillColor = 'black';
-	backgroundRect.sendToBack();
-	backgroundRect.position = b.center.clone();
-	console.log("Width", Ruler.pts2mm(b.width), "Height", Ruler.pts2mm(b.height)) 
+MountainPath.addBackground = function(rectangle){
+		var bg = new paper.Path.Rectangle(rectangle);
+		bg.fillColor = new paper.Color(0);
+		bg.sendToBack();	
 }

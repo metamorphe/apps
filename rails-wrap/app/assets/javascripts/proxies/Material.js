@@ -25,7 +25,7 @@ Materials.prototype = {
 function Material(gauge, color){
 	this.gauge = gauge;
 	this.diameter = Ruler.gauge2mm(gauge);
-	this.color = color;
+	this.color = new paper.Color(color);
 }
 Material.prototype = {
 	getStyle: function(){
@@ -38,6 +38,13 @@ Material.prototype = {
 		};
 	}, 
 	equals: function(m){
-		return m.gauge == this.gauge && m.color == this.color;
+		return m.gauge == this.gauge && m.color.toCanvasStyle() == (this.color.toCanvasStyle());
 	}
+}
+
+Material.detectMaterial =  function(path){
+	var s = path.style;
+	var gauge = Ruler.pts2gauge(parseFloat(s.strokeWidth));
+	var color = s.strokeColor;
+	return new Material(gauge, color);
 }
