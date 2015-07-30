@@ -180,7 +180,7 @@ JigDesigner.prototype = {
 
 	    this.toolbox = new Toolbox(this.paper, $("#toolbox"));	
 	    this.toolbox.add("anchortool", $('#anchor-tool'), new AnchorPointTool(this.paper));
-		this.toolbox.add("vectortool", $('#vector-tool'),  new VectorTool(this.paper));
+		// this.toolbox.add("vectortool", $('#vector-tool'),  new VectorTool(this.paper));
 		this.toolbox.add("transformtool", $('#transform-tool'),  new TransformTool(this.paper));
 		this.update();
 		

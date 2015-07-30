@@ -91,9 +91,7 @@ function AnchorPointTool(paper){
 		scope.update();
 	}
 	this.tool.onKeyDown = function(event){
-		console.log(event.key);
-		if(event.key == "backspace")
-			event.preventDefault();
+		scope.onKeyDownDefault(event);
 
 		console.log("delete? ", scope.selectedPoint, scope.selectedStroke)
 		if(event.key == "-" ||event.key == "backspace"){

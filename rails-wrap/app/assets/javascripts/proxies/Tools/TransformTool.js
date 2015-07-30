@@ -106,9 +106,7 @@ function TransformTool(paper){
 	
 	}
 	this.tool.onKeyDown = function(event){
-		console.log(event.key);
-		if(event.key == "backspace")
-			event.preventDefault();
+		scope.onKeyDownDefault(event);
 
 		if(event.key == "-" ||event.key == "backspace"){
 			if(scope.selectedStroke != null){
