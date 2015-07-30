@@ -42,6 +42,12 @@ Toolbox.prototype={
 			if(event.key == "a"){
 				$('#anchor-tool').click().focus();
 			}
+			if(event.key == "s"){
+				$("#save-progress").click().focus();
+			}
+			if(event.key == "p"){
+				$("#print").click().focus();
+			}
 		}
 
 	},

@@ -87,7 +87,7 @@ find_clocks = function(path){
 		var dist = A.cross(B) / (A.length * B.length);	
 		// var c = new paper.Path.Circle(el.clone(), 3);
 		
-		var epsilon = 0.030;
+		var epsilon = 0.050;
 		var sign = Math.sign(dist);
 		// console.log(dist, sign);
 		if(Math.abs(dist) < epsilon){
@@ -134,7 +134,7 @@ function extract_curve_points(clockwise){
 	});	
 	result = conv(result, [-1, 1]);
 	result = _.map(result, function(el, i, arr){
-		if(el != 0) return i;
+		if(el != 0) return i - 2;
 	})
 	result = _.compact(result);	
 
@@ -173,13 +173,18 @@ function segment_path(path, clean_pts){
 	var end, el;
 	for(var i in clean_pts){
 		el = clean_pts[i];	
+		// console.log(path.name, el.type);
+
 		if(el.type == "intersection" && !entering_loop){
 			entering_loop = true;
+			// console.log("entering");
 		}
-		if(el.type == "intersection" && entering_loop){
+		else if(el.type == "intersection" && entering_loop){
 			entering_loop = false;
+			// console.log("exiting");
 		}
-		if(count == 3 || el.type == "intersection" || (entering_loop == false && el.type =="curvature")){
+		// count == 4 || 
+		if(el.type == "intersection" || (entering_loop == false && el.type =="curvature")){
 			end = el.idx;
 			// console.log("PT ID:", i, el.idx, el.type);
 			MountainPath.interior_wall_path(path, parseInt(start), parseInt(end), 1);
@@ -200,8 +205,8 @@ find_self_intersections = function(path){
 	for(var i = 0; i < path.length; i++){
 		var pt = path.getPointAt(i);
 		
-		var c = paper.Path.Circle(pt.clone(), 1.0);
-	
+		var c = paper.Path.Circle(pt.clone(), 1.5);
+		// c.strokeColor = "black";
 		var intersections = c.getIntersections(path);
 		if(intersections.length == 4){
 			c.fillColor = "magenta";
@@ -217,11 +222,11 @@ find_self_intersections = function(path){
 ends = function(path){
 	var pts = [];
 	var pt = path.getPointAt(0)
-	var c = paper.Path.Circle(pt, 3);
+	var c = paper.Path.Circle(pt, 4);
 	c.style = {
 		fillColor: "green"
 	}
-	pts.push({point: pt, idx: 0, type: "start", dom: c}); 
+	pts.push({point: pt.clone(), idx: 0, type: "start", dom: c}); 
 
 	var pt = path.getPointAt(path.length);
 	var c = paper.Path.Circle(pt, 3);
@@ -229,7 +234,7 @@ ends = function(path){
 		fillColor: "red"
 	}
 	c.bringToFront(0);
-	pts.push({point: pt, idx: path.length, type: "end", dom: c}); 
+	pts.push({point: pt.clone(), idx: path.length, type: "end", dom: c}); 
 	return pts;
 }
 
@@ -265,19 +270,22 @@ function angle_threshold(path, pts, threshold){
 	var el0 = pts[0];
 	var angle0 = path.getTangentAt(el0.idx).angle;
 	pts = _.filter(pts, function(el, i, arr){
-		
+		console.log("ang", el.type)
 		var angle = path.getTangentAt(el.idx).angle;
 		var diff = Math.abs(angle - angle0);
+		if(el.type == "start") el.dom.selected = true;
+		// console.log(diff, path.name, el.type);
 		// console.log(diff > threshold || i == 0 || i == arr.length - 1, angle - angle0);
 		
 		
-		var curved =  diff > threshold;
+		var curved =  diff > threshold || el.type == "intersection" || el.type == "start";
 		// var curved = (i == 0 || diff > threshold);
 		// || i == arr.length - 1 
 		if(!curved){
-			el.dom.fillColor = "yellow"; 
-			// console.log("ang", el.type);
+			// el.dom.fillColor = "orange"; 
+			// console.log("removed");
 			el.dom.remove();
+			// el.dom.fillColor = "white";
 		} else{
 			angle0 = angle;
 		}

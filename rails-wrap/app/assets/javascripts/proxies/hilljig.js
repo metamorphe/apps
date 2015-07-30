@@ -1,6 +1,7 @@
 // hilljig generator
-var jigpath;                                                                                                     
-                             
+var jigpath;   
+                                                                                                
+                           
 function HillJig(container, svg){
 	this.paper;
 	this.container = container;
@@ -16,6 +17,7 @@ function HillJig(container, svg){
 	this.init();
 	var loadLSController = this.gui.add(this, "loadFromLocalStorage");
 	var removeConnectors = this.gui.add(this, "hilljig_make");
+	var holdMaker = this.gui.add(this, "hold_make");
 	productController = this.gui.add(this, "product", ["HillJig"]);
 
 	this.gui.add(this.paper.view, "zoom", 0.2, 4).step(0.1);
@@ -65,12 +67,17 @@ HillJig.prototype = {
 			lengthen_path(testPath);
 			MountainPath.wall_make(el.path);
 			MountainPath.wire_path(el.path);
+			MountainPath.add_holey_ends(el.path);
 			el.path.remove();
 		});
 		bg = MountainPath.addBackground(factory.wirepaths.bounds().bounds);
-			bg.sendToBack();
+		bg.sendToBack();
 		
 		scope.paper.project.view.update();
+	},
+
+	hold_make: function(){
+		ConnectorJig.make(this);
 	},
 	update: function(){
 		if(typeof this.paper == "undefined") return;

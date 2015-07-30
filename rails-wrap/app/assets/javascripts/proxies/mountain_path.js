@@ -5,7 +5,7 @@ MountainPath.WALL_HEIGHT = 10; //mm
  
 MountainPath.SCALE = 100;
 MountainPath.TOLERANCE = 0.1;
-MountainPath.WALL_THICKNESS = 20;//mm
+MountainPath.WALL_THICKNESS = Ruler.mm2pts(20);//mm
 MountainPath.MAX_MOUNTAIN_PATH_HEIGHT_RATIO = 0.7;
 MountainPath.PT_TOLERANCE = 25;
 
@@ -41,9 +41,11 @@ MountainPath.wall_make = function(path){
 
 	var pts = _.flatten([intersects, clocks, e]);
 
+
 	pts = _.sortBy(pts, function(el, i, arr){ return parseInt(el.idx);});
 	pts = distance_threshold(path, pts, MountainPath.PT_TOLERANCE);
-	pts = angle_threshold(path, pts, 1.0);
+	console.log(pts);
+	pts = angle_threshold(path, pts, 10.0);
 	
 	// DEBUG POINTS
 	_.each(pts, function(el, i, arr){ el.dom.remove(); });
@@ -52,6 +54,14 @@ MountainPath.wall_make = function(path){
 	segment_path(path, pts);
 }
 var mini;
+
+MountainPath.add_holey_ends = function(path){
+	var pt = path.getPointAt(path.length);
+	var c = paper.Path.Circle(pt, path.style.strokeWidth * 1.3);
+	c.style.fillColor = "black";
+	c.style.strokeColor = new paper.Color(0.05);
+	c.style.strokeWidth = 1;
+}
 MountainPath.interior_wall_path = function(path, n0, n1, mini_n){
 	// console.log(n0, n1);
 	if(_.isNaN(n1)) throw "N1 is isUndefined";
@@ -97,7 +107,8 @@ MountainPath.mountain_make = function(path, gray){
 	
 
 	// e is the inner, b is the outer
-	var paths_outer = JigClipper.offset(path, (-path_width/2) -path_width * MountainPath.TOLERANCE);
+	
+	var paths_outer = JigClipper.offset(path, (-path_width/2) - path_width * MountainPath.TOLERANCE);
 	var paths_inner = JigClipper.offset(path, (-path_width/2) - MountainPath.WALL_THICKNESS);
 
 
@@ -106,11 +117,13 @@ MountainPath.mountain_make = function(path, gray){
 	
 	
 	_.each(paths_outer, function(el, i, arr){
-		el.style = MountainPath.construction_style(make_id/5);
+		// el.style = MountainPath.construction_style(make_id/5);
 		MountainPath.path_reorder(el, original_end);
 		el.closed = false;
-		el.bringToFront();
+		el.style.strokeColor = "white";
+		// el.strokeWidth = 1;
 		el.style = MountainPath.heightmap_style(gray);
+		el.bringToFront();
 	});
 
 	_.each(paths_inner, function(el, i, arr){
@@ -130,8 +143,11 @@ MountainPath.mountain_make = function(path, gray){
 				outer.sendToBack();
 				outer.style = MountainPath.heightmap_style(gray);
 			}
+			else{
+				console.log("NO OUTER", el, i);
+			}
 	});
-
+	
 	make_id ++;
 }
 
@@ -160,9 +176,11 @@ MountainPath.wire_path = function(path){
 		        strokeColor: new paper.Color(normalizedPosition * MountainPath.MAX_MOUNTAIN_PATH_HEIGHT_RATIO)
 		    });
 			group.addChild(line);
+		    line.bringToFront();
+
 		  
 	}
-	group.bringToFront();
+	// group.bringToFront();
 }
 
 
