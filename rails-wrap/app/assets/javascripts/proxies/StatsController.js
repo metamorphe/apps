@@ -2,10 +2,11 @@
 
 StatsController.mm2_per_hr = 3922;
 StatsController.wall_buffer_mm = 12;
-StatsController.paths_per_hr = 6;
+StatsController.paths_per_hr = 40;
 
 function StatsController(design){
 	this.design = design;
+   console.log(design);
 	this.print_time = "5hr 30min";
 	this.make_time = "15min";
 	this.bom = {};
@@ -35,10 +36,11 @@ StatsController.prototype = {
    		return this;
    }, 
    calculate: function(){
+      var b = factory.wirepaths.bounds().bounds;
 		this.bom_length = Ruler.pts2mm(this.design.wirepaths.totalLength()).toFixed(2) + " mm";
    		var print_time = (
-   							(Ruler.pts2mm(this.design.svgSym.bounds.height) + StatsController.wall_buffer_mm) * 
-   						  	(Ruler.pts2mm(this.design.svgSym.bounds.width)  + StatsController.wall_buffer_mm) /
+   							(Ruler.pts2mm(b.height) + StatsController.wall_buffer_mm) * 
+   						  	(Ruler.pts2mm(b.width)  + StatsController.wall_buffer_mm) /
 	   						StatsController.mm2_per_hr
 	   					 );
    		this.print_time = StatsController.prettyTime(print_time);

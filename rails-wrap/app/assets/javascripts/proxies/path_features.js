@@ -200,7 +200,7 @@ find_self_intersections = function(path){
 	for(var i = 0; i < path.length; i++){
 		var pt = path.getPointAt(i);
 		
-		var c = paper.Path.Circle(pt.clone(), 2);
+		var c = paper.Path.Circle(pt.clone(), 1.0);
 	
 		var intersections = c.getIntersections(path);
 		if(intersections.length == 4){

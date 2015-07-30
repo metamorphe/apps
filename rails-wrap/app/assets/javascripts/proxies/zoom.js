@@ -1,7 +1,7 @@
 // zoom.js
 
 Zoom.STEP = 0.5;
-Zoom.MAX = 5;
+Zoom.MAX = 10;
 Zoom.MIN = 0.1;
 
 function Zoom(starting_level, paper){

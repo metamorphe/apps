@@ -203,4 +203,5 @@ MountainPath.addBackground = function(rectangle){
 		var bg = new paper.Path.Rectangle(rectangle);
 		bg.fillColor = new paper.Color(0);
 		bg.sendToBack();	
+		return bg;
 }

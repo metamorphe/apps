@@ -25,6 +25,7 @@ function HillJig(container, svg){
 	gaugeController.onChange(function(){ scope.update();});
 	loadLSController.onChange(function(){ scope.loadingFromLocalStorage(); });
 	$('.close-button').click();
+	
 }
 
 function lengthen_path(path){
@@ -54,6 +55,8 @@ HillJig.prototype = {
 		_.each(this.connectors, function(el){
 			el.path.remove();
 		});
+
+		console.log("N paths to jigify", this.paths.length)
 		// this.paths[1].path.remove();
 		// _.each([this.paths[0]], function(el){
 		_.each(this.paths, function(el){
@@ -62,9 +65,10 @@ HillJig.prototype = {
 			lengthen_path(testPath);
 			MountainPath.wall_make(el.path);
 			MountainPath.wire_path(el.path);
-			MountainPath.addBackground(factory.wirepaths.bounds().bounds);
 			el.path.remove();
 		});
+		bg = MountainPath.addBackground(factory.wirepaths.bounds().bounds);
+			bg.sendToBack();
 		
 		scope.paper.project.view.update();
 	},

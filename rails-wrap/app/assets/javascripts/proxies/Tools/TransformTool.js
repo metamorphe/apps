@@ -30,6 +30,7 @@ function TransformTool(paper){
 	this.selectedStroke = null;
 	this.activeSelectionRectangle = null;
 	this.tool = new paper.Tool();
+	this.copy_mode = false;
 
 	this.tool.distanceThreshold = 10;
 
@@ -60,7 +61,13 @@ function TransformTool(paper){
 				scope.activeSelectionRectangle.position = path.bounds.center.clone();
 				
 				scope.activeSelectionRectangle.rotation = 0;
+
+				var ref_x = scope.activeSelectionRectangle.wire.ref_x ? -1 : 1;
+				var ref_y = scope.activeSelectionRectangle.wire.ref_y ? -1 : 1;
+
 				scope.activeSelectionRectangle.prevScale = scope.activeSelectionRectangle.ppath.scaling;
+				// scope.activeSelectionRectangle.prevScale.x *= ref_x; 
+				// scope.activeSelectionRectangle.prevScale.y *= ref_y; 
 				scope.activeSelectionRectangle.prevRot = scope.activeSelectionRectangle.ppath.rotation;
 				scope.paper.project.activeLayer.addChild(scope.activeSelectionRectangle);
 				scope.selectedStroke = path;
@@ -88,11 +95,8 @@ function TransformTool(paper){
 	                {
 	                    selectionRectangleRotation = 0;
 	                }
-	                else
-	                {
-	                   
+	                else{
 						selectionRectangleScale =  0;
-                
 	                }
 				}
 	            else
@@ -101,7 +105,53 @@ function TransformTool(paper){
 		}
 	
 	}
-	
+	this.tool.onKeyDown = function(event){
+		console.log(event.key);
+		if(event.key == "backspace")
+			event.preventDefault();
+
+		if(event.key == "-" ||event.key == "backspace"){
+			if(scope.selectedStroke != null){
+				factory.activePath = scope.selectedStroke.id;
+				factory.wirepaths.at(factory.activePath).remove();
+				scope.clear();
+			}
+		}
+
+		if(event.key == "d"){
+			if(scope.selectedStroke != null){
+				factory.activePath = scope.selectedStroke.id;
+				var dp = factory.wirepaths.at(factory.activePath).duplicate();
+				factory.wirepaths.add(dp.id, dp);
+				scope.clear();
+			}
+		}
+
+		if(event.key == "r"){
+			if(scope.selectedStroke != null){
+				factory.activePath = scope.selectedStroke.id;
+				var dp = factory.wirepaths.at(factory.activePath);
+				dp.reflect_x();
+				
+			}
+		}
+		if(event.key == "f"){
+			if(scope.selectedStroke != null){
+				factory.activePath = scope.selectedStroke.id;
+				var dp = factory.wirepaths.at(factory.activePath);
+				dp.reflect_y();
+				
+			}
+		}
+		
+		scope.copy_mode = event.key == "option";
+		return true;
+	}
+
+	this.tool.onKeyUp = function(event){	
+		scope.copy_mode = event.key == "option";
+	}
+
 	this.tool.onMouseUp = function(event){
 		selectionRectangleScale = null;
     	selectionRectangleRotation = null;
@@ -125,10 +175,17 @@ function TransformTool(paper){
 			var init_diag =  scope.activeSelectionRectangle.wire.init_size;
 			
 			var ratio = diag/init_diag;
+			// var ref_x = scope.activeSelectionRectangle.wire.ref_x ? -1 : 1;
+			// var ref_y = scope.activeSelectionRectangle.wire.ref_y ? -1 : 1;
+			// console.log("xref", ref_x, "yref", ref_y);
+
+
 			var rect_ratio = ratio;
 			rect_ratio /= scope.activeSelectionRectangle.prevScale.x;
 			
-	        scaling = new paper.Point(ratio, ratio);
+		
+
+	        scaling = new paper.Point(ratio, ratio );
 	        rect_scaling = new paper.Point(rect_ratio, rect_ratio);
 
 	        scope.activeSelectionRectangle.scaling = rect_scaling;
