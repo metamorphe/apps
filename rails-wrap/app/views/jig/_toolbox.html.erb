@@ -31,7 +31,15 @@
       <% button_tag :class => "btn btn-default" do %>
         <span class="icon-anchor-select"></span>
       <% end %>
-    
+
+      <div class="btn-group" role="group" aria-label="item-tools">
+        <%= button_tag :id => "bring-to-front", :class => "btn btn-primary" do %>
+        <span class="glyphicon glyphicon-arrow-up"></span>
+        <% end %>
+        <%= button_tag :id => "send-to-back", :class => "btn btn-primary" do %>
+        <span class="glyphicon glyphicon-arrow-down"></span>
+        <% end %>
+      </div>    
 
       <div class="btn-group pull-right" role="group">
         <%= button_tag :id=>"revert", :class=>"btn btn-md btn-default" do %>

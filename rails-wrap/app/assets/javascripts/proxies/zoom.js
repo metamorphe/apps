@@ -30,7 +30,10 @@ Zoom.prototype = {
 		// console.log("showing scale");
 		var b = factory.wirepaths.bounds().bounds;
 		var pt = b.topLeft.clone();
+
 		var diam = Ruler.mm2pts(24.26);
+		pt.x += diam;
+		pt.y += diam;
 		this.scale = paper.Path.Circle({
 			center: pt, 
 			radius: diam/2, 

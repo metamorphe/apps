@@ -7,13 +7,23 @@ ConnectorJig.BASE_RATIO = 0.2;
 var intersectsT; var intersectsB;
 ConnectorJig.make = function(factory){
 	var scope = factory;
-		scope.connectors = _.filter(scope.wirepaths.wires, function(el){
-			return el.is_connector;
+		this.connectors = _.filter(scope.wirepaths.wires, function(el){
+			return el.is_connector && !el.is_gem;
 		});
-		scope.paths = _.filter(scope.wirepaths.wires, function(el){
-			return !el.is_connector;
+		this.gems = _.filter(scope.wirepaths.wires, function(el){
+			return el.is_gem && !el.is_connector;
+		});
+
+
+		this.paths = _.filter(scope.wirepaths.wires, function(el){
+			return !el.is_connector && !el.is_gem;
 		});
 		
+		
+		_.each(this.gems, function(el){
+			el.path.remove();
+		});
+
 		
 		_.each(scope.connectors, function(el){
 			el.path.remove();
@@ -37,7 +47,6 @@ ConnectorJig.make_base = function(){
 	bg.sendToBack();
 }
 ConnectorJig.mountain_make = function(path, gray, inner_1_outer_0){
-	// console.log("mm", path);
 	path_width = path.style.strokeWidth;
 	
 	var paths_orig = JigClipper.offset(path, 0);
@@ -56,12 +65,7 @@ ConnectorJig.mountain_make = function(path, gray, inner_1_outer_0){
 	
 	
 	_.each(paths_outer, function(el, i, arr){
-		// el.style = MountainPath.construction_style(make_id/5);
 		MountainPath.path_reorder(el, original_end);
-		// el.closed = false;
-		// el.style.strokeColor = "white";
-		// el.strokeWidth = 1;
-		// el.style = MountainPath.heightmap_style(gray);
 		el.bringToFront();
 	});
 
@@ -75,7 +79,6 @@ ConnectorJig.mountain_make = function(path, gray, inner_1_outer_0){
 	var cp = new paper.CompoundPath({
 		children: cp_children, 
 		fillColor: new paper.Color(1.0)
-		// selected: true
 	});
 	cp.sendToBack();
 		
@@ -114,16 +117,12 @@ ConnectorJig.pressfit = function(connectors, paths){
 					return el2.idx;
 				});
 				arr[i] = _.sortBy(e, function(v){return v;});
-
-				// console.log(arr[i]);
 			});
 
-			// console.log("#" + i, intersects);
+			
 
 			_.each(intersects, function(el, i, arr){
 				var path = factory.wirepaths.at(i).path;
-				// for(var i = 0; i < el.length; i+=2)
-				// 	ConnectorJig.make_sub_path(path, el[i], el[i+1]);
 			});
 		});
 }

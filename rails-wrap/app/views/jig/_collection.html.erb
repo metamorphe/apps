@@ -11,6 +11,11 @@
   top: 60px;
   background: #ddd;
   height: calc(100% - 75px);
+
+}
+#collection-panel{
+   overflow-y: scroll;
+   height: calc(100% - 75px);
 }
 #collection.collapsed {
   left: -22%;
@@ -30,6 +35,7 @@
     text-align: left;
     padding: 0 10px;
     text-transform: uppercase;
+    font-size: 14px;
   }
   #collection footer{
     width: 93%;
@@ -127,6 +133,7 @@ $(function(){
 	<div class="title">
 		<h4> Collection - Primitives <span id="toggle-switch" class="badge glyphicon glyphicon-arrow-right pull-right">  </span></h4> 
 	</div>
+  <div id="collection-panel">
 	<% @files[:filenames].each do |f| %>
 		<div class="responsive-container col-xs-3 no-select">
 		    <div class="dummy"></div>
@@ -135,4 +142,5 @@ $(function(){
 		    </div>
 		</div>
 	<% end %>
+</div>
 </div>

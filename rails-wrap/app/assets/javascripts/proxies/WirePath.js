@@ -23,6 +23,7 @@ function WirePath(paper, path){
 		this.path.parent.applyMatrix = true;
 	}
 	this.is_connector = path.name.indexOf('connector') > -1 || path.name.indexOf('three') > -1;
+	this.is_gem = path.name.indexOf('bead') > -1;
 	this.paper = paper;
 	this.terminationA = WirePath.termination.NONE;
 	this.terminationB = WirePath.termination.NONE;

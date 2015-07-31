@@ -36,7 +36,7 @@
    
     dropLogic();
   });
-
+  getActiveTool = function(){ return paper.tool.toolholder; }
   function dropLogic(){
     // DROP LOGIC
     $('#sandbox canvas').on("drop", function(event){
@@ -69,7 +69,21 @@
   }
   function attachHandlers(){
     WirePath.DOM = $("#wirepath_controller");
-    
+     $("#bring-to-front").click(function(){
+        var stroke = getActiveTool().selectedStroke;
+        if(! _.isNull(stroke)){
+          stroke.parent.bringToFront();
+          paper.view.update();
+        } 
+      });
+
+     $("#send-to-back").click(function(){
+        var stroke = getActiveTool().selectedStroke;
+        if(! _.isNull(stroke)){
+          stroke.parent.sendToBack();
+          paper.view.update();
+        } 
+      });
 
     $("#zoom-in").click(function(){zoom.in();});
     $("#zoom-out").click(function(){zoom.out();});

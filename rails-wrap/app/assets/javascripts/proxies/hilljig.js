@@ -48,13 +48,22 @@ HillJig.prototype = {
 	hilljig_make: function(){
 		var scope = this;
 		this.connectors = _.filter(this.wirepaths.wires, function(el){
-			return el.is_connector;
+			return el.is_connector && !el.is_gem;
 		});
+		this.gems = _.filter(this.wirepaths.wires, function(el){
+			return el.is_gem && !el.is_connector;
+		});
+
+
 		this.paths = _.filter(this.wirepaths.wires, function(el){
-			return !el.is_connector;
+			return !el.is_connector && !el.is_gem;
 		});
 
 		_.each(this.connectors, function(el){
+			el.path.remove();
+		});
+
+		_.each(this.gems, function(el){
 			el.path.remove();
 		});
 
