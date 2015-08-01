@@ -44,7 +44,7 @@
       event.stopPropagation();
       var filename = event.originalEvent.dataTransfer.getData("text");
       var position = paper.view.viewToProject(new paper.Point(event.originalEvent.x, event.originalEvent.y));
-      
+      console.log(event.originalEvent.dataTransfer.getData("text"));
       var filetype = filename.split('.');
       filetype = filetype[filetype.length - 1];
 

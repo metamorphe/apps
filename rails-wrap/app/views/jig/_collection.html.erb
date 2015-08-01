@@ -3,7 +3,7 @@
   position: absolute;
   background: #F1FCFE;
   /*height: 100%;*/
-  padding-bottom: 15px;
+  padding-bottom: 0px;
   padding-top: 0px;
   padding-left: 0px;
   padding-right: 0px;
@@ -15,7 +15,7 @@
 }
 #collection-panel{
    overflow-y: scroll;
-   height: calc(100% - 75px);
+   height: calc(100% - 61px);
 }
 #collection.collapsed {
   left: -22%;
@@ -27,7 +27,7 @@
     background: #4FB896;
     color: white;
     margin-left: -5px;
-    margin-bottom: 10px;
+    /*margin-bottom: 10px;*/
     padding: 10px;
 
   }
@@ -111,9 +111,17 @@
 #toggle-switch{
   cursor: pointer;
 }
+#collection select{
+  font-size: 14pt;
+}
 </style>
 
 <script type="text/javascript">
+
+
+var files = <%= @files.to_json.html_safe %>;
+var collections; 
+
 $(function(){
   $('#toggle-switch').click(function(){
     is_collapsed = $(this).parents('#collection').hasClass("collapsed");
@@ -126,21 +134,66 @@ $(function(){
        $(this).removeClass("glyphicon-arrow-left").addClass("glyphicon-arrow-right");
     }
   });
+  collections = new Collection(files);
 });
+var testC; 
+function Collection(files){
+  var materials = {};
+  console.log(files.filenames);
+  this.path = files.path;
+  this.materials = _.groupBy(files.filenames, function(el, i, arr){
+    return el.collection;
+  });
+  this.collections = _.keys(this.materials);
+  this.main_container = $("#collection-panel");
+  this.selectorAdd();
+  this.elementAdd("Primitives")
+}
+Collection.prototype = {
+  elementAdd: function(material){
+    var scope = this;
+    console.log(this.materials[material]);
+    var els = _.map(this.materials[material], function(el, i, arr){
+      var dom = $('<div class="responsive-container col-xs-3 no-select">' +
+            '<div class="dummy"></div>' +
+            '<div class="img-container no-select">' + '</div>' +
+        '</div>');
+      var img = $('<img src="' + (scope.path + el.filename) + '" alt="'+ el.title + '" title="' + el.title + '"/>');
+      img.on('dragstart', function(event){
+        event.originalEvent.dataTransfer.setData("text", $(this).attr('src'));
+      });
+      dom.find('.img-container').append(img);
+      return dom;
+   });
+   $(this.main_container).append(els);
+  },
+  selectorAdd: function(){
+    var scope = this;
+    var container = $('#collection-type').on('change', function(){
+      scope.main_container.html("");
+      scope.elementAdd($(this).val());
+    });
+    container.html('');
+    console.log(this.collections);
+
+    options = _.map(this.collections, function(el, i, arr){
+       var dom = $('<option></option>').html(el).attr('id', i).attr('value', el.collection);
+       if(el == "Primitives")
+        dom.attr('selected', 'true');
+      return dom;
+    });
+    container.append(options);
+  }
+}
+
 </script>
 
 <div id="collection" class="collapsed col-xs-3 no-select">
 	<div class="title">
-		<h4> Collection - Primitives <span id="toggle-switch" class="badge glyphicon glyphicon-arrow-right pull-right">  </span></h4> 
+		<h4> Collection - <select id="collection-type">
+    </select> <span id="toggle-switch" class="badge glyphicon glyphicon-arrow-right pull-right">  </span></h4> 
+    
 	</div>
   <div id="collection-panel">
-	<% @files[:filenames].each do |f| %>
-		<div class="responsive-container col-xs-3 no-select">
-		    <div class="dummy"></div>
-		    <div class="img-container no-select">
-		        <%= image_tag @files[:path] + f, :alt => f.split(".")[0].titlecase, :title => f.split(".")[0].titlecase %>
-		    </div>
-		</div>
-	<% end %>
-</div>
+  </div>
 </div>
