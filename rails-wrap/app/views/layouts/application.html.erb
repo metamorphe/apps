@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Proxies - <%= params[:action].humanize %></title>
+  <title>Ellustrate - <%= params[:action].humanize %></title>
   <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
   <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
   <!-- <%=params[:controller]%> -->
@@ -43,7 +43,7 @@
 	        <span class="icon-bar"></span>
 	        <span class="icon-bar"></span>
 	      </button>
-	      <a class="navbar-brand" href="/"><b id='logo'>Proxies </b></a>
+	      <a class="navbar-brand" href="/"><b id='logo'>Ellustrate </b></a>
 	    </div>
 
 	    <!-- Collect the nav links, forms, and other content for toggling -->
@@ -53,7 +53,7 @@
 	        	<a href="/"> Home</a>
 	        </li>
 	        <li class="<%= params[:action] == "interface" ? "active" : "" %>">
-	        	<%= link_to "Jig Interface", jig_interface_path(1) %>
+	        	<%= link_to "Circuit Design", jig_interface_path(1) %>
 	        </li>
 
 	        
@@ -66,20 +66,9 @@
 
 	          <ul class="dropdown-menu" role="menu">
 	          	<li class="<%= params[:action] == "designer" ? "active" : "" %>">
-	        	<%= link_to "Jig Designer", jig_designer_path, :class=> "navbar-link" %>
+	        	<%= link_to "Bill of Materials", jig_bom_path, :class=> "navbar-link" %>
 		        </li>
-		        	<li class="<%= params[:action] == "form" ? "active" : "" %>">
-	        	<%= link_to "Form Designer", jig_form_path, :class=> "navbar-link" %>
-		        </li>
-		        <li class="<%= params[:action] == "peg" ? "active" : "" %>">
-		        	<%= link_to "Peg Designer", peg_designer_path, :class=> "navbar-link" %>
-		        </li>
-		          <li class="<%= params[:action] == "threejs" ? "active" : "" %>">
-		        	<%= link_to "Weave Designer", weaver_path, :class=> "navbar-link" %>
-		        </li>
-	          	<li><%= link_to "pic2stl", pic2stl_path , :class=> "navbar-link" %> </li>
-        		<li><%= link_to "planebox", plane_box_path, :class=> "navbar-link"  %> </li>
-        		<li><%= link_to "threejs_env", three_env_path , :class=> "navbar-link" %> </li>
+		        
 	          </ul>
 			</li>
 				  	
@@ -133,7 +122,7 @@
 	
 <footer class="footer shadow">
   <div class="container">
-    <p class="text-muted"> <a href="/"><b>Proxies</b></a>
+    <p class="text-muted"> <a href="/"><b>Ellustrate</b></a>
     	Adobe Systems 2015 </p>
   </div>
 </footer>

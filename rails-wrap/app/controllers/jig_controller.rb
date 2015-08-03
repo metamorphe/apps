@@ -18,6 +18,8 @@ class JigController < ApplicationController
   	# render :json => @files
   end
 
+  def bom
+  end
 
 
   # HELPER METHODS

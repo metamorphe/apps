@@ -7,10 +7,10 @@ Rails.application.routes.draw do
   namespace :jig do
     get 'designer', :as => "designer"
     get 'generator', :as => "generator"
-    
+    get 'bom', :as => "bom"
     get 'form', :as => "form"
-
   end
+  
   get 'jig/interface/:id' => "jig#interface",  :as => "jig_interface"
   devise_for :users
   resources :user, :only => ["show"]
