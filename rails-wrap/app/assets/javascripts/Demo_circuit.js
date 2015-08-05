@@ -30,11 +30,11 @@
                 var circuit_voltage_drop = battery.voltage - (resistorPos.resistance * circuit_current);
                 
                 if (circuit_voltage_drop < led.turnonvoltage) {
-                    led_brightness = 0; console.log("i'm at the first statement", led_brightness);
+                    led_brightness = 0; 
                 } else if (circuit_current > led.current_max) {
-                    led_brightness = -1; console.log("i'm at the second statement", led_brightness);
+                    led_brightness = -1; 
                 } else {
-                    led_brightness = circuit_current/led.current_max; console.log("i'm at the third statement", led_brightness);
+                    led_brightness = circuit_current/led.current_max; 
                 }
                 
                 console.log("this is the led brightness", led_brightness);
