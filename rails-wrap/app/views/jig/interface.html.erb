@@ -110,9 +110,10 @@
 
   function SidebarController(){
 
-    $("#materials").change(function(){
+    $(".materials").change(function(){
       var matIdx = parseInt($(this).val());
-      var material = materials.at(matIdx);
+      var componentType = $(this).data("component-type");
+      var material = materials.at(componentType, matIdx);
       
       if(factory.activePath){
         factory.wirepaths.at(factory.activePath).material = material;

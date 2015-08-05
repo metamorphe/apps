@@ -109,11 +109,18 @@ WirePath.prototype = {
 		}
 	},
 	updateDOM: function(){
-		var mat_idx = materials.find(this.material);
-		this.dom.materials.val(mat_idx);
-		this.dom.terminationA.val(this.terminationA);
-		this.dom.terminationB.val(this.terminationB);
-		this.dom.weight_profile.val(this.weight_profile);
+		console.log("mat", this.material);
+		var area = this.path.length / this.path.style.strokeWidth;
+		var resistor = Fluke.calculateResistanceFromArea(this.material, area);
+		console.log("fluke", resistor)
+		dim.set(resistor.resistance, Math.random(), Math.random());
+
+
+		// var mat_idx = materials.find(this.material);
+		// this.dom.materials.val(mat_idx);
+		// this.dom.terminationA.val(this.terminationA);
+		// this.dom.terminationB.val(this.terminationB);
+		// this.dom.weight_profile.val(this.weight_profile);
 		return this;
 	}, 
 
@@ -151,7 +158,16 @@ WirePath.prototype = {
 
 
 
-
+function Fluke(){}
+Fluke.calculateResistanceFromArea = function(material, area){ //assuming the trace is uniform for now
+    
+    console.log(material, area);
+   if( _.isUndefined(material.physical)) 
+    	return {resistance: NaN};
+   else
+    	return {resistance: material.physical.resistance * area};
+    return 0;
+}
 
 
 

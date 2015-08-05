@@ -55,26 +55,23 @@ JigDesigner.prototype = {
 		this.paper.view.update();
 	},
 	loadJSON: function(json, callback){
-		// console.log("Loading json", json);
+		
 		var scope = this;
 		this.paper.project.activeLayer.removeChildren();
 		var item = this.paper.project.importJSON(json); 
-	
 		var layer = item[0];	
-		var group = layer;
+		console.log("Loading json", layer);
+		
+		
 
-		scope.toolbox.tools.anchortool.toolholder.setSVG(item);
+		// scope.toolbox.tools.anchortool.toolholder.setSVG(item);
 			
 
 		if(!_.isUndefined(layer) && !_.isUndefined(layer.children)){
 
-				// for(var i = 0; i < layer.children.length; i ++){
-					// var group = layer.children[i];
+	 //    		layer.position = paper.view.center;
 
-			
-	    		group.position = paper.view.center;
-
-				_.each(Utility.unpackChildren(group, []), function(value, key, arr){
+				_.each(Utility.unpackChildren(layer, []), function(value, key, arr){
 					var path = value;
 					var mat = Material.detectMaterial(path);
 					var w  = new WirePath(scope.paper, path);
@@ -85,19 +82,20 @@ JigDesigner.prototype = {
 					console.log("loading ", w.path.name);
 					factory.activePath = w.id;
 				});
-			// }
-			// console.log("exited");
-		}else{
+			
+		} else{
 			console.log('no layer detected!');
 		}
+
+
     	scope.toolbox.tools.anchortool.toolholder.selectAll(false);
     	paper.tool = null;
     	
-    	item.selected = true;
+    	// item.selected = true;
     	$('#transform-tool').click().focus();
     	
   		// paper.project.activeLayer.addChild(group);
-	
+  		paper.view.update();
 	},
 	addSVG: function(filenamer, position, callback){
 		console.log("position", position);

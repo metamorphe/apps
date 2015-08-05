@@ -30,8 +30,8 @@ function Materials(dom){
 
 
 Materials.prototype = {
-	at: function(type){
-		return this.collection[type];
+	at: function(type, i){
+		return this.collection[type][i];
 	}, 
 	find: function(other){
 		for(var type in this.collection){
