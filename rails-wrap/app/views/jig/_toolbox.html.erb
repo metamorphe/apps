@@ -32,6 +32,7 @@
         <span class="icon-anchor-select"></span>
       <% end %>
 
+
       <div class="btn-group" role="group" aria-label="item-tools">
         <%= button_tag :id => "bring-to-front", :class => "btn btn-primary" do %>
         <span class="glyphicon glyphicon-arrow-up"></span>
@@ -40,7 +41,9 @@
         <span class="glyphicon glyphicon-arrow-down"></span>
         <% end %>
       </div>    
-
+       <%= button_tag :id => "fluke-calc", :class => "btn btn-primary" do %>
+        <span class="glyphicon glyphicon glyphicon-record"></span>
+        <% end %>
       <div class="btn-group pull-right" role="group">
         <%= button_tag :id=>"revert", :class=>"btn btn-md btn-default" do %>
           <span class="glyphicon glyphicon-refresh"></span>

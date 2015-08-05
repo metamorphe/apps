@@ -115,10 +115,13 @@ WirePath.prototype = {
 		// var led = materials.collection.electrical_components[1];
 		
 		// console.log("circuit", battery, led, resistor);
-		
+
 
 		dim.set(resistor.resistance, NaN, NaN);
 		var mat_idx = materials.find(this.material);
+		console.log("MAT ID", mat_idx, this.material.component_type);
+		if(mat_idx == -1) mat_idx = 0;
+		if(_.isUndefined(this.material.component_type)) this.material.component_type = "trace";
 		var m = this.dom.materials
 							.filter("[data-component-type='"+ this.material.component_type +"']")
 							.val(mat_idx);

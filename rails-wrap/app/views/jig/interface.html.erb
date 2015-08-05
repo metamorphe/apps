@@ -84,6 +84,9 @@
           paper.view.update();
         } 
       });
+      $("#fluke-calc").click(function(){
+        Fluke.calculateCircuitState();
+      });
 
     $("#zoom-in").click(function(){zoom.in();});
     $("#zoom-out").click(function(){zoom.out();});

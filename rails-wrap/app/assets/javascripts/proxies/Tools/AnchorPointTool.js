@@ -93,7 +93,9 @@ function AnchorPointTool(paper){
 
 		if(factory.activePath){
 			factory.wirepaths.at(factory.activePath).updateDOM();
+			Fluke.calculateCircuitState();
 		}
+
 	}
 	this.tool.onKeyDown = function(event){
 		scope.onKeyDownDefault(event);
