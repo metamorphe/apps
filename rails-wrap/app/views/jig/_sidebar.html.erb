@@ -7,7 +7,7 @@ input{
     <div id="main-title" class="title shadowed row">
       <h4 class="col-xs-12 shadowed-text"> Form Design </h4>
     </div>
-    <div id="stat-box">
+    <!-- <div id="stat-box">
      
       <span class="glyphicon glyphicon-print"></span> <span id="print-time"> 4 hr 30 min </span>&nbsp;
       | &nbsp; <span class="glyphicon glyphicon-time"></span> <span id="make-time"> 30 min </span>&nbsp;
@@ -17,7 +17,7 @@ input{
       <% end %>
      
     </div>
-    <br>
+    <br> -->
     <div class="input-group">
       <span class="input-group-addon glyphicon glyphicon-file" id="basic-addon1"></span>
       <input type="text" placeholder="Enter a filename" id="filename" class="form-control"/>
@@ -27,11 +27,11 @@ input{
 
       <label> Trace Material: </label> <br>
       <select class="materials" data-component-type="trace" class="form-control">
-          <option value="0" data-id="default" data-physical-resistance ="0.5" data-physical-current-unit="milliohms" data-style-color="#000000" data-digital-inlet="1" data-digital-outlet="1" data-digital-polarity="2" > None </option>
-          <option value="1" data-id="copper-tape" data-physical-resistance ="0.5" data-physical-current-unit="milliohms" data-style-color="#F79EEE" data-digital-inlet="1" data-digital-outlet="1" data-digital-polarity="2" > Silver </option>
-          <option value="2" data-id="silver-paint" data-physical-resistance ="2000" data-physical-current-unit="milliohms" data-style-color="#EE941E" data-digital-inlet="1" data-digital-outlet="1" data-digital-polarity="2" > Copper </option>
-          <option value="3" data-id="graphite-paint" data-physical-resistance ="5500" data-physical-current-unit="milliohms" data-style-color="#F7EE1E" data-digital-inlet="1" data-digital-outlet="1" data-digital-polarity="2" > Graphite paint </option>
-          <option value="4" data-id="conductive-thread" data-physical-resistance ="6000" data-physical-current-unit="milliohms" data-style-color="#F794EE" data-digital-inlet="1" data-digital-outlet="1" data-digital-polarity="2" > Conductive thread </option>
+          <option value="0" data-id="default" data-physical-resistance ="0.5" data-physical-current-unit="milliohms" data-style-strokecolor="#000000" data-style-dashArray = "[]" data-digital-inlet="1" data-digital-outlet="1" data-digital-polarity="2" > None </option>
+          <option value="1" data-id="copper-tape" data-physical-resistance ="0.5" data-physical-current-unit="milliohms" data-style-strokecolor="#808285" data-style-dashArray = "[]" data-digital-inlet="1" data-digital-outlet="1" data-digital-polarity="2" > Silver </option>
+          <option value="2" data-id="silver-paint" data-physical-resistance ="2000" data-physical-current-unit="milliohms" data-style-strokecolor="#F15A29" data-style-dashArray = "[]" data-digital-inlet="1" data-digital-outlet="1" data-digital-polarity="2" > Copper </option>
+          <option value="3" data-id="graphite-paint" data-physical-resistance ="5500" data-physical-current-unit="milliohms" data-style-strokecolor="#414042" data-style-dashArray = "[]" data-digital-inlet="1" data-digital-outlet="1" data-digital-polarity="2" > Graphite paint </option>
+          <option value="4" data-id="conductive-thread" data-physical-resistance ="6000" data-physical-current-unit="milliohms" data-style-strokecolor="#939598" data-style-dashArray = "[10, 4]" data-digital-inlet="1" data-digital-outlet="1" data-digital-polarity="2" > Conductive thread </option>
       </select> 
       <br>
       <label> Electrical Components: </label> <br>
@@ -54,7 +54,7 @@ input{
       <br>
 
       
-      <div class="row">
+<!--       <div class="row">
       <label class="col-xs-12"> Termination Points </label>
       
       <div class="col-xs-6">
@@ -84,7 +84,7 @@ input{
         <option value="2"> Tapered </option>
         <option value="3"> Unitapered</option>
        </select>  
-    </div>
+    </div> -->
     <%= render :partial => "import_export_footer" %>
 
 
