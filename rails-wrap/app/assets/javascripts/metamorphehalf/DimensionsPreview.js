@@ -1,7 +1,7 @@
 function DimensionsPreview(container){
 	this.container = container;
 	this.dom = $("<ul></ul>");
-	this.h = DimensionsPreview.list_dom("resistance:");
+	this.h = DimensionsPreview.list_dom("res:");
 	this.w = DimensionsPreview.list_dom("amps:");
 	this.d = DimensionsPreview.list_dom("volt:");
 	this.dom.append([this.h, this.w, this.d]);
@@ -18,7 +18,7 @@ function DimensionsPreview(container){
 	}).appendTo(container);
 }
 DimensionsPreview.list_dom = function(label){
-	var label = DimensionsPreview.format(label, -13)
+	var label = DimensionsPreview.format(label, -8)
 	var list_elem = $('<li class="list-group-item"><span name="label">'+ label +'</span><span name="value"></span></li>');
 	list_elem.css({
 		padding: "2px 3px",
@@ -30,9 +30,9 @@ DimensionsPreview.list_dom = function(label){
 
 DimensionsPreview.prototype = {
 	set: function(h, w, d){
-		this.h.find("span[name='value']").html(DimensionsPreview.format(h.toFixed(2)+" ohm", -10));
-		this.w.find("span[name='value']").html(DimensionsPreview.format(w.toFixed(2)+" amp", -10));
-		this.d.find("span[name='value']").html(DimensionsPreview.format(d.toFixed(2)+" vol", -10));
+		this.h.find("span[name='value']").html(DimensionsPreview.format(h.toFixed(2)+" ohm", -15));
+		this.w.find("span[name='value']").html(DimensionsPreview.format(w.toFixed(2)+" amp", -15));
+		this.d.find("span[name='value']").html(DimensionsPreview.format(d.toFixed(2)+" vol", -15));
 	}
 }
 

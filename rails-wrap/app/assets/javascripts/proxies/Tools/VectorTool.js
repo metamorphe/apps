@@ -11,7 +11,7 @@ function VectorTool(paper){
 
 	this.tool.onMouseDown = function(event){
 		hitResult = scope.paper.project.hitTest(event.point, {stroke: true});
-
+		console.log("HR", hitResult);
 		if(! _.isNull(hitResult)){
 			
 			if(hitResult.type == "stroke"){

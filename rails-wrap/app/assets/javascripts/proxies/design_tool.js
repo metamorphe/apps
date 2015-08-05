@@ -69,17 +69,18 @@ JigDesigner.prototype = {
 
 		if(!_.isUndefined(layer) && !_.isUndefined(layer.children)){
 
-	 //    		layer.position = paper.view.center;
+	    		layer.position = paper.view.center;
 
 				_.each(Utility.unpackChildren(layer, []), function(value, key, arr){
 					var path = value;
 					var mat = Material.detectMaterial(path);
+					console.log("Loading mat", mat);
+
 					var w  = new WirePath(scope.paper, path);
 					w.material = mat;
 					w.update();
 
 					scope.wirepaths.add(w.id, w);
-					console.log("loading ", w.path.name);
 					factory.activePath = w.id;
 				});
 			

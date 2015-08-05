@@ -21,6 +21,7 @@ function Materials(dom){
 				else{
 					if(!(key in properties)) properties[key] = {};
 					properties[key][secondary_key] = e.value;
+					properties["component_type"] = componentType;
 				}
 			});
 			return new Material(properties);
@@ -51,11 +52,13 @@ function Material(properties){
 Material.prototype = {
 	getStyle: function(){
 		return {
-			strokeColor: this.style.color,
+			strokeColor: this.style.strokecolor,
 			strokeWidth: 2, 
 			shadowColor: new paper.Color(0.2, 0.2, 0.2), 
 			shadowBlur:  2, 
-			shadowOffset: new paper.Point(1, 1)
+			shadowOffset: new paper.Point(1, 1), 
+			strokeCap: 'round', 
+			dashArray: eval(this.style.dasharray)
 		};
 	}, 
 	equals: function(m){
@@ -66,6 +69,6 @@ Material.prototype = {
 Material.detectMaterial =  function(path){
 	var s = path.style;
 	var properties = {style: {}};
-	properties.style.color = s.strokeColor;
+	properties.style.strokecolor = s.strokeColor;
 	return new Material(properties);
 }

@@ -75,6 +75,7 @@ function AnchorPointTool(paper){
 		// scope.selectedPoint = null;
 		scope.selectedHandle = null;
 		// scope.selectedStroke = null;
+
 		scope.update();
 	}
 
@@ -89,6 +90,10 @@ function AnchorPointTool(paper){
 		}
 		
 		scope.update();
+
+		if(factory.activePath){
+			factory.wirepaths.at(factory.activePath).updateDOM();
+		}
 	}
 	this.tool.onKeyDown = function(event){
 		scope.onKeyDownDefault(event);

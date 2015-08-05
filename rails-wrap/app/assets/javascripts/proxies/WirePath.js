@@ -102,22 +102,28 @@ WirePath.prototype = {
 	},
 	initDOM: function(){
 		this.dom = {
-			materials : WirePath.DOM.find("#materials"),
+			materials : WirePath.DOM.find(".materials"),
 			terminationA : WirePath.DOM.find("#termination-a"),
 			terminationB : WirePath.DOM.find("#termination-b"),
 			weight_profile : WirePath.DOM.find("#weight-profile")
 		}
 	},
 	updateDOM: function(){
-		console.log("mat", this.material);
 		var area = this.path.length / this.path.style.strokeWidth;
 		var resistor = Fluke.calculateResistanceFromArea(this.material, area);
-		console.log("fluke", resistor)
-		dim.set(resistor.resistance, Math.random(), Math.random());
+		// var battery = materials.collection.electrical_components[12];
+		// var led = materials.collection.electrical_components[1];
+		
+		// console.log("circuit", battery, led, resistor);
+		
+
+		dim.set(resistor.resistance, NaN, NaN);
+		var mat_idx = materials.find(this.material);
+		var m = this.dom.materials
+							.filter("[data-component-type='"+ this.material.component_type +"']")
+							.val(mat_idx);
 
 
-		// var mat_idx = materials.find(this.material);
-		// this.dom.materials.val(mat_idx);
 		// this.dom.terminationA.val(this.terminationA);
 		// this.dom.terminationB.val(this.terminationB);
 		// this.dom.weight_profile.val(this.weight_profile);
@@ -156,18 +162,6 @@ WirePath.prototype = {
 	}
 }
 
-
-
-function Fluke(){}
-Fluke.calculateResistanceFromArea = function(material, area){ //assuming the trace is uniform for now
-    
-    console.log(material, area);
-   if( _.isUndefined(material.physical)) 
-    	return {resistance: NaN};
-   else
-    	return {resistance: material.physical.resistance * area};
-    return 0;
-}
 
 
 

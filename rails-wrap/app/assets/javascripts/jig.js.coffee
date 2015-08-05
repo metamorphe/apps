@@ -28,4 +28,4 @@
 //= require proxies/Wires
 //= require proxies/WirePath
 //= require clipper
-//= require Demo_circuit
+//= require circuitree/fluke

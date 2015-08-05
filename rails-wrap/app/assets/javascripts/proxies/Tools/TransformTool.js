@@ -11,7 +11,7 @@ var values = {
 var hitOptions = {
 	segments: true,
 	stroke: true,
-	fill: true,
+	fill: false,
 	tolerance: 5
 };
 
@@ -66,13 +66,11 @@ function TransformTool(paper){
 				var ref_y = scope.activeSelectionRectangle.wire.ref_y ? -1 : 1;
 
 				scope.activeSelectionRectangle.prevScale = scope.activeSelectionRectangle.ppath.scaling;
-				// scope.activeSelectionRectangle.prevScale.x *= ref_x; 
-				// scope.activeSelectionRectangle.prevScale.y *= ref_y; 
 				scope.activeSelectionRectangle.prevRot = scope.activeSelectionRectangle.ppath.rotation;
 				scope.paper.project.activeLayer.addChild(scope.activeSelectionRectangle);
 				scope.selectedStroke = path;
 			}
-			// console.log(hitResult.type == "stroke", hitResult == "segment", path.name != "selection rectangle")
+
 			if((hitResult.type == "stroke" || hitResult.type == "segment") && path.name != "selection rectangle"){ //&& {
 				
 				console.log("wire select");
