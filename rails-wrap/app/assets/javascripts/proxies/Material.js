@@ -2,71 +2,70 @@ function Materials(dom){
 
 	this.dom = dom;
 
-	this.materials = {};
+	this.collection = {};
 	var scope = this;
 	_.each(this.dom, function(el, i, arr){
 		var componentType = $(el).data("component-type");
-		scope.materials[componentType] = _.map($(el).children(), function(component, key, arr){
-					var properties = {};
-					var data_properties = _.filter(component.attributes, function(e, j, arr2){
-						return e.name.indexOf("data") == 0;
-					});	
-					var data_properties = _.each(data_properties, function(e, j, arr2){
-						var s = e.name.split('-');
-						s = s.splice(1)
-						var key = s[0];
-						var secondary_key = s.slice(1).join("_").replace("-", "_");
-						
-						if(!(key in properties)) properties[key] = {};
-						
-						properties[key][secondary_key] = e.value;
-					});
-					// var gauge = parseInt($(value).attr('data-gauge'));
-					// var color = $(value).attr('data-color');
-
-					// $(value).attr('value', key);
-					// var mat = new Material(gauge, color);
-					return properties;
-				});
+		scope.collection[componentType] = _.map($(el).children(), function(component, key, arr){
+			var properties = {};
+			var data_properties = _.filter(component.attributes, function(e, j, arr2){
+				return e.name.indexOf("data") == 0;
+			});	
+			var data_properties = _.each(data_properties, function(e, j, arr2){
+				var s = e.name.split('-');
+				s = s.splice(1)
+				var key = s[0];
+				var secondary_key = s.slice(1).join("_").replace("-", "_");
+				
+				if(secondary_key == "") properties[key] = e.value;
+				else{
+					if(!(key in properties)) properties[key] = {};
+					properties[key][secondary_key] = e.value;
+				}
+			});
+			return new Material(properties);
+		});
 	});
-	console.log(this.materials);
 }
+
+
 Materials.prototype = {
-	at: function(i){
-		return this.materials[i];
+	at: function(type){
+		return this.collection[type];
 	}, 
 	find: function(other){
-		for(var i in this.materials){
-			if(this.materials[i].equals(other))
-				return i;
+		for(var type in this.collection){
+			for(var i in this.collection[type]){
+				if(this.collection[type][i].equals(other))
+					return i;
+			}
+			return -1;
 		}
-		return -1;
 	}
 }
 
-function Material(gauge, color){
-	this.gauge = gauge;
-	this.diameter = Ruler.gauge2mm(gauge);
-	this.color = new paper.Color(color);
+function Material(properties){
+	for(key in properties)
+		this[key] = properties[key];
 }
 Material.prototype = {
 	getStyle: function(){
 		return {
-			strokeColor: this.color,
-			strokeWidth: Ruler.mm2pts(this.diameter), 
+			strokeColor: this.style.color,
+			strokeWidth: 2, 
 			shadowColor: new paper.Color(0.2, 0.2, 0.2), 
-			shadowBlur: Ruler.mm2pts(this.diameter) * 2, 
-			shadowOffset: new paper.Point(Ruler.mm2pts(this.diameter)/2, Ruler.mm2pts(this.diameter)/2)
+			shadowBlur:  2, 
+			shadowOffset: new paper.Point(1, 1)
 		};
 	}, 
 	equals: function(m){
-		return m.gauge == this.gauge && m.color.toCanvasStyle() == (this.color.toCanvasStyle());
+		return m.id == this.id;
 	}
 }
 
 Material.detectMaterial =  function(path){
 	var s = path.style;
-	var gauge = Ruler.pts2gauge(parseFloat(s.strokeWidth));
-	var color = s.strokeColor;
-	return new Material(gauge, color);
+	var properties = {style: {}};
+	properties.style.color = s.strokeColor;
+	return new Material(properties);
 }

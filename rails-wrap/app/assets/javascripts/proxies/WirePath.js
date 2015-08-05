@@ -12,7 +12,7 @@ WirePath.weight_profile = {
 	UNITAPERED: 3
 }
 
-WirePath.baseMaterial = new Material(17, '#999');
+WirePath.baseMaterial = new Material({style: {color: "#000000"}});
 
 
 function WirePath(paper, path){

@@ -10,31 +10,31 @@
   var design = <%= @design %>;
   var factory, zoom, materials, storage;
   $(function(){
-    // attachHandlers();
-    // dim = new DimensionsPreview($("#sandbox"));
-    // dim.dom.css({
-    //   bottom: 0, 
-    //   right: 0, 
-    //   left: "auto", 
-    //   top: "auto"
-    // });
-    // dim.set(0, 0, 0);
+    attachHandlers();
+    dim = new DimensionsPreview($("#sandbox"));
+    dim.dom.css({
+      bottom: 0, 
+      right: 0, 
+      left: "auto", 
+      top: "auto"
+    });
+    dim.set(0, 0, 0);
 
-    // storage = new WebStorage();
-    // factory = new JigDesigner($("#sandbox"));
+    storage = new WebStorage();
+    factory = new JigDesigner($("#sandbox"));
     
     
-    // zoom = new Zoom(factory.paper.view.zoom, factory.paper);
+    zoom = new Zoom(factory.paper.view.zoom, factory.paper);
     materials = new Materials($(".materials"));
 
-    // StatsController.DOM = $('#stat-box');
-    // stats = new StatsController(factory);
+    StatsController.DOM = $('#stat-box');
+    stats = new StatsController(factory);
     
-    // resp = $.getJSON(design.json.url, function(resp){
-    //    factory.loadJSON(resp);
-    // });
+    resp = $.getJSON(design.json.url, function(resp){
+       factory.loadJSON(resp);
+    });
    
-    // dropLogic();
+    dropLogic();
   });
   getActiveTool = function(){ return paper.tool.toolholder; }
   function dropLogic(){
