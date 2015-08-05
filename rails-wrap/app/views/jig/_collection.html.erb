@@ -139,7 +139,7 @@ $(function(){
 var testC; 
 function Collection(files){
   var materials = {};
-  console.log(files.filenames);
+  // console.log(files.filenames);
   this.path = files.path;
   this.materials = _.groupBy(files.filenames, function(el, i, arr){
     return el.collection;
@@ -152,7 +152,7 @@ function Collection(files){
 Collection.prototype = {
   elementAdd: function(material){
     var scope = this;
-    console.log(this.materials[material]);
+    // console.log(this.materials[material]);
     var els = _.map(this.materials[material], function(el, i, arr){
       var dom = $('<div class="responsive-container col-xs-3 no-select">' +
             '<div class="dummy"></div>' +
@@ -174,7 +174,7 @@ Collection.prototype = {
       scope.elementAdd($(this).val());
     });
     container.html('');
-    console.log(this.collections);
+    // console.log(this.collections);
 
     options = _.map(this.collections, function(el, i, arr){
        var dom = $('<option></option>').html(el).attr('id', i).attr('value', el.collection);
