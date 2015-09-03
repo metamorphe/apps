@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Proxies - <%= params[:action].humanize %></title>
+  <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
+  <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+    <%= stylesheet_link_tag params[:controller], media: 'all', 'data-turbolinks-track' => true %>
+  <%= javascript_include_tag params[:controller], 'data-turbolinks-track' => true %>
+  <!--  
+  <script type="text/javascript" src="//use.typekit.net/duw7epu.js"></script>
+  -->
+	<script>
+		// try { Typekit.load(); } catch (e) {}
+	</script>
+  <%= csrf_meta_tags %>
+  <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+  <script type="text/javascript">
+	  $(function(){
+		// PREVENT BROWSER BUMP
+		$(window).on('scroll', function(e){
+		   scrollAmount = $(this).scrollTop();
+		   if(scrollAmount < 1){
+		      $(this).scrollTop(1);
+		   }
+		   if(scrollAmount > $(document).height() - $(window).height()){
+		      $(this).scrollTop($(window).height());
+		   }
+		});
+	})
+  </script>
+</head>
+<body>
+
+	  	<% if notice %>
+		  <p class="alert alert-success"><%= notice %></p>
+		<% end %>
+		<% if alert %>
+		  <p class="alert alert-danger"><%= alert %></p>
+		<% end %>
+	    <%= yield %>
+
+</body>
+</html>

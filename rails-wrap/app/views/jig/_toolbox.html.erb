@@ -1,0 +1,92 @@
+<style>
+#toolbox .btn-group{
+  margin-right: 5px;
+}
+</style> 
+<div id="toolbox" class="shadowed">
+      <%= button_tag :id => "transform-tool", :class => "btn btn-default" do %>
+        <span class="icon-primary-cursor"></span>
+      <% end %>
+      <%= button_tag :id => "pan-tool", :class => "btn btn-default" do %>
+        <span class="glyphicon glyphicon-hand-up"></span>
+      <% end %>
+      <%= button_tag :id => "path-tool", :class => "btn btn-default" do %>
+        <span class="icon-path-draw"></span>
+      <% end %>
+
+      <div class="btn-group" role="group" aria-label="pen-tools">
+       <%= button_tag :id => "anchor-tool", :class => "btn btn-default" do %>
+        <span class="icon-pen-tool"></span>
+        <% end %>
+        <%= button_tag :class => "btn btn-default" do %>
+        <span class="icon-pen-add-tool"></span>
+        <% end %>
+        <%= button_tag :class => "btn btn-default" do %>
+        <span class="icon-pen-remove-tool"></span>
+        <% end %>
+      </div>
+      <% button_tag :class => "btn btn-default" do %>
+        <span class="icon-noun_68342_cc"></span>
+      <% end %>
+      <% button_tag :class => "btn btn-default" do %>
+        <span class="icon-bezier-select"></span>
+      <% end %>
+      <% button_tag :class => "btn btn-default" do %>
+        <span class="icon-anchor-select"></span>
+      <% end %>
+
+
+      <div class="btn-group" role="group" aria-label="item-tools">
+        <%= button_tag :id => "bring-to-front", :class => "btn btn-primary" do %>
+        <span class="glyphicon glyphicon-arrow-up"></span>
+        <% end %>
+        <%= button_tag :id => "send-to-back", :class => "btn btn-primary" do %>
+        <span class="glyphicon glyphicon-arrow-down"></span>
+        <% end %>
+      </div>    
+       <%= button_tag :id => "fluke-calc", :class => "btn btn-primary" do %>
+        <span class="glyphicon glyphicon glyphicon-record"></span>
+        <% end %>
+      <div class="btn-group pull-right" role="group">
+        <%= button_tag :id=>"revert", :class=>"btn btn-md btn-default" do %>
+          <span class="glyphicon glyphicon-refresh"></span>
+        <% end %>
+         <%= button_tag :id=>"undo", :class=>"btn btn-md btn-default" do %>
+          <span class="glyphicon glyphicon-arrow-left"></span>
+        <% end %>
+         <%= button_tag :id=>"save-progress", :class=>"btn btn-md btn-default" do %>
+          <span class="glyphicon glyphicon-floppy-disk"></span>
+        <% end %>
+         <%= button_tag :id=>"redo", :class=>"btn btn-md btn-default" do %>
+          <span class="glyphicon glyphicon-arrow-right"></span>
+        <% end %>
+         <%= button_tag :id=>"fast-forward", :class=>"btn btn-md btn-default" do %>
+          <span class="glyphicon glyphicon-repeat"></span>
+        <% end %>
+      </div>
+
+      <!-- ZOOM TOOLS -->
+      <div class="btn-group pull-right" role="group" id="zoom-ui" aria-label="zoom-tools">
+       
+      
+        <%= button_tag :id=>"zoom-out", :class=>"btn btn-md btn-warning" do %>
+          <span class="glyphicon glyphicon-zoom-out"></span>
+        <% end %>
+         <%= button_tag :id=>"scale", :class=>"btn btn-md btn-warning" do %>
+          <span class="glyphicon glyphicon-tree-conifer"></span>
+        <% end %>
+        
+        <%= button_tag :id=>"zoom-in", :class=>"btn btn-md btn-warning" do %>
+            <span class="glyphicon glyphicon-zoom-in"></span>
+        <% end %>
+      
+      </div>
+      <!-- END ZOOM TOOLS -->
+
+
+        <div class="btn-group pull-right" role="group">
+        <%= button_tag :id=>"clear-history", :class=>"btn btn-md btn-danger" do %>
+          <span class="glyphicon glyphicon-ban-circle"></span>
+        <% end %>
+      </div>
+  </div>    

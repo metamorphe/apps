@@ -1,0 +1,197 @@
+
+<script type="text/javascript">
+// .d8888.  .o88b. d8888b. d888888b d8888b. d888888b 
+// 88'  YP d8P  Y8 88  `8D   `88'   88  `8D `~~88~~' 
+// `8bo.   8P      88oobY'    88    88oodD'    88    
+//   `Y8b. 8b      88`8b      88    88~~~      88    
+// db   8D Y8b  d8 88 `88.   .88.   88         88    
+// `8888Y'  `Y88P' 88   YD Y888888P 88         YP    
+                                                  
+  var design = <%= @design %>;
+  var factory, zoom, materials, storage;
+  $(function(){
+    attachHandlers();
+    dim = new DimensionsPreview($("#sandbox"));
+    dim.dom.css({
+      bottom: 0, 
+      right: 0, 
+      left: "auto", 
+      top: "auto"
+    });
+    dim.set(0, 0, 0);
+
+    storage = new WebStorage();
+    factory = new CircuitDesigner($("#sandbox"));
+    
+    
+    zoom = new Zoom(factory.paper.view.zoom, factory.paper);
+    materials = new Materials($(".materials"));
+
+    StatsController.DOM = $('#stat-box');
+    stats = new StatsController(factory);
+    
+    resp = $.getJSON(design.json.url, function(resp){
+       factory.loadJSON(resp);
+    });
+
+    api = new API(factory.nodes);
+   
+    dropLogic();
+  });
+  getActiveTool = function(){ return paper.tool.toolholder; }
+  function dropLogic(){
+    // DROP LOGIC
+    $('#sandbox canvas').on("drop", function(event){
+      event.preventDefault();  
+      event.stopPropagation();
+      var filename = event.originalEvent.dataTransfer.getData("text");
+      var position = paper.view.viewToProject(new paper.Point(event.originalEvent.x, event.originalEvent.y));
+      console.log(event.originalEvent.dataTransfer.getData("text"));
+      var filetype = filename.split('.');
+      filetype = filetype[filetype.length - 1];
+
+      console.log("Dropped!", filename , position, event, filetype);
+      if(filetype == "svg")
+        factory.addSVG(filename, position);
+      else if(filetype == "json")
+        factory.addJSON(filename, position);
+    }).on("dragover", function(event) {
+      event.preventDefault();  
+      event.stopPropagation();
+      $(this).addClass('dragging');
+    }).on("dragleave", function(event) {
+      event.preventDefault();  
+      event.stopPropagation();
+      $(this).removeClass('dragging');
+    });
+
+    $('img').on('dragstart', function(event){
+      event.originalEvent.dataTransfer.setData("text", $(this).attr('src'));
+    });
+  }
+  function attachHandlers(){
+    WirePath.DOM = $("#wirepath_controller");
+     $("#bring-to-front").click(function(){
+        var stroke = getActiveTool().selectedStroke;
+        if(! _.isNull(stroke)){
+          stroke.parent.bringToFront();
+          paper.view.update();
+        } 
+      });
+
+     $("#send-to-back").click(function(){
+        var stroke = getActiveTool().selectedStroke;
+        if(! _.isNull(stroke)){
+          stroke.parent.sendToBack();
+          paper.view.update();
+        } 
+      });
+      $("#fluke-calc").click(function(){
+        Fluke.calculateCircuitState();
+      });
+
+    $("#zoom-in").click(function(){zoom.in();});
+    $("#zoom-out").click(function(){zoom.out();});
+    $("#scale").click(function(){
+      if($(this).hasClass('active')){
+        $(this).removeClass('active');
+        zoom.hide_scale();
+      } else{
+        $(this).addClass('active');
+        zoom.show_scale();
+      }
+    });
+      
+    
+    var sb = new SidebarController();
+
+    $('.download').click(function(){
+    	if($(this).attr("name") == "svg")
+	      $(this).attr('href', 'data:text/svg,' + factory.export(TextureGenerator.SVG) ).attr('download', 'mytexture.svg');
+	    else if($(this).attr("name") == "png")
+		    $(this).attr('href', factory.export(TextureGenerator.PNG) ).attr('download', 'mytexture.png');
+    });
+  }
+
+  function SidebarController(){
+
+    $(".materials").change(function(){
+      var matIdx = parseInt($(this).val());
+      var componentType = $(this).data("component-type");
+      var material = materials.at(componentType, matIdx);
+      
+      if(factory.activePath){
+        factory.nodes.at(factory.activePath).material = material;
+
+        factory.nodes.at(factory.activePath).update();
+        factory.nodes.at(factory.activePath).updateDOM();
+        factory.paper.view.update();
+      }
+    });
+
+    $("#termination-a").change(function(){
+      var terminationType = parseInt($(this).val());
+      if(factory.activePath){
+        var path = factory.nodes.at(factory.activePath);
+        path.terminationA = terminationType;
+        path.update().updateDOM();
+      }
+    });
+    $("#termination-b").change(function(){
+      var terminationType = parseInt($(this).val());
+      if(factory.activePath){
+        var path = factory.nodes.at(factory.activePath);
+        path.terminationB = terminationType;
+        path.update().updateDOM();
+      }
+    });
+     $("#weight-profile").change(function(){
+      var profileType = parseInt($(this).val());
+      if(factory.activePath){
+        var path = factory.nodes.at(factory.activePath);
+        path.weight_profile = profileType;
+        path.update().updateDOM();
+      }
+    });
+     $('#save-progress').click(function(){
+      factory.save();
+     });
+     $('#undo').click(function(){
+      factory.undo();
+     });
+     $('#redo').click(function(){
+      factory.redo();
+     });
+     $('#revert').click(function(){
+      factory.revert();
+     });
+     $('#fast-forward').click(function(){
+      factory.fast_forward();
+     });
+     $('#clear-history').click(function(){
+      factory.clear_history();
+     });
+  }
+
+
+</script>
+
+
+<!-- 
+db   db d888888b .88b  d88. db      
+88   88 `~~88~~' 88'YbdP`88 88      
+88ooo88    88    88  88  88 88      
+88~~~88    88    88  88  88 88      
+88   88    88    88  88  88 88booo. 
+YP   YP    YP    YP  YP  YP Y88888P  
+-->
+<div id="interface-container" class="row">   
+
+ 
+  <%= render :partial => "toolbox" %>
+            
+  <div id="sandbox" class="col-xs-8">
+    <!-- <canvas id="sandboxy" resize></canvas> -->
+  </div>
+  <%= render :partial => "sidebar" %>
+<%= render 'collection'%>
