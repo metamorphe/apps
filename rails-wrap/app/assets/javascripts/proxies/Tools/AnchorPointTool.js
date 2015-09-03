@@ -59,8 +59,8 @@ function AnchorPointTool(paper){
 
 				scope.selectedStroke = hitResult.item;
 				factory.activePath = scope.selectedStroke.id;
-				factory.wirepaths.at(factory.activePath).updateDOM();
-				factory.wirepaths.at(factory.activePath).updateHandles();
+				factory.nodes.at(factory.activePath).updateDOM();
+				factory.nodes.at(factory.activePath).updateHandles();
 			}
 		} else{
 			scope.selectAll(false);
@@ -92,7 +92,7 @@ function AnchorPointTool(paper){
 		scope.update();
 
 		if(factory.activePath){
-			factory.wirepaths.at(factory.activePath).updateDOM();
+			factory.nodes.at(factory.activePath).updateDOM();
 			Fluke.calculateCircuitState();
 		}
 

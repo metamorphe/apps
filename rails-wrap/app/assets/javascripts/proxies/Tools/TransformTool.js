@@ -57,7 +57,7 @@ function TransformTool(paper){
 
 			if(_.isNull(scope.activeSelectionRectangle)){
 
-				scope.activeSelectionRectangle = factory.wirepaths.at(path.id).selection_rectangle;
+				scope.activeSelectionRectangle = factory.nodes.at(path.id).selection_rectangle;
 				scope.activeSelectionRectangle.position = path.bounds.center.clone();
 				
 				scope.activeSelectionRectangle.rotation = 0;
@@ -82,7 +82,7 @@ function TransformTool(paper){
 
 				scope.selectedStroke = hitResult.item;
 				factory.activePath = scope.selectedStroke.id;
-				factory.wirepaths.at(factory.activePath).updateDOM();
+				factory.nodes.at(factory.activePath).updateDOM();
 			}
 
 			if (hitResult.type == 'segment') {
@@ -109,7 +109,7 @@ function TransformTool(paper){
 		if(event.key == "-" ||event.key == "backspace"){
 			if(scope.selectedStroke != null){
 				factory.activePath = scope.selectedStroke.id;
-				factory.wirepaths.at(factory.activePath).remove();
+				factory.nodes.at(factory.activePath).remove();
 				scope.clear();
 			}
 		}
@@ -117,8 +117,8 @@ function TransformTool(paper){
 		if(event.key == "d"){
 			if(scope.selectedStroke != null){
 				factory.activePath = scope.selectedStroke.id;
-				var dp = factory.wirepaths.at(factory.activePath).duplicate();
-				factory.wirepaths.add(dp.id, dp);
+				var dp = factory.nodes.at(factory.activePath).duplicate();
+				factory.nodes.add(dp.id, dp);
 				scope.clear();
 			}
 		}
@@ -126,7 +126,7 @@ function TransformTool(paper){
 		if(event.key == "r"){
 			if(scope.selectedStroke != null){
 				factory.activePath = scope.selectedStroke.id;
-				var dp = factory.wirepaths.at(factory.activePath);
+				var dp = factory.nodes.at(factory.activePath);
 				dp.reflect_x();
 				
 			}
@@ -134,7 +134,7 @@ function TransformTool(paper){
 		if(event.key == "f"){
 			if(scope.selectedStroke != null){
 				factory.activePath = scope.selectedStroke.id;
-				var dp = factory.wirepaths.at(factory.activePath);
+				var dp = factory.nodes.at(factory.activePath);
 				dp.reflect_y();
 				
 			}

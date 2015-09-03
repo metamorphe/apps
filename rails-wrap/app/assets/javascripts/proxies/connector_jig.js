@@ -7,15 +7,15 @@ ConnectorJig.BASE_RATIO = 0.2;
 var intersectsT; var intersectsB;
 ConnectorJig.make = function(factory){
 	var scope = factory;
-		this.connectors = _.filter(scope.wirepaths.wires, function(el){
+		this.connectors = _.filter(scope.nodes.wires, function(el){
 			return el.is_connector && !el.is_gem;
 		});
-		this.gems = _.filter(scope.wirepaths.wires, function(el){
+		this.gems = _.filter(scope.nodes.wires, function(el){
 			return el.is_gem && !el.is_connector;
 		});
 
 
-		this.paths = _.filter(scope.wirepaths.wires, function(el){
+		this.paths = _.filter(scope.nodes.wires, function(el){
 			return !el.is_connector && !el.is_gem;
 		});
 		
@@ -40,7 +40,7 @@ ConnectorJig.make = function(factory){
 		scope.paper.project.view.update();
 }
 ConnectorJig.make_base = function(){
-	bg = MountainPath.addBackground(factory.wirepaths.bounds().bounds);
+	bg = MountainPath.addBackground(factory.nodes.bounds().bounds);
 	bg.style = {
 		fillColor: new paper.Color(ConnectorJig.BASE_RATIO)
 	}
@@ -122,7 +122,7 @@ ConnectorJig.pressfit = function(connectors, paths){
 			
 
 			_.each(intersects, function(el, i, arr){
-				var path = factory.wirepaths.at(i).path;
+				var path = factory.nodes.at(i).path;
 			});
 		});
 }

@@ -36,15 +36,15 @@ StatsController.prototype = {
    		return this;
    }, 
    calculate: function(){
-      var b = factory.wirepaths.bounds().bounds;
-		this.bom_length = Ruler.pts2mm(this.design.wirepaths.totalLength()).toFixed(2) + " mm";
+      var b = factory.nodes.bounds().bounds;
+		this.bom_length = Ruler.pts2mm(this.design.nodes.totalLength()).toFixed(2) + " mm";
    		var print_time = (
    							(Ruler.pts2mm(b.height) + StatsController.wall_buffer_mm) * 
    						  	(Ruler.pts2mm(b.width)  + StatsController.wall_buffer_mm) /
 	   						StatsController.mm2_per_hr
 	   					 );
    		this.print_time = StatsController.prettyTime(print_time);
-   		this.make_time = StatsController.prettyTime(this.design.wirepaths.length() / StatsController.paths_per_hr)
+   		this.make_time = StatsController.prettyTime(this.design.nodes.length() / StatsController.paths_per_hr)
    		return this;
    }
 }

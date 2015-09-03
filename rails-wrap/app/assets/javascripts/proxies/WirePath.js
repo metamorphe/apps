@@ -17,18 +17,17 @@ WirePath.baseMaterial = new Material({style: {color: "#000000"}});
 
 function WirePath(paper, path){
 	this.id = path.id;
+	
 	this.path = path;
 	this.path.applyMatrix = true;
 	if(!_.isUndefined(this.path.parent)){
 		this.path.parent.applyMatrix = true;
 	}
-	this.is_connector = path.name.indexOf('connector') > -1 || path.name.indexOf('three') > -1;
-	this.is_gem = path.name.indexOf('bead') > -1;
+	this.name = path.name;
+
 	this.paper = paper;
-	this.terminationA = WirePath.termination.NONE;
-	this.terminationB = WirePath.termination.NONE;
+	
 	this.material = WirePath.baseMaterial;
-	this.weight_profile = WirePath.weight_profile.UNIFORM;
 	this.init_bounds = path.bounds.clone().expand(10, 10);
 	
 	this.selection_rectangle = this.initSelectionRectangle(); 
@@ -37,9 +36,27 @@ function WirePath(paper, path){
 	this.initDOM();
 	this.ref_x = false;
 	this.ref_y = false;
+	// this.addTerminals();
 }
 WirePath.COIL_LOOP_WIDTH = 2;
 WirePath.prototype = {
+	addTerminals: function(){
+		var b = this.path.bounds;
+		// console.log(this.name, b);
+		var left = this.paper.Path.Circle({
+			fillColor: "red", 
+			radius: 5, 
+			position: b.leftCenter, 
+			name: "terminal"
+		});
+		var right = this.paper.Path.Circle({
+			fillColor: "black", 
+			radius: 5, 
+			position: b.rightCenter, 
+			name: "terminal"
+		});
+		this.terminals = [left, right];
+	}, 
 	duplicate: function(){
 		var p = this.path.clone();
 		var wp = new WirePath(paper, p);
@@ -69,53 +86,17 @@ WirePath.prototype = {
 		var style = this.material.getStyle();
 		this.path.style = style;
 		
-
-		if(this.terminationB == WirePath.termination.SIMPLE_LOOP){
-			var start = this.path.localToGlobal(this.path.getPointAt(0));
-			var tangent2f = this.path.getTangentAt(0);
-			var loopWidth = Ruler.mm2pts(WirePath.COIL_LOOP_WIDTH)/2 + Ruler.mm2pts(this.material.diameter)/2;
-			tangent2f.length = loopWidth;
-
-			var path = new paper.Path.Circle({
-			    center: [start.x - tangent2f.x, start.y - tangent2f.y],
-			    radius: Ruler.mm2pts(WirePath.COIL_LOOP_WIDTH)
-			});
-			
-			path.style = this.material.getStyle();
-		}
-		if(this.terminationA == WirePath.termination.SIMPLE_LOOP){
-			var start = this.path.localToGlobal(this.path.getPointAt(this.path.length));
-			var tangent2f = this.path.getTangentAt(this.path.length);
-			var loopWidth = Ruler.mm2pts(WirePath.COIL_LOOP_WIDTH)/2 + Ruler.mm2pts(this.material.diameter)/2;
-			tangent2f.length = loopWidth;
-
-			var path = new paper.Path.Circle({
-			    center: [start.x + tangent2f.x, start.y + tangent2f.y],
-			    radius: Ruler.mm2pts(WirePath.COIL_LOOP_WIDTH),
-			    strokeColor: this.material.color,
-			    strokeWidth: Ruler.mm2pts(this.material.diameter)
-			});
-		}
-
 		this.paper.view.update();
 		return this;
 	},
 	initDOM: function(){
 		this.dom = {
-			materials : WirePath.DOM.find(".materials"),
-			terminationA : WirePath.DOM.find("#termination-a"),
-			terminationB : WirePath.DOM.find("#termination-b"),
-			weight_profile : WirePath.DOM.find("#weight-profile")
+			materials : WirePath.DOM.find(".materials")
 		}
 	},
 	updateDOM: function(){
 		var area = this.path.length / this.path.style.strokeWidth;
 		var resistor = Fluke.calculateResistanceFromArea(this.material, area);
-		// var battery = materials.collection.electrical_components[12];
-		// var led = materials.collection.electrical_components[1];
-		
-		// console.log("circuit", battery, led, resistor);
-
 
 		dim.set(resistor.resistance, NaN, NaN);
 		var mat_idx = materials.find(this.material);
@@ -126,10 +107,6 @@ WirePath.prototype = {
 							.filter("[data-component-type='"+ this.material.component_type +"']")
 							.val(mat_idx);
 
-
-		// this.dom.terminationA.val(this.terminationA);
-		// this.dom.terminationB.val(this.terminationB);
-		// this.dom.weight_profile.val(this.weight_profile);
 		return this;
 	}, 
 
@@ -159,7 +136,6 @@ WirePath.prototype = {
 	    return selectionRectangle;
 	}, 
 	updateHandles: function(){
-		// var b = this.path.bounds.clone(0).expand(10);
 		this.selection_rectangle.remove()
 		this.selection_rectangle = this.initSelectionRectangle();
 	}

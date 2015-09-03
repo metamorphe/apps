@@ -1,10 +1,17 @@
-function Wires(){
-	this.wires = {}
+function Circuit(){
+	this.collection = {}
 }
 
-Wires.prototype = {
+Circuit.prototype = {
+	select: function(id){
+		if(_.isUndefined(id)) return _.map(this.collection, function(value, key){ return value; });
+		return _.find(this.collection, function(value, key){
+			// console.log(value, key.name);
+			return value.name == id;
+		});
+	}, 
 	bounds: function(){
-		var b = _.reduce(this.wires, function(memo, val, key, arr){
+		var b = _.reduce(this.collection, function(memo, val, key, arr){
 			return memo.unite(val.path.bounds.clone().expand(10));
 		}, new paper.Rectangle(paper.view.center, new paper.Size(0, 0)));	
 		b = b.expand(20);
@@ -27,28 +34,28 @@ Wires.prototype = {
 		return {bounds: b, zoomFactor: zoom}
 	},
 	clear: function(){
-		this.wires = {};
+		this.collection = {};
 	},
 	add: function(key, val){
-		this.wires[key] = val;
+		this.collection[key] = val;
 	}, 
 	remove: function(key){
 		console.log("Deleting wire at", key, this.at(key));
 
-		if(key in this.wires){
+		if(key in this.collection){
 			this.at(key).remove();
-			delete this.wires[key];
+			delete this.collection[key];
 		}
 	},
 	at: function(key){
-		return this.wires[key];
+		return this.collection[key];
 	}, 
 	totalLength: function(){
 		var sum = 0;
-		_.each(this.wires, function(v){ sum += v.path.length });
+		_.each(this.collection, function(v){ sum += v.path.length });
 		return sum;
 	}, 
 	length: function(){
-		return Object.size(this.wires);
+		return Object.size(this.collection);
 	}
 }

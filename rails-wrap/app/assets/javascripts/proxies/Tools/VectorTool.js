@@ -22,7 +22,7 @@ function VectorTool(paper){
 
 				scope.selectedStroke = hitResult.item;
 				factory.activePath = scope.selectedStroke.id;
-				factory.wirepaths.at(factory.activePath).updateDOM();
+				factory.nodes.at(factory.activePath).updateDOM();
 			}
 
 		} else{

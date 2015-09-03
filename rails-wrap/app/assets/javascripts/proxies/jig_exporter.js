@@ -12,7 +12,7 @@ JigExporter.export = function(paper, canvas, mode, downloadFlag){
 
 	var prev = paper.view.zoom;
 	paper.view.zoom = 1;
-	b = factory.wirepaths.bounds();
+	b = factory.nodes.bounds();
 	paper.view.zoom *= b.zoomFactor;
 	// default
 	var exp;
@@ -61,7 +61,7 @@ JigExporter.export = function(paper, canvas, mode, downloadFlag){
 		});
 		
 	}
-	var b = factory.wirepaths.bounds().bounds;
+	var b = factory.nodes.bounds().bounds;
 	console.log("width", Ruler.pts2mm(b.width), "height", Ruler.pts2mm(b.height));
 	paper.view.zoom = prev;
 

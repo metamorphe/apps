@@ -21,7 +21,7 @@
     dim.set(0, 0, 0);
 
     storage = new WebStorage();
-    factory = new JigDesigner($("#sandbox"));
+    factory = new CircuitDesigner($("#sandbox"));
     
     
     zoom = new Zoom(factory.paper.view.zoom, factory.paper);
@@ -33,6 +33,8 @@
     resp = $.getJSON(design.json.url, function(resp){
        factory.loadJSON(resp);
     });
+
+    api = new API(factory.nodes);
    
     dropLogic();
   });
@@ -119,10 +121,10 @@
       var material = materials.at(componentType, matIdx);
       
       if(factory.activePath){
-        factory.wirepaths.at(factory.activePath).material = material;
+        factory.nodes.at(factory.activePath).material = material;
 
-        factory.wirepaths.at(factory.activePath).update();
-        factory.wirepaths.at(factory.activePath).updateDOM();
+        factory.nodes.at(factory.activePath).update();
+        factory.nodes.at(factory.activePath).updateDOM();
         factory.paper.view.update();
       }
     });
@@ -130,7 +132,7 @@
     $("#termination-a").change(function(){
       var terminationType = parseInt($(this).val());
       if(factory.activePath){
-        var path = factory.wirepaths.at(factory.activePath);
+        var path = factory.nodes.at(factory.activePath);
         path.terminationA = terminationType;
         path.update().updateDOM();
       }
@@ -138,7 +140,7 @@
     $("#termination-b").change(function(){
       var terminationType = parseInt($(this).val());
       if(factory.activePath){
-        var path = factory.wirepaths.at(factory.activePath);
+        var path = factory.nodes.at(factory.activePath);
         path.terminationB = terminationType;
         path.update().updateDOM();
       }
@@ -146,7 +148,7 @@
      $("#weight-profile").change(function(){
       var profileType = parseInt($(this).val());
       if(factory.activePath){
-        var path = factory.wirepaths.at(factory.activePath);
+        var path = factory.nodes.at(factory.activePath);
         path.weight_profile = profileType;
         path.update().updateDOM();
       }

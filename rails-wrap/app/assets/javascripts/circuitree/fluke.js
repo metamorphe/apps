@@ -3,8 +3,8 @@
 function Fluke(){}
 
 Fluke.calculateCircuitState = function(){
-        var resA = factory.wirepaths.at(6);
-        var resB = factory.wirepaths.at(7);
+        var resA = factory.nodes.at(6);
+        var resB = factory.nodes.at(7);
         console.log(resA, resB);
         
         var area = resA.path.length / resA.path.style.strokeWidth;

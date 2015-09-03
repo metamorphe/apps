@@ -12,7 +12,7 @@ function HillJig(container, svg){
 	this.controllers_defined = false;
 	this.loadFromLocalStorage = true;
 	this.loadedFromLocal = false;
-	this.wirepaths = new Wires();
+	this.nodes = new Circuit();
 	// this.factor = 500 / Ruler.convert(config.size, "mm");
 	this.init();
 	var loadLSController = this.gui.add(this, "loadFromLocalStorage");
@@ -47,15 +47,15 @@ function lengthen_path(path){
 HillJig.prototype = {
 	hilljig_make: function(){
 		var scope = this;
-		this.connectors = _.filter(this.wirepaths.wires, function(el){
+		this.connectors = _.filter(this.nodes.wires, function(el){
 			return el.is_connector && !el.is_gem;
 		});
-		this.gems = _.filter(this.wirepaths.wires, function(el){
+		this.gems = _.filter(this.nodes.wires, function(el){
 			return el.is_gem && !el.is_connector;
 		});
 
 
-		this.paths = _.filter(this.wirepaths.wires, function(el){
+		this.paths = _.filter(this.nodes.wires, function(el){
 			return !el.is_connector && !el.is_gem;
 		});
 
@@ -79,7 +79,7 @@ HillJig.prototype = {
 			MountainPath.add_holey_ends(el.path);
 			el.path.remove();
 		});
-		bg = MountainPath.addBackground(factory.wirepaths.bounds().bounds);
+		bg = MountainPath.addBackground(factory.nodes.bounds().bounds);
 		bg.sendToBack();
 		
 		scope.paper.project.view.update();
@@ -189,7 +189,7 @@ HillJig.prototype = {
 				var path = value;
 				var mat = Material.detectMaterial(path);
 				var w  = new WirePath(scope.paper, value);
-				scope.wirepaths.add(w.id, w);
+				scope.nodes.add(w.id, w);
 				w.material = mat;
 				w.update();
 				
@@ -204,7 +204,7 @@ HillJig.prototype = {
 		
 		scope.paper.view.center = new paper.Point(0 + b.width/2 + 20, 0 + b.height/2 + 20);
 		scope.paper.view.update();
-		b = scope.wirepaths.bounds();
+		b = scope.nodes.bounds();
 		paper.view.zoom *= b.zoomFactor;
 	}
 }

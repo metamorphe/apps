@@ -6,7 +6,7 @@
 // Y8888P  Y888888P  Y888P  Y8888D' Y88888P `8888Y' Y888888P  Y888P  VP   V8P Y88888P 88   YD 
                                                                                       
                              
-function JigDesigner(container){
+function CircuitDesigner(container){
 	this.paper;
 	this.container = container;
 	this.gauge = 14;
@@ -21,12 +21,12 @@ function JigDesigner(container){
 
 	latest_event =  _.max(save_events);
 	this.current_save = latest_event;
-	this.wirepaths = new Wires();
+	this.nodes = new Circuit();
 }
 
 // var point_manip = null;
 
-JigDesigner.prototype = {
+CircuitDesigner.prototype = {
 	addBackground: function(){
 		var rectangle = new paper.Rectangle(new paper.Point(0, 0), new paper.Point(paper.view.size.width * paper.view.zoom, paper.view.size.height * paper.view.zoom));
 		var bg = new paper.Path.Rectangle(rectangle);
@@ -51,7 +51,7 @@ JigDesigner.prototype = {
 	clear: function(){
 		// paper.project.activeLayer.removeChildren();
 		this.paper.project.clear();
-		this.wirepaths.clear();
+		this.nodes.clear();
 		this.paper.view.update();
 	},
 	loadJSON: function(json, callback){
@@ -60,6 +60,7 @@ JigDesigner.prototype = {
 		this.paper.project.activeLayer.removeChildren();
 		var item = this.paper.project.importJSON(json); 
 		var layer = item[0];	
+
 		console.log("Loading json", layer);
 		
 		
@@ -73,15 +74,20 @@ JigDesigner.prototype = {
 
 				_.each(Utility.unpackChildren(layer, []), function(value, key, arr){
 					var path = value;
-					var mat = Material.detectMaterial(path);
-					console.log("Loading mat", mat);
+					if(path.name != "trace"){
+						var mat = Material.detectMaterial(path);
+						console.log("Loading mat", value.name);
 
-					var w  = new WirePath(scope.paper, path);
-					w.material = mat;
-					w.update();
+						var w  = new WirePath(scope.paper, path);
 
-					scope.wirepaths.add(w.id, w);
-					factory.activePath = w.id;
+						w.material = mat;
+						w.update();
+						scope.nodes.add(w.id, w);
+						factory.activePath = w.id;
+
+					}else{
+						path.remove();
+					}
 				});
 			
 		} else{
@@ -98,43 +104,22 @@ JigDesigner.prototype = {
   		// paper.project.activeLayer.addChild(group);
   		paper.view.update();
 	},
-	addSVG: function(filenamer, position, callback){
-		console.log("position", position);
+	addSVG: function(filename, position, callback){
+		
 		var scope = this;
-		this.paper.project.importSVG(filenamer, {
+		var fileType = filename.split('/');
+		fileType = fileType[fileType.length - 1];
+		fileType = fileType.split('_');
+		fileType = fileType[0].toLowerCase();
+		console.log("filename", fileType, filename);
+		this.paper.project.importSVG(filename, {
 	    	onLoad: function(item) { 
-		    	
-		    	paper.project.activeLayer.addChild(item);
-		   
-		    	paper.view.update();
-		    	if(_.isUndefined(position))
-			    	item.position = paper.view.center;
-			    else
-			    	item.position = position;
-
-    			scope.toolbox.tools.anchortool.toolholder.setSVG(item);
-    			// scope.wirepaths = new Wires();
-
-    			_.each(Utility.unpackChildren(item, []), function(value, key, arr){
-    				var path = value;
-					var mat = Material.detectMaterial(path);
-					path.name = filenamer;
-
-    				var w  = new WirePath(scope.paper, value);
-    				scope.wirepaths.add(w.id, w);
-    				w.material = mat;
-    				w.update();
-    				console.log("filename", filenamer);
-    				
-    				factory.activePath = w.id;
-    			});
-
-		    	scope.toolbox.tools.anchortool.toolholder.selectAll(false);
-		    	// paper.tool = null;
-		    	
-		    	item.selected = true;
-		    	$('#transform-tool').click().focus();
-	    }});
+	    		if(fileType != "artwork")
+		    		CircuitDesigner.decomposeImport(item, position, callback, scope);
+		    	else
+		    		CircuitDesigner.retainGroup(item, position, callback, scope);
+	    	}
+		});
 	},
 	importSVG: function(callback){
 		var scope = this;
@@ -153,7 +138,7 @@ JigDesigner.prototype = {
     			_.each(Utility.unpackChildren(item, []), function(value, key, arr){
     				var w  = new WirePath(scope.paper, value);
     				w.path.name = scope.svg;
-    				scope.wirepaths.add(w.id, w);
+    				scope.nodes.add(w.id, w);
     			});
 
 		    	scope.toolbox.tools.anchortool.toolholder.selectAll(false);
@@ -179,7 +164,7 @@ JigDesigner.prototype = {
 
 	    this.toolbox = new Toolbox(this.paper, $("#toolbox"));	
 	    this.toolbox.add("anchortool", $('#anchor-tool'), new AnchorPointTool(this.paper));
-		// this.toolbox.add("vectortool", $('#vector-tool'),  new VectorTool(this.paper));
+		this.toolbox.add("pathtool", $('#path-tool'),  new TracePathTool(this.paper));
 		this.toolbox.add("transformtool", $('#transform-tool'),  new TransformTool(this.paper));
 		this.update();
 		
@@ -303,6 +288,70 @@ JigDesigner.prototype = {
 	}
 }
                  
+
+CircuitDesigner.decomposeImport = function(item, position, callback, scope){
+		paper.project.activeLayer.addChild(item);
+		   
+		    	paper.view.update();
+		    	if(_.isUndefined(position))
+			    	item.position = paper.view.center;
+			    else
+			    	item.position = position;
+
+    			scope.toolbox.tools.anchortool.toolholder.setSVG(item);
+    			// scope.nodes = new Circuit();
+
+    			_.each(Utility.unpackChildren(item, []), function(value, key, arr){
+    				var path = value;
+					var mat = Material.detectMaterial(path);
+					// path.name = filenamer;
+
+    				var w  = new WirePath(scope.paper, value);
+    				scope.nodes.add(w.id, w);
+    				w.material = mat;
+    				w.update();
+    				// console.log("filename", filenamer);
+    				
+    				factory.activePath = w.id;
+    			});
+
+		    	scope.toolbox.tools.anchortool.toolholder.selectAll(false);
+		    	// paper.tool = null;
+		    	
+		    	// item.selected = true;
+		    	$('#transform-tool').click().focus();
+}
+CircuitDesigner.retainGroup = function(item, position, callback, scope){
+		paper.project.activeLayer.addChild(item);
+		   
+		    	paper.view.update();
+		    	
+		    	if(_.isUndefined(position))
+			    	item.position = paper.view.center;
+			    else
+			    	item.position = position;
+
+
+    	// 		_.each(Utility.unpackChildren(item, []), function(value, key, arr){
+    	// 			var path = value;
+					// var mat = Material.detectMaterial(path);
+					// // path.name = filenamer;
+
+    	// 			var w  = new WirePath(scope.paper, value);
+    	// 			scope.nodes.add(w.id, w);
+    	// 			w.material = mat;
+    	// 			w.update();
+    	// 			// console.log("filename", filenamer);
+    				
+    	// 			factory.activePath = w.id;
+    	// 		});
+
+		    	scope.toolbox.tools.anchortool.toolholder.selectAll(false);
+		    	// paper.tool = null;
+		    	
+		    	// item.selected = true;
+		    	$('#transform-tool').click().focus();
+}
 
 
 
