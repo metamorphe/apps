@@ -1,7 +1,8 @@
-wrap-tool
+ellustrate-tool
 =========
 
-A Three.js application for exploring custom wire wrap jigs
+A paper.js application for making pretty circuits. 
 
 Contributors: 
 * Cesar Torres 
+* Joanne Lo
