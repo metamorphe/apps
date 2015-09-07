@@ -6,9 +6,7 @@ var hitOptions = {
 	tolerance: 5
 };
 
-var selectionRectangleScale=null;
 var selectionRectangleScaleNormalized=null;
-var selectionRectangleRotation=null;
 
 
 function PanTool(paper){
@@ -48,7 +46,6 @@ function PanTool(paper){
 	}
 
 	this.tool.onMouseDrag = function(event){
-		console.log(event);
 		console.log("MouseDrag", scope.canvas_item_type);
 		scope[scope.canvas_item_type].onMouseDrag(event, scope);
 		scope.update();
@@ -77,12 +74,47 @@ PanTool.prototype = {
 	},
 	transform: {
 		onMouseDown: function(event, hitResult, scope){
+			if(scope.selectedCluster && scope.selectedCluster.canvasItem.type == "ArtworkLayerElement"){
+				if(designer.art_layer.lock_mode) return;
+			}
+			// console.log("Transforming");
+			// console.log(hitResult.type);
+			if(["segment"].indexOf(hitResult.type) != -1){
+				scope.activeItem = scope.activeSelectionRectangle.item;
+				scope.activeSelectionRectangle.prevScale = scope.activeSelectionRectangle.ppath.scaling;
+				
+			   	scope.activeSegment = hitResult.segment;
 
+			    if(hitResult.segment.index >= 2 && hitResult.segment.index <= 4)
+                    scope.rotating = 0;
+                else
+					scope.scaling = 0;
+			}
 		},
 		onMouseDrag: function(event, scope){
+			if(scope.selectedCluster && scope.selectedCluster.canvasItem.type == "ArtworkLayerElement"){
+				if(designer.art_layer.lock_mode) return;
+			}
+			if(scope.activeSegment){
+				var path_bounds = scope.activeSelectionRectangle.ppath.bounds.clone();       
+				var diag = event.point.subtract(path_bounds.center.clone()).length;
+				var init_diag =  scope.activeSelectionRectangle.item.init_size;
+				var ratio = diag/init_diag;
+				var rect_ratio = ratio;
+				rect_ratio /= scope.activeSelectionRectangle.prevScale.x;
+			
+				scaling = new paper.Point(ratio, ratio );
+				rect_scaling = new paper.Point(rect_ratio, rect_ratio);
+
+				scope.activeSelectionRectangle.scaling = rect_scaling;
+				scope.activeSelectionRectangle.ppath.scaling = scaling;
+			}	
 
 		},
 		onMouseUp: function(event, scope){
+			if(scope.selectedCluster && scope.selectedCluster.canvasItem.type == "ArtworkLayerElement"){
+				if(designer.art_layer.lock_mode) return;
+			}
 
 		}
 	},

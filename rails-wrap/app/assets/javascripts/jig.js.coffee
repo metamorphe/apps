@@ -20,6 +20,7 @@
 //= require proxies/Tools/VectorTool
 //= require proxies/Tools/TransformTool
 //= require proxies/Tools/PanTool
+//= require proxies/Tools/CanvasPanTool
 //= require proxies/StatsController
 //= require proxies/Material
 //= require proxies/Circuit

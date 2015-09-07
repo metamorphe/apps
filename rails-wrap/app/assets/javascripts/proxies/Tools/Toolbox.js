@@ -26,11 +26,13 @@ Toolbox.prototype={
 	add:function(name, dom, tool){
 		var scope = this;
 		tool.tool.toolholder = tool;
+		tool.tool.dom = dom;
 		tool.tool.name = name;
 		this.tools[name] = {dom: dom, toolholder: tool, name: name};
 		dom.click(function(){
 			if(scope.paper.tool && scope.paper.tool.name == name) return;
 			console.log("Enabling", name);
+			dom.addClass('btn-warning').removeClass('btn-ellustrate');
 			scope.enable(name);
 		});
 		var origOnKeyDown = tool.onKeyDown;
@@ -58,6 +60,7 @@ Toolbox.prototype={
 	},
 	clearTool: function(){
 		if(!_.isNull(this.paper.tool)){
+			this.paper.tool.dom.removeClass('btn-warning').addClass('btn-ellustrate');
 			this.paper.tool.toolholder.clear();
 		}
 		this.paper.tool = null;

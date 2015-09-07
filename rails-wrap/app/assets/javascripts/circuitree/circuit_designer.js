@@ -28,7 +28,7 @@ CircuitDesigner.prototype = {
 		this.paper.setup(this.canvas[0]);
 		this.height = this.paper.view.size.height;
 		this.width = this.paper.view.size.width;
-		this.paper.view.zoom = 2.5;	
+		this.paper.view.zoom = 1.5;	
 		var scope = this; 
 
 		// Setups tools
@@ -37,6 +37,7 @@ CircuitDesigner.prototype = {
 		this.toolbox.add("pathtool", $('#path-tool'),  new TracePathTool(this.paper));
 		this.toolbox.add("transformtool", $('#transform-tool'),  new TransformTool(this.paper));
 		this.toolbox.add("pantool", $('#pan-tool'),  new PanTool(this.paper));
+		this.toolbox.add("canvaspantool", $('#canvas-pan-tool'),  new CanvasPanTool(this.paper));
 		
 		this.toolbox.enable("pantool");
 		return this;
@@ -64,6 +65,7 @@ CircuitDesigner.prototype = {
 	    		if(fileType == "artwork"){
 	    			scope.art_layer.add(item);
 			    	CircuitDesigner.retainGroup(item, position, callback, scope);
+			    	item.sendToBack();
 	    		}
 	    	}
 		});

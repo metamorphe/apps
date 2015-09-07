@@ -87,7 +87,7 @@ CanvasItem.prototype = {
 	    selectionRectangle.name = "selection rectangle";
 	    selectionRectangle.selected = true;
 	    selectionRectangle.ppath = this.path;
-	    selectionRectangle.wire = this;
+	    selectionRectangle.item = this;
 	    selectionRectangle.ppath.pivot = selectionRectangle.pivot;
 	   	selectionRectangle.remove();
 
