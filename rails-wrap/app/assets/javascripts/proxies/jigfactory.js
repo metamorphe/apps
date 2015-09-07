@@ -1,4 +1,4 @@
-// jigfactory.js
+// jigdesigner.js
 var jigpath; 
 
 //    d88b d888888b  d888b  d88888b  .d8b.   .o88b. d888888b  .d88b.  d8888b. db    db 
@@ -9,7 +9,7 @@ var jigpath;
 // Y8888P  Y888888P  Y888P  YP      YP   YP  `Y88P'    YP     `Y88P'  88   YD    YP    
                                                                                                                  
                              
-function JigFactory(container, svg){
+function Jigdesigner(container, svg){
 	this.paper;
 	this.container = container;
 	this.svg = svg;
@@ -31,7 +31,7 @@ function JigFactory(container, svg){
 	this.gui.add(this, "export");
 }
 
-JigFactory.prototype = {
+Jigdesigner.prototype = {
 	addBackground: function(){
 		var rectangle = new paper.Rectangle(new paper.Point(0, 0), new paper.Point(paper.view.size.width * paper.view.zoom, paper.view.size.height * paper.view.zoom));
 		var bg = new paper.Path.Rectangle(rectangle);
@@ -200,9 +200,9 @@ JigFactory.prototype = {
 		// var prev = this.paper.view.zoom;
 		// this.paper.view.zoom = 1;
 		
-		// if(mode == JigFactory.SVG)
+		// if(mode == Jigdesigner.SVG)
 			exp = this.paper.project.exportSVG({asString: true});
-		// else if(mode == JigFactory.PNG)
+		// else if(mode == Jigdesigner.PNG)
 			// exp = this.canvas[0].toDataURL("image/png");
 		// else 
 			// exp = "No mode was specified";

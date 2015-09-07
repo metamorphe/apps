@@ -21,8 +21,8 @@ function VectorTool(paper){
 				hitResult.item.selected = true;
 
 				scope.selectedStroke = hitResult.item;
-				factory.activePath = scope.selectedStroke.id;
-				factory.nodes.at(factory.activePath).updateDOM();
+				designer.activePath = scope.selectedStroke.id;
+				designer.nodes.at(designer.activePath).updateDOM();
 			}
 
 		} else{

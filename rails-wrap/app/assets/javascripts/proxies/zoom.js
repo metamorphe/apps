@@ -29,7 +29,7 @@ Zoom.prototype = {
 	}, 
 	show_scale: function(){
 		// console.log("showing scale");
-		var b = factory.nodes.bounds().bounds;
+		var b = designer.nodes.bounds().bounds;
 		var pt = b.topLeft.clone();
 
 		var diam = Ruler.mm2pts(24.26);

@@ -58,9 +58,9 @@ function AnchorPointTool(paper){
 					hitResult.item.selected = true;
 
 				scope.selectedStroke = hitResult.item;
-				factory.activePath = scope.selectedStroke.id;
-				factory.nodes.at(factory.activePath).updateDOM();
-				factory.nodes.at(factory.activePath).updateHandles();
+				designer.activePath = scope.selectedStroke.id;
+				designer.nodes.at(designer.activePath).updateDOM();
+				designer.nodes.at(designer.activePath).updateHandles();
 			}
 		} else{
 			scope.selectAll(false);
@@ -91,8 +91,8 @@ function AnchorPointTool(paper){
 		
 		scope.update();
 
-		if(factory.activePath){
-			factory.nodes.at(factory.activePath).updateDOM();
+		if(designer.activePath){
+			designer.nodes.at(designer.activePath).updateDOM();
 			Fluke.calculateCircuitState();
 		}
 

@@ -8,7 +8,7 @@
 // `8888Y'  `Y88P' 88   YD Y888888P 88         YP    
                                                   
   var design = <%= @design %>;
-  var factory, zoom, materials, storage;
+  var designer, zoom, materials, storage;
   $(function(){
     attachHandlers();
     dim = new DimensionsPreview($("#sandbox"));
@@ -21,20 +21,20 @@
     dim.set(0, 0, 0);
 
     storage = new WebStorage();
-    factory = new CircuitDesigner($("#sandbox"));
+    designer = new CircuitDesigner($("#sandbox"));
     
     
-    zoom = new Zoom(factory.paper.view.zoom, factory.paper);
+    zoom = new Zoom(designer.paper.view.zoom, designer.paper);
     materials = new Materials($(".materials"));
 
     StatsController.DOM = $('#stat-box');
-    stats = new StatsController(factory);
+    stats = new StatsController(designer);
     
     resp = $.getJSON(design.json.url, function(resp){
-       factory.loadJSON(resp);
+       designer.loadJSON(resp);
     });
 
-    api = new API(factory.nodes);
+    api = new API(designer.nodes);
    
     dropLogic();
   });
@@ -52,9 +52,9 @@
 
       console.log("Dropped!", filename , position, event, filetype);
       if(filetype == "svg")
-        factory.addSVG(filename, position);
+        designer.addSVG(filename, position);
       else if(filetype == "json")
-        factory.addJSON(filename, position);
+        designer.addJSON(filename, position);
     }).on("dragover", function(event) {
       event.preventDefault();  
       event.stopPropagation();
@@ -107,9 +107,9 @@
 
     $('.download').click(function(){
     	if($(this).attr("name") == "svg")
-	      $(this).attr('href', 'data:text/svg,' + factory.export(TextureGenerator.SVG) ).attr('download', 'mytexture.svg');
+	      $(this).attr('href', 'data:text/svg,' + designer.export(TextureGenerator.SVG) ).attr('download', 'mytexture.svg');
 	    else if($(this).attr("name") == "png")
-		    $(this).attr('href', factory.export(TextureGenerator.PNG) ).attr('download', 'mytexture.png');
+		    $(this).attr('href', designer.export(TextureGenerator.PNG) ).attr('download', 'mytexture.png');
     });
   }
 
@@ -120,56 +120,40 @@
       var componentType = $(this).data("component-type");
       var material = materials.at(componentType, matIdx);
       
-      if(factory.activePath){
-        factory.nodes.at(factory.activePath).material = material;
+      if(designer.activePath){
+        designer.nodes.at(designer.activePath).material = material;
 
-        factory.nodes.at(factory.activePath).update();
-        factory.nodes.at(factory.activePath).updateDOM();
-        factory.paper.view.update();
+        designer.nodes.at(designer.activePath).update();
+        designer.nodes.at(designer.activePath).updateDOM();
+        designer.paper.view.update();
       }
     });
 
-    $("#termination-a").change(function(){
-      var terminationType = parseInt($(this).val());
-      if(factory.activePath){
-        var path = factory.nodes.at(factory.activePath);
-        path.terminationA = terminationType;
-        path.update().updateDOM();
-      }
+    $('#ghost').click(function(){
+      designer.art_layer.ghost_mode = !designer.art_layer.ghost_mode; 
+      designer.art_layer.update();
     });
-    $("#termination-b").change(function(){
-      var terminationType = parseInt($(this).val());
-      if(factory.activePath){
-        var path = factory.nodes.at(factory.activePath);
-        path.terminationB = terminationType;
-        path.update().updateDOM();
-      }
-    });
-     $("#weight-profile").change(function(){
-      var profileType = parseInt($(this).val());
-      if(factory.activePath){
-        var path = factory.nodes.at(factory.activePath);
-        path.weight_profile = profileType;
-        path.update().updateDOM();
-      }
+    $('#lock').click(function(){
+      designer.art_layer.lock_mode = !designer.art_layer.lock_mode; 
+      designer.art_layer.update();
     });
      $('#save-progress').click(function(){
-      factory.save();
+      designer.save();
      });
      $('#undo').click(function(){
-      factory.undo();
+      designer.undo();
      });
      $('#redo').click(function(){
-      factory.redo();
+      designer.redo();
      });
      $('#revert').click(function(){
-      factory.revert();
+      designer.revert();
      });
      $('#fast-forward').click(function(){
-      factory.fast_forward();
+      designer.fast_forward();
      });
      $('#clear-history').click(function(){
-      factory.clear_history();
+      designer.clear_history();
      });
   }
 
@@ -190,8 +174,8 @@ YP   YP    YP    YP  YP  YP Y88888P
  
   <%= render :partial => "toolbox" %>
             
-  <div id="sandbox" class="col-xs-8">
+  <div id="sandbox" class="col-xs-12">
     <!-- <canvas id="sandboxy" resize></canvas> -->
   </div>
-  <%= render :partial => "sidebar" %>
+  <% render :partial => "sidebar" %>
 <%= render 'collection'%>

@@ -10,6 +10,11 @@ Toolbox.prototype={
 	init: function(){
 		// this.add("vectortool", new VectorTool(this.paper));
 	},
+	getActive: function(){
+		if(_.isNull(paper.tool))
+			return null;
+		return paper.tool.toolholder;
+	},
 	enable: function(key){
 		this.clearTool();
 		this.paper.tool = this.tools[key].toolholder.tool;

@@ -19,7 +19,7 @@ var selectionRectangleScale=null;
 var selectionRectangleScaleNormalized=null;
 var selectionRectangleRotation=null;
 
-var segment, path, selectionRectangleSegment;
+var segment, path;
 var movePath = false;
 
 
@@ -57,7 +57,7 @@ function TransformTool(paper){
 
 			if(_.isNull(scope.activeSelectionRectangle)){
 
-				scope.activeSelectionRectangle = factory.nodes.at(path.id).selection_rectangle;
+				scope.activeSelectionRectangle = designer.nodes.at(path.id).selection_rectangle;
 				scope.activeSelectionRectangle.position = path.bounds.center.clone();
 				
 				scope.activeSelectionRectangle.rotation = 0;
@@ -81,8 +81,8 @@ function TransformTool(paper){
 				hitResult.item.selected = true;
 
 				scope.selectedStroke = hitResult.item;
-				factory.activePath = scope.selectedStroke.id;
-				factory.nodes.at(factory.activePath).updateDOM();
+				designer.activePath = scope.selectedStroke.id;
+				designer.nodes.at(designer.activePath).updateDOM();
 			}
 
 			if (hitResult.type == 'segment') {
@@ -108,33 +108,33 @@ function TransformTool(paper){
 
 		if(event.key == "-" ||event.key == "backspace"){
 			if(scope.selectedStroke != null){
-				factory.activePath = scope.selectedStroke.id;
-				factory.nodes.at(factory.activePath).remove();
+				designer.activePath = scope.selectedStroke.id;
+				designer.nodes.at(designer.activePath).remove();
 				scope.clear();
 			}
 		}
 
 		if(event.key == "d"){
 			if(scope.selectedStroke != null){
-				factory.activePath = scope.selectedStroke.id;
-				var dp = factory.nodes.at(factory.activePath).duplicate();
-				factory.nodes.add(dp.id, dp);
+				designer.activePath = scope.selectedStroke.id;
+				var dp = designer.nodes.at(designer.activePath).duplicate();
+				designer.nodes.add(dp.id, dp);
 				scope.clear();
 			}
 		}
 
 		if(event.key == "r"){
 			if(scope.selectedStroke != null){
-				factory.activePath = scope.selectedStroke.id;
-				var dp = factory.nodes.at(factory.activePath);
+				designer.activePath = scope.selectedStroke.id;
+				var dp = designer.nodes.at(designer.activePath);
 				dp.reflect_x();
 				
 			}
 		}
 		if(event.key == "f"){
 			if(scope.selectedStroke != null){
-				factory.activePath = scope.selectedStroke.id;
-				var dp = factory.nodes.at(factory.activePath);
+				designer.activePath = scope.selectedStroke.id;
+				var dp = designer.nodes.at(designer.activePath);
 				dp.reflect_y();
 				
 			}

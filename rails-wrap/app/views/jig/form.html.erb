@@ -7,17 +7,17 @@
 // `8888Y'  `Y88P' 88   YD Y888888P 88         YP    
                                                   
 
-  var factory;
+  var designer;
   $(function(){
     attachHandlers();
-    factory = new JigFactory($("#generator"), "/leaf.svg");
+    designer = new Jigdesigner($("#generator"), "/leaf.svg");
   });
   function attachHandlers(){
     $('.download').click(function(){
     	if($(this).attr("name") == "svg")
-	      $(this).attr('href', 'data:text/svg,' + factory.export(TextureGenerator.SVG) ).attr('download', 'mytexture.svg');
+	      $(this).attr('href', 'data:text/svg,' + designer.export(TextureGenerator.SVG) ).attr('download', 'mytexture.svg');
 	    else if($(this).attr("name") == "png")
-		    $(this).attr('href', factory.export(TextureGenerator.PNG) ).attr('download', 'mytexture.png');
+		    $(this).attr('href', designer.export(TextureGenerator.PNG) ).attr('download', 'mytexture.png');
     });
     
 }

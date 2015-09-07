@@ -8,14 +8,19 @@
   padding-left: 0px;
   padding-right: 0px;
   padding-left: 5px;
-  top: 60px;
+  top: 0px;
   background: #ddd;
-  height: calc(100% - 75px);
+  /*height: calc(100% - 75px);*/
+  height: 100%;
 
+
+ 
+  
 }
 #collection-panel{
    overflow-y: scroll;
-   height: calc(100% - 61px);
+   /*height: calc(100% - 61px);*/
+   height: 100%;
 }
 #collection.collapsed {
   left: -22%;
@@ -24,18 +29,25 @@
   display: none;
 }
   #collection .title{
-    background: #4FB896;
-    color: white;
+    background: #484848;
     margin-left: -5px;
-    /*margin-bottom: 10px;*/
-    padding: 10px;
+    margin-top: -10px;
+    padding: 0 6px;
+    font-family: "Helvetica", "Arial", sans-serif;
+    font-weight: bold;
+    color: #ddddd;
+    font-size: 6.43pt;
 
   }
   #collection .title h4{
     text-align: left;
-    padding: 0 10px;
+    padding: 0;
     text-transform: uppercase;
     font-size: 14px;
+    font-family: "Helvetica", "Arial", sans-serif;
+    font-weight: bold;
+    color: #dddddd;
+    font-size: 6.43pt;
   }
   #collection footer{
     width: 93%;
@@ -92,6 +104,19 @@
 .img-container img svg{
 	color: black;
 }
+#collection-type{
+   background: transparent;
+   width: 250px;
+   padding: 3px;
+  
+   line-height: 0.8;
+   border: 0;
+   color: #FFF;
+   border-radius: 0;
+   height: 34px;
+   /*-webkit-appearance: none;*/
+}
+
 
 .noselect {
     -webkit-touch-callout: none;
@@ -109,10 +134,11 @@
     user-select: none;
 }
 #toggle-switch{
+  margin-top: 5px;
   cursor: pointer;
 }
 #collection select{
-  font-size: 14pt;
+  font-size: 10pt;
 }
 </style>
 
@@ -188,8 +214,8 @@ Collection.prototype = {
 
 </script>
 
-<div id="collection" class="collapsed col-xs-3 no-select">
-	<div class="title">
+<div id="collection" class="col-xs-3 no-select">
+	<div class="title text-shadowed">
 		<h4> Collection - <select id="collection-type">
     </select> <span id="toggle-switch" class="badge glyphicon glyphicon-arrow-right pull-right">  </span></h4> 
     

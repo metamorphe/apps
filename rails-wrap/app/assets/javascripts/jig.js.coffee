@@ -12,13 +12,14 @@
 //= require scraps/ruler
 //= require proxies/utility
 //= require proxies/jig_exporter
-//= require proxies/design_tool
+//= require circuitree/circuit_designer
 //= require proxies/zoom
 //= require proxies/Tools/Toolbox
 //= require proxies/Tools/TracePathTool
 //= require proxies/Tools/AnchorPointTool
 //= require proxies/Tools/VectorTool
 //= require proxies/Tools/TransformTool
+//= require proxies/Tools/PanTool
 //= require proxies/StatsController
 //= require proxies/Material
 //= require proxies/Circuit
@@ -26,3 +27,5 @@
 //= require clipper
 //= require circuitree/fluke
 //= require circuitree/api
+//= require circuitree/CanvasItem
+//= require circuitree/artwork_layer

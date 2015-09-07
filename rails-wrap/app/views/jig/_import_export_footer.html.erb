@@ -1,13 +1,13 @@
 <script type="text/javascript">
 $(function(){
   $('#save-svg').click(function(){
-    JigExporter.export(factory.paper, factory.canvas, JigExporter.SVG);
+    JigExporter.export(designer.paper, designer.canvas, JigExporter.SVG);
    });
    $('#save-json').click(function(){
-    JigExporter.export(factory.paper, factory.canvas, JigExporter.JSON);
+    JigExporter.export(designer.paper, designer.canvas, JigExporter.JSON);
    });
   $('#save-png').click(function(){
-    JigExporter.export(factory.paper, factory.canvas, JigExporter.PNG);
+    JigExporter.export(designer.paper, designer.canvas, JigExporter.PNG);
    });
   $('#print').click(function(){
     window.location = "/jig/generator";

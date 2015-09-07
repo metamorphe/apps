@@ -12,7 +12,7 @@ function TracePathTool(paper){
 
 	this.tool.onMouseDown = function(event){
 		console.log("down");
-		var components = factory.nodes.select();
+		var components = designer.nodes.select();
 
 		path = new paper.Path({
 			strokeColor: "#C0C0C0",
@@ -30,7 +30,7 @@ function TracePathTool(paper){
     	else path.style.strokeColor = intersects[0].style.fillColor;
     }
 	this.tool.onMouseUp = function(event){
-		var components = factory.nodes.select();
+		var components = designer.nodes.select();
 
 		var terminals = _.map(components, function(el, i, attr){
     		return el.terminals;

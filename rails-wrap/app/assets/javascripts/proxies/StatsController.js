@@ -36,7 +36,7 @@ StatsController.prototype = {
    		return this;
    }, 
    calculate: function(){
-      var b = factory.nodes.bounds().bounds;
+      var b = designer.nodes.bounds().bounds;
 		this.bom_length = Ruler.pts2mm(this.design.nodes.totalLength()).toFixed(2) + " mm";
    		var print_time = (
    							(Ruler.pts2mm(b.height) + StatsController.wall_buffer_mm) * 
