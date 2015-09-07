@@ -138,14 +138,16 @@ PanTool.prototype = {
 			if(["stroke", "fill", "segment"].indexOf(hitResult.type) != -1){
 			
 				var cluster = hitResult.item;
-				while(["Layer", "Group"].indexOf(cluster.className) == -1)
+				console.log(!_.isUndefined(cluster.canvasItem), ["Layer", "Group"].indexOf(cluster.className) == -1);
+				while(_.isUndefined(cluster.canvasItem) || ["Layer", "Group"].indexOf(cluster.className) == -1)
 					cluster = cluster.parent;
 
+				if(scope.activeSelectionRectangle) scope.activeSelectionRectangle.remove();
 				scope.activeSelectionRectangle = cluster.canvasItem.selection_rectangle;
 				scope.activeSelectionRectangle.position = cluster.canvasItem.getBounds().center.clone();
 				scope.paper.project.activeLayer.addChild(scope.activeSelectionRectangle);
-				
 
+				
 				scope.selectedCluster = cluster;
 				if(cluster.canvasItem.type == "ArtworkLayerElement"){
 					if(designer.art_layer.lock_mode) return;
