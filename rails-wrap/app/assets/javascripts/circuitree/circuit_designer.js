@@ -4,7 +4,7 @@ CircuitDesigner.defaultTool;
 function CircuitDesigner(container){
 	this.paper = paper;
 	this.container = container;
-	this.nodes = new Circuit();
+	this.circuit_layer = new CircuitLayer(paper);
 	this.art_layer = new ArtworkLayer(paper);
 	CircuitDesigner.defaultTool = $('#pan-tool');
 
@@ -49,7 +49,6 @@ CircuitDesigner.prototype = {
 
 	clear: function(){
 		this.paper.project.clear();
-		this.nodes.clear();
 		this.update();
 	},
 	addSVG: function(filename, position, callback){
@@ -72,21 +71,20 @@ CircuitDesigner.prototype = {
 	},
 	loadJSON: function(json, callback){
 		var scope = this;
-		scope.clear();
 
 		var item = this.paper.project.importJSON(json); 
-		var layer = item[0];	
+		var layer = item[0].children[0];	
 		console.log("Loading json", layer);
 		// if valid JSON
 		if(!_.isUndefined(layer) && !_.isUndefined(layer.children)){  
-	    		CircuitDesigner.retainGroup(layer, paper.view.center, callback, scope);
+	    		CircuitDesigner.decomposeImport(layer, paper.view.center, callback, scope);
 		} else{
 			console.log('No layer detected!');
 		}
 
-    	paper.tool = null;
-       	CircuitDesigner.defaultTool.click().focus();
-   		scope.update();
+  //   	paper.tool = null;
+  //      	CircuitDesigner.defaultTool.click().focus();
+  //  		scope.update();
 	},
 	
 	save: function(){
@@ -105,15 +103,20 @@ CircuitDesigner.prototype = {
 CircuitDesigner.retainGroup = function(item, position, callback, scope){
 	console.log("Retaining group", item.className);
 	item.position = position;
+	CircuitDesigner.defaultTool.click().focus();
+}
+
+
+CircuitDesigner.decomposeImport = function(item, position, callback, scope){
 	
-	// paper.project.activeLayer.addChild(item);
-	   
-	// this.update();
-	
-	// if(_.isUndefined(position))
- //    	item.position = paper.view.center;
- //    else
- //    	item.position = position;
+	if(_.isUndefined(position)) item.position = paper.view.center;
+    else item.position = position;
+
+
+	_.each(Utility.unpackChildren(item, []), function(value, key, arr){
+		var path = value;
+		scope.circuit_layer.add(path);
+	});
 
 	CircuitDesigner.defaultTool.click().focus();
 }

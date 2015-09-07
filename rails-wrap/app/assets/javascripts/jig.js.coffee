@@ -23,7 +23,7 @@
 //= require proxies/Tools/CanvasPanTool
 //= require proxies/StatsController
 //= require proxies/Material
-//= require proxies/Circuit
+//= require proxies/CircuitLayer
 //= require proxies/WirePath
 //= require clipper
 //= require circuitree/fluke

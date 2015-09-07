@@ -74,11 +74,14 @@ PanTool.prototype = {
 	},
 	transform: {
 		onMouseDown: function(event, hitResult, scope){
+			console.log(scope.selectedCluster);
 			if(scope.selectedCluster && scope.selectedCluster.canvasItem.type == "ArtworkLayerElement"){
 				if(designer.art_layer.lock_mode) return;
 			}
 			// console.log("Transforming");
 			// console.log(hitResult.type);
+
+
 			if(["segment"].indexOf(hitResult.type) != -1){
 				scope.activeItem = scope.activeSelectionRectangle.item;
 				scope.activeSelectionRectangle.prevScale = scope.activeSelectionRectangle.ppath.scaling;
@@ -131,16 +134,22 @@ PanTool.prototype = {
 	},
 	pan:  {
 		onMouseDown: function(event, hitResult, scope){
+			console.log("PANNING", hitResult.type);
 			if(scope.selectedCluster && scope.selectedCluster.canvasItem.type == "ArtworkLayerElement"){
 				if(designer.art_layer.lock_mode) return;
 			}
-
+			console.log(hitResult.type);
 			if(["stroke", "fill", "segment"].indexOf(hitResult.type) != -1){
 			
 				var cluster = hitResult.item;
 				console.log(!_.isUndefined(cluster.canvasItem), ["Layer", "Group"].indexOf(cluster.className) == -1);
-				while(_.isUndefined(cluster.canvasItem) || ["Layer", "Group"].indexOf(cluster.className) == -1)
+				while(_.isUndefined(cluster.canvasItem))
 					cluster = cluster.parent;
+
+				if(cluster.canvasItem.type == "ArtworkLayerElement"){
+					if(designer.art_layer.lock_mode) return;
+				}
+				scope.selectedCluster = cluster;
 
 				if(scope.activeSelectionRectangle) scope.activeSelectionRectangle.remove();
 				scope.activeSelectionRectangle = cluster.canvasItem.selection_rectangle;
@@ -148,10 +157,8 @@ PanTool.prototype = {
 				scope.paper.project.activeLayer.addChild(scope.activeSelectionRectangle);
 
 				
-				scope.selectedCluster = cluster;
-				if(cluster.canvasItem.type == "ArtworkLayerElement"){
-					if(designer.art_layer.lock_mode) return;
-				}
+				
+				
 			}
 		},
 		onMouseDrag: function(event, scope){
@@ -166,6 +173,7 @@ PanTool.prototype = {
 			}
 		},
 		onMouseUp: function(event, scope){
+			scope.selectedCluster = null;
 		}
 	}
 }

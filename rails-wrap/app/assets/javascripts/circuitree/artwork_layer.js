@@ -64,5 +64,4 @@ ArtworkLayer.prototype = {
 		this.lockify();
 		paper.view.update();
 	}
-
 }
