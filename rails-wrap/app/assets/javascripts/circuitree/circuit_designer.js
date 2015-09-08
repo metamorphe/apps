@@ -77,14 +77,12 @@ CircuitDesigner.prototype = {
 		console.log("Loading json", layer);
 		// if valid JSON
 		if(!_.isUndefined(layer) && !_.isUndefined(layer.children)){  
-	    		CircuitDesigner.decomposeImport(layer, paper.view.center, callback, scope);
+	    	CircuitDesigner.decomposeImport(layer, paper.view.center, callback, scope);
 		} else{
 			console.log('No layer detected!');
 		}
 
-  //   	paper.tool = null;
-  //      	CircuitDesigner.defaultTool.click().focus();
-  //  		scope.update();
+   		scope.update();
 	},
 	
 	save: function(){
@@ -115,7 +113,15 @@ CircuitDesigner.decomposeImport = function(item, position, callback, scope){
 
 	_.each(Utility.unpackChildren(item, []), function(value, key, arr){
 		var path = value;
-		scope.circuit_layer.add(path);
+		// console.log(path.name);
+		if(path.name == "trace"){ path.remove(); return; }
+		else if(path.name == "sticker_led"){ 
+			scope.circuit_layer.add(path, ['n', 's']);
+		}
+		else if(path.name == "battery"){ 
+			scope.circuit_layer.add(path, ['e', 'w']);
+		}
+		else scope.circuit_layer.add(path);
 	});
 
 	CircuitDesigner.defaultTool.click().focus();

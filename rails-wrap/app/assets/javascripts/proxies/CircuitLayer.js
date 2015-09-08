@@ -10,9 +10,9 @@ CircuitLayer.prototype = {
 	get: function(id){
 		return this.collection[id];
 	},
-	add: function(item){
-		console.log("Adding circuit el", item.id, item.name);
-		var ci = new CanvasItem(this.paper, item, this.className + "Element")
+	add: function(item, terminals_config){
+		console.log("Adding circuit el", item.id, item.name, terminals_config);
+		var ci = new CanvasItem(this.paper, item, this.className + "Element", terminals_config)
 		ci.art_id = this.collection.length;
 		this.collection.push(ci);
 		this.update(true);
