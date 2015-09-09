@@ -8,7 +8,7 @@
 // `8888Y'  `Y88P' 88   YD Y888888P 88         YP    
                                                   
   var design = <%= @design %>;
-  var designer, zoom, materials, storage;
+  var designer, zoom, materials, storage, alerter;
   $(function(){
     attachHandlers();
     dim = new DimensionsPreview($("#sandbox"));
@@ -35,7 +35,7 @@
     });
 
     api = new API(designer.nodes);
-   
+    alerter = new Alerter($('#alerter'));
     dropLogic();
   });
   getActiveTool = function(){ return paper.tool.toolholder; }
@@ -173,7 +173,16 @@ YP   YP    YP    YP  YP  YP Y88888P
 
  
   <%= render :partial => "toolbox" %>
-            
+  <div id="alerter" class="alert alert-danger alert-dismissible fade in" role="alert">
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+      <h4>Oh snap! That's no bueno!</h4>
+      <p id='message'>Change this and that and try again. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Cras mattis consectetur purus sit amet fermentum.</p>
+      <p>
+        <button id="action" type="button" class="btn btn-danger" data-dismiss="alert">Take this action</button>
+        <button id="auto" type="button" class="btn btn-default">Do this automatically</button>
+        <button id="silence" type="button" class="btn btn-default">Don't tell me again</button>
+      </p>
+    </div>
   <div id="sandbox" class="col-xs-12">
     <!-- <canvas id="sandboxy" resize></canvas> -->
   </div>

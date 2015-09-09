@@ -1,0 +1,53 @@
+function AnimationHandler(paper){
+	this.animations = [];
+	this.t = 0;
+	var self = this;
+	paper.view.onFrame = function(event){
+		self.t = event.time;
+
+		_.each(self.animations, function(el, i, arr){
+			el.fn(event);
+		});
+	}
+}
+
+AnimationHandler.prototype = {
+	add: function(fn, duration){
+		var a = new Animation(guid(), this.t, fn, duration);
+		this.animations.push(a);
+		return a.id;
+	}, 
+	remove: function(animation_id){
+		this.animations = _.reject(this.animations, function(el, i, arr){
+			return el.id == animation_id
+		});
+	}
+}
+
+
+function Animation(id, t, fn, duration){
+	this.start = t;
+	this.id = id;
+	var self = this;
+	if(_.isUndefined(duration)){
+		this.fn = function(event){ fn(event) };
+	} else{
+		this.fn = function(event){
+			if(event.time - self.start < duration){
+				fn(event);
+			}
+			else
+				designer.animation_handler.remove(self.id);
+		}
+	}
+}
+
+function guid() {
+  function s4() {
+    return Math.floor((1 + Math.random()) * 0x10000)
+      .toString(16)
+      .substring(1);
+  }
+  return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+    s4() + '-' + s4() + s4() + s4();
+}

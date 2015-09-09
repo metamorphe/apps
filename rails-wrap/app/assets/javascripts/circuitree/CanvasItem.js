@@ -1,7 +1,8 @@
 
 
-function CanvasItem(paper, path, type, terminals){
-	if(_.isUndefined(terminals)) terminals = [];
+function CanvasItem(paper, path, type, t_config){
+	if(_.isUndefined(t_config)) this.t_config = [];
+	else this.t_config = t_config;
 
 	this.className = "CanvasItem";
 	this.paper = paper;
@@ -9,7 +10,10 @@ function CanvasItem(paper, path, type, terminals){
 
 	
 	this.type = type;
-	this.path = new paper.Group([path]);
+	if(type == "ArtworkLayerElement")
+		this.path = path;
+	else
+		this.path = new paper.Group([path]);
 	this.path.canvasItem = this;
 
 	this.path.applyMatrix = true;
@@ -21,6 +25,7 @@ function CanvasItem(paper, path, type, terminals){
 	// transformation rectangle
 	this.ref_x = false;
 	this.ref_y = false;
+
 	
 	this.init_bounds = path.bounds.clone().expand(10, 10);
 	this.selection_rectangle = this.initSelectionRectangle();
@@ -30,7 +35,8 @@ function CanvasItem(paper, path, type, terminals){
 	// this.path.addChild(c);
 	// var g = new paper.Group([this.path, c]);
 	// paper.project.activeLayer.addChild(c);
-	if(terminals.length > 0) this.addTerminals(terminals);
+	// if(this.t_config.length > 0) this.addTerminals(this.t_config);
+
 }
 CanvasItem.prototype = {
 	setOpacity: function(val){
@@ -39,45 +45,94 @@ CanvasItem.prototype = {
 	getBounds: function(){
 		return this.path.bounds;
 	},
-	addTerminals: function(config){
+	removeTerminals: function(){
+		_.each(_.values(this.terminals), function(el, i, arr){
+			el.remove();
+		});
+		this.terminals = {};
+	},
+	ledOn: function(on1_off0){
+		if(on1_off0){
+			this.path.led_on = true;
+			this.path.children[0].style = {
+				shadowColor: "yellow",
+				shadowBlur: 60,
+				shadowOffset: new paper.Point(0, 0)
+			}
+			this.path.children[0].opacity = 1;
+		} else {
+			this.path.led_on = false;
+			this.path.children[0].style = {
+				shadowColor: "yellow",
+				shadowBlur: 0,
+				shadowOffset: new paper.Point(0, 0)
+			}
+			this.path.children[0].opacity = 1;
+		}
+	},
+	flashTerminal: function(key, duration){
+		if(!(key in this.terminals)) return;
+
+		var term = this.terminals[key];
+		term.style = {
+			shadowColor: "blue",
+			shadowBlur: 30,
+			shadowOffset: new paper.Point(0, 0)
+		}
+		designer.animation_handler.add(function(event){
+			var t = Math.sin(event.count/5); //[-1, 1]
+			t += 1; //[0, 2];
+			t /= 2; //[0, 1];
+			term.shadowColor.alpha = t;
+		}, duration);
+	},
+	addTerminals: function(){
 		var b = this.path.bounds;
 		this.terminals = {};
 		console.log("TERM", this.path.className);
 		// console.log(this.name, b);
-		if(config.indexOf('w') != -1){
+		if(this.t_config.indexOf('w') != -1){
 			this.terminals['w'] = this.paper.Path.Circle({
 				fillColor: "red", 
 				radius: 5, 
 				position: b.leftCenter, 
-				name: "terminal", 
+				name: "terminal",
+				polarity: 1,
+				direction: 'w',
 				parent: this.path
 			});
 
 		}
-		if(config.indexOf('e') != -1){
+		if(this.t_config.indexOf('e') != -1){
 			this.terminals['e']  = this.paper.Path.Circle({
-				fillColor: "black", 
+				fillColor: "#333333", 
 				radius: 5, 
 				position: b.rightCenter, 
 				name: "terminal", 
+				polarity: 0,
+				direction: 'e',
 				parent: this.path
 			});
 		}
-		if(config.indexOf('s') != -1){
+		if(this.t_config.indexOf('s') != -1){
 			this.terminals['s']  = this.paper.Path.Circle({
 				fillColor: "red", 
 				radius: 5, 
 				position: b.bottomCenter, 
 				name: "terminal", 
+				polarity: 1, 
+				direction: 's',
 				parent: this.path
 			});
 		}
-		if(config.indexOf('n') != -1){
+		if(this.t_config.indexOf('n') != -1){
 			this.terminals['n']  = this.paper.Path.Circle({
-				fillColor: "black", 
+				fillColor: "#333333", 
 				radius: 5, 
 				position: b.topCenter, 
 				name: "terminal", 
+				polarity: 0,
+				direction: 'n',
 				parent: this.path
 			});
 		}

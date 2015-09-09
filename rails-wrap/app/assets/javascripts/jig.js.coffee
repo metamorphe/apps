@@ -21,6 +21,8 @@
 //= require proxies/Tools/TransformTool
 //= require proxies/Tools/PanTool
 //= require proxies/Tools/CanvasPanTool
+//= require proxies/Tools/RunTool
+//= require proxies/Tools/DebugTool
 //= require proxies/StatsController
 //= require proxies/Material
 //= require proxies/CircuitLayer
@@ -30,3 +32,6 @@
 //= require circuitree/api
 //= require circuitree/CanvasItem
 //= require circuitree/artwork_layer
+//= require circuitree/TracesLayer
+//= require circuitree/animation_handler
+//= require circuitree/Alerter

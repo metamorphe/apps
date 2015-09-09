@@ -1,9 +1,11 @@
 function CircuitLayer(paper){
-	this.collection = {};
 	this.paper = paper;
 	this.className = "CircuitLayer";
 	this.collection = [];
 	this.lock_mode = false;
+	this.draw_mode = false;
+	this.well_mode = false;
+	this.debug_mode = false;
 }
 
 CircuitLayer.prototype = {
@@ -13,10 +15,23 @@ CircuitLayer.prototype = {
 	add: function(item, terminals_config){
 		console.log("Adding circuit el", item.id, item.name, terminals_config);
 		var ci = new CanvasItem(this.paper, item, this.className + "Element", terminals_config)
-		ci.art_id = this.collection.length;
+		ci.art_id = guid();
 		this.collection.push(ci);
 		this.update(true);
 	}, 
+	drawify: function(){
+		var scope = this;
+		if(scope.draw_mode){
+			_.each(scope.collection, function(el, i, arr){
+				el.addTerminals();
+			});
+		}				
+		else{
+			_.each(scope.collection, function(el, i, arr){
+				el.removeTerminals();
+			});
+		}
+	},
 	lockify: function(){
 		var scope = this;
 		if(scope.lock_mode){
@@ -31,7 +46,18 @@ CircuitLayer.prototype = {
 	},
 	update: function(bypass){
 		this.lockify();
+		this.drawify();
 		paper.view.update();
+	}, 
+	getAllTerminals: function(){
+		return _.flatten(_.map(this.collection, function(el, i, arr){
+			return _.values(el.terminals);
+		}));
+	},
+	getAllLights: function(){
+		return _.flatten(_.filter(this.collection, function(el, i, arr){
+			return el.path.children[0].name == "sticker_led";
+		}));
 	}
 	// select: function(id){
 	// 	if(_.isUndefined(id)) return _.map(this.collection, function(value, key){ return value; });
@@ -88,4 +114,14 @@ CircuitLayer.prototype = {
 	// length: function(){
 	// 	return Object.size(this.collection);
 	// }
+}
+
+function guid() {
+  function s4() {
+    return Math.floor((1 + Math.random()) * 0x10000)
+      .toString(16)
+      .substring(1);
+  }
+  return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+    s4() + '-' + s4() + s4() + s4();
 }

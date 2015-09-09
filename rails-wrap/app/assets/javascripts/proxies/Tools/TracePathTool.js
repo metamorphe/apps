@@ -1,4 +1,12 @@
-var path; 
+var path;
+var hitOptions = {
+	segments: true,
+	stroke: true,
+	fill: true,
+	tolerance: 1
+};
+TracePathTool.SHORT_MESSAGE = "You are shorting your circuit. Avoid crossing any paths or connecting to terminals that aren't the same color (polarity).";
+
 function TracePathTool(paper){
 	this.paper = paper;
 	this.selectedPoint = null;
@@ -11,48 +19,47 @@ function TracePathTool(paper){
 	var scope = this;
 
 	this.tool.onMouseDown = function(event){
-		console.log("down");
-		var components = designer.nodes.select();
 
-		path = new paper.Path({
-			strokeColor: "#C0C0C0",
-			strokeWidth: 20
-		});
-    	path.add(event.point);
-    	
-    	var terminals = _.map(components, function(el, i, attr){
-    		return el.terminals;
-    	});
-    	var terminals = _.flatten(terminals);
-    	var intersects = TracePathTool.getAllInsides(path, terminals);
-    	console.log("intersects", intersects);
-    	if(intersects.length == 0) path.remove();
-    	else path.style.strokeColor = intersects[0].style.fillColor;
+		hitResult = scope.paper.project.hitTest(event.point, hitOptions);
+		
+		if(_.isNull(hitResult)) scope.canvas_item_type = "canvas";
+		else{
+			path = hitResult.item;
+			if(path.name == "terminal") scope.canvas_item_type = "terminal";
+			else if(path.name == "sticker_led") scope.canvas_item_type = "led";
+			else if(path.name == "trace") scope.canvas_item_type = "trace";
+			else scope.canvas_item_type = "canvas";
+		} 
+		console.log("MouseDown", scope.canvas_item_type);
+		scope[scope.canvas_item_type].onMouseDown(event, hitResult, scope);
+		scope.update();
     }
 	this.tool.onMouseUp = function(event){
-		var components = designer.nodes.select();
-
-		var terminals = _.map(components, function(el, i, attr){
-    		return el.terminals;
-    	});
-    	var terminals = _.flatten(terminals);
-    	var intersects = TracePathTool.getAllIntersections(path, terminals);
-    	
-    	intersects = _.uniq(intersects);
-    	console.log("intersects up", intersects);
-    	console.log(path.style.strokeColor.red,  intersects[1].style.fillColor.red);
-    	if(intersects.length == 0) path.remove();
-    	else if(path.style.strokeColor.red != intersects[1].style.fillColor.red) path.remove();
-		else path.simplify();
+		console.log("MouseUp", scope.canvas_item_type);
+		scope[scope.canvas_item_type].onMouseUp(event, scope);
+		scope.canvas_item_type = null;
+		scope.update();
 	}
 
 	this.tool.onMouseDrag = function(event){
-		path.add(event.point);
+		console.log("MouseDrag", scope.canvas_item_type);
+		scope[scope.canvas_item_type].onMouseDrag(event, scope);
+		scope.update();
 	}	
 }
 
-
+var trace;
+var start_terminal = null;
+var start_trace = null;
 TracePathTool.prototype = {
+	enable: function(){
+		designer.circuit_layer.draw_mode = true;
+		designer.circuit_layer.update();
+	},
+	disable: function(){
+		designer.circuit_layer.draw_mode = false;
+		designer.circuit_layer.update();
+	},
 	update: function(){
 		this.paper.view.update();
 	}, 
@@ -61,6 +68,132 @@ TracePathTool.prototype = {
 	}, 
 	setSVG: function(svg){
 		this.svg = svg;
+	},
+	clear: function(){
+
+	}, 
+	terminal: {
+		onMouseDown: function(event, hitResult, scope){
+			var path = hitResult.item;
+			start_terminal = path;
+			start_terminal.scaling = new paper.Point(1.1, 1.1);
+			var direction = path.direction; // terminal location 'n', 's', 'e', 'w'
+			// valid
+			var validConnections = Fluke.getValidConnections(path);
+			_.each(validConnections, function(el, i, arr){
+				el.scaling = new paper.Point(1.1, 1.1);
+				// el.parent.canvasItem.flashTerminal(el.direction, 5);
+			});
+
+			// invalid
+			var invalidConnections = Fluke.getInvalidConnections(path);
+			_.each(invalidConnections, function(el, i, arr){
+				el.scaling = new paper.Point(0.5, 0.5);
+			});
+
+			trace = new paper.Path({
+				strokeColor: path.style.fillColor,
+				strokeWidth: 4,
+				name: "trace"
+			});
+	    	trace.add(event.point);
+		}, 
+		onMouseDrag: function(event){
+			trace.add(event.point);
+		}, 
+		onMouseUp: function(event){
+			var terminals = designer.circuit_layer.getAllTerminals();
+	    	var intersects = TracePathTool.getAllIntersections(trace, terminals);
+	    	intersects = _.uniq(intersects);
+	    	intersects = _.reject(intersects, function(el, i, arr){
+	    		return el.parent.canvasItem.id == start_terminal.parent.canvasItem.id;
+	    	});
+
+	    	// hanging trace
+	    	if(intersects.length == 0) return;
+
+	    	var valid_connection = _.reduce(intersects, function(memo, el, i, arr){
+	    		console.log(start_terminal.style.fillColor.red, el.style.fillColor.red);
+	    		return memo && start_terminal.style.fillColor.equals(el.style.fillColor);
+	    	}, true);
+
+	    	if(valid_connection){
+	    		trace.simplify();
+	    		trace.remove();
+	    		designer.traces_layer.add(trace);
+	    	}
+	    	else{
+	    		// error message
+	    		alerter.alert(TracePathTool.SHORT_MESSAGE,
+		    		function(){
+		    			trace.remove();
+		    		}, 
+		    		"Remove the shorting path"
+	    		);
+	    		
+	    	}
+			start_terminal.scaling = new paper.Point(1.0, 1.0);
+
+			var validConnections = Fluke.getValidConnections(path);
+			_.each(validConnections, function(el, i, arr){
+				el.scaling = new paper.Point(1.0, 1.0);
+				// el.parent.canvasItem.flashTerminal(el.direction, 5);
+			});
+
+			var invalidConnections = Fluke.getInvalidConnections(path);
+			_.each(invalidConnections, function(el, i, arr){
+				el.scaling = new paper.Point(1.0, 1.0);
+			});
+			start_terminal = null;
+		}
+	},
+	trace: {
+		onMouseDown: function(event, hitResult, scope){
+			var path = hitResult.item;
+			start_trace = path;
+			
+			trace = new paper.Path({
+				strokeColor: path.style.strokeColor,
+				strokeWidth: 4,
+				name: "trace"
+			});
+	    	trace.add(event.point);
+		}, 
+		onMouseDrag: function(event){
+			trace.add(event.point);
+		}, 
+		onMouseUp: function(event){
+			trace.simplify();
+			trace.remove();
+    		designer.traces_layer.add(trace);
+		}
+	},
+	led: {
+		onMouseDown: function(event, hitResult, scope){
+			var path = hitResult.item;
+			path.parent.canvasItem.ledOn(!path.parent.led_on);
+		}, 
+		onMouseDrag: function(event){
+
+		}, 
+		onMouseUp: function(event){
+
+		}
+	}, 
+	canvas: {
+		onMouseDown: function(event, hitResult, scope){
+			
+		}, 
+		onMouseDrag: function(event){
+
+		}, 
+		onMouseUp: function(event){
+			terminals = designer.circuit_layer.getAllTerminals();
+			//reset terminals
+			_.each(terminals, function(el, i, arr){
+				el.scaling = new paper.Point(1.0, 1.0);
+			})
+		}
 	}
 }
 

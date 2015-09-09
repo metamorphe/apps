@@ -1,3 +1,4 @@
+
 var parallel_circuit_with_resistors = [
 		Object.create({
 			id: "battery", 

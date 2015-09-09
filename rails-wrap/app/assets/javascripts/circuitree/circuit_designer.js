@@ -6,11 +6,13 @@ function CircuitDesigner(container){
 	this.container = container;
 	this.circuit_layer = new CircuitLayer(paper);
 	this.art_layer = new ArtworkLayer(paper);
+	this.traces_layer = new TracesLayer(paper);
 	CircuitDesigner.defaultTool = $('#pan-tool');
-
 	this.init();
+	this.animations = [];
 	this.update();
-		
+	var self = this;
+	this.animation_handler = new AnimationHandler(paper);
 }
 
 CircuitDesigner.prototype = {
@@ -38,6 +40,8 @@ CircuitDesigner.prototype = {
 		this.toolbox.add("transformtool", $('#transform-tool'),  new TransformTool(this.paper));
 		this.toolbox.add("pantool", $('#pan-tool'),  new PanTool(this.paper));
 		this.toolbox.add("canvaspantool", $('#canvas-pan-tool'),  new CanvasPanTool(this.paper));
+		this.toolbox.add("run", $('#run-tool'),  new RunTool(this.paper));
+		this.toolbox.add("debug", $('#debug-tool'),  new DebugTool(this.paper));
 		
 		this.toolbox.enable("pantool");
 		return this;

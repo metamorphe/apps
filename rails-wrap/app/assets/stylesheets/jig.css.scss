@@ -10,6 +10,14 @@
 *= require font
 *= require_self
 */
+
+#alerter{
+	position: absolute;
+	top: 10%;
+	width: 50%;
+	left: 27%;
+	z-index: 1000;
+}
 .thumbnail .legend{
 	position: absolute;
 	text-align: right;

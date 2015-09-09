@@ -23,13 +23,13 @@
       <%= button_tag :id => "transform-tool", :class => "btn btn-ellustrator" do %>
         <span class="icon-primary-cursor"></span>
       <% end %>
+     
       <%= button_tag :id => "pan-tool", :class => "btn btn-ellustrator" do %>
-        <span class="icon-pan"></span>
-      <% end %>   
-      <%= button_tag :id => "canvas-pan-tool", :class => "btn btn-ellustrator" do %>
         <span class="glyphicon glyphicon-hand-up"></span>
       <% end %>
-     
+      <%= button_tag :id => "canvas-pan-tool", :class => "btn btn-ellustrator" do %>
+        <span class="icon-pan"></span>
+      <% end %>   
     </div>
    <!-- ZOOM TOOLS -->
       <div class="btn-group" role="group" id="zoom-ui" aria-label="zoom-tools">
@@ -92,10 +92,10 @@
 
 
       <div class="btn-group" role="group" aria-label="pen-tools">
-       <%= button_tag :id => "fluke-calc", :class => "btn btn-primary" do %>
+       <%= button_tag :id => "run-tool", :class => "btn btn-primary" do %>
         <span class="glyphicon glyphicon glyphicon-record"></span>
         <% end %>
-        <%= button_tag :id => "fluke-calc", :class => "btn btn-primary" do %>
+        <%= button_tag :id => "debug-tool", :class => "btn btn-primary" do %>
         <span class="icon-debug"></span>
         <% end %>
       </div>      

@@ -18,6 +18,8 @@ Toolbox.prototype={
 	enable: function(key){
 		this.clearTool();
 		this.paper.tool = this.tools[key].toolholder.tool;
+		if(!_.isUndefined(this.tools[key].toolholder.enable))
+			this.tools[key].toolholder.enable();
 	},
 	disableAll: function(){
 		var scope = this;
@@ -61,6 +63,8 @@ Toolbox.prototype={
 	clearTool: function(){
 		if(!_.isNull(this.paper.tool)){
 			this.paper.tool.dom.removeClass('btn-warning').addClass('btn-ellustrate');
+		if(!_.isUndefined(this.paper.tool.toolholder.disable))
+			this.paper.tool.toolholder.disable();
 			this.paper.tool.toolholder.clear();
 		}
 		this.paper.tool = null;

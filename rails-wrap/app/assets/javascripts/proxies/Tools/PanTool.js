@@ -54,6 +54,12 @@ function PanTool(paper){
 
 
 PanTool.prototype = {
+	enable: function(){
+
+	},
+	disable: function(){
+
+	},
 	update: function(){
 		this.paper.view.update();
 	}, 

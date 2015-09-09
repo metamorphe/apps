@@ -2,6 +2,24 @@
 
 function Fluke(){}
 
+Fluke.getInvalidConnections = function(terminal){
+    var terminals = designer.circuit_layer.getAllTerminals();
+    terminals =  _.filter(terminals, function(el, i, arr){
+        return ! terminal.fillColor.equals(el.fillColor || terminal.id != el.id);
+    });
+    return _.map(terminals, function(el, i, arr){
+        return el;
+    });
+}
+Fluke.getValidConnections = function(terminal){
+    var terminals = designer.circuit_layer.getAllTerminals();
+    terminals =  _.filter(terminals, function(el, i, arr){
+        return terminal.fillColor.equals(el.fillColor) && terminal.id != el.id;
+    });
+    return _.map(terminals, function(el, i, arr){
+        return el;
+    });
+}
 Fluke.calculateCircuitState = function(){
         var resA = designer.nodes.at(6);
         var resB = designer.nodes.at(7);
