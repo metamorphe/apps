@@ -102,20 +102,26 @@ TracePathTool.prototype = {
 			trace.add(event.point);
 		}, 
 		onMouseUp: function(event){
+			
+			// Get all conductive elements on the board
 			var terminals = designer.circuit_layer.getAllTerminals();
+
+			// Find all unique non-self referential intersections with those elements
 	    	var intersects = TracePathTool.getAllIntersections(trace, terminals);
-	    	intersects = _.uniq(intersects);
+			intersects = _.uniq(intersects);
 	    	intersects = _.reject(intersects, function(el, i, arr){
 	    		return el.parent.canvasItem.id == start_terminal.parent.canvasItem.id;
 	    	});
 
-	    	// hanging trace
+	    	// Handle intersections
+	    	// Hanging trace
 	    	if(intersects.length == 0) return;
 
+	    	// Are all connections of the same polarity
 	    	var valid_connection = _.reduce(intersects, function(memo, el, i, arr){
-	    		console.log(start_terminal.style.fillColor.red, el.style.fillColor.red);
 	    		return memo && start_terminal.style.fillColor.equals(el.style.fillColor);
 	    	}, true);
+
 
 	    	if(valid_connection){
 	    		trace.simplify();
@@ -126,12 +132,32 @@ TracePathTool.prototype = {
 	    		// error message
 	    		alerter.alert(TracePathTool.SHORT_MESSAGE,
 		    		function(){
-		    			trace.remove();
+		    			// trace.flashPath();
+		    			trace.simplify();
+						// var term = this.terminals[key];
+						trace.style = {
+							shadowColor: "blue",
+							shadowBlur: 30,
+							shadowOffset: new paper.Point(0, 0)
+						}
+						designer.animation_handler.add(function(event){
+							var t = Math.sin(event.count/5); //[-1, 1]
+							t += 1; //[0, 2];
+							t /= 2; //[0, 1];
+							trace.shadowColor.alpha = t;
+						}, 1.5,
+						function(){
+							trace.shadowColor.alpha = 0;
+							trace.remove();
+						});
+		    			
 		    		}, 
 		    		"Remove the shorting path"
 	    		);
 	    		
 	    	}
+
+	    	// Visual characteristics on MouseUp
 			start_terminal.scaling = new paper.Point(1.0, 1.0);
 
 			var validConnections = Fluke.getValidConnections(path);
@@ -144,6 +170,8 @@ TracePathTool.prototype = {
 			_.each(invalidConnections, function(el, i, arr){
 				el.scaling = new paper.Point(1.0, 1.0);
 			});
+
+			// State variable update
 			start_terminal = null;
 		}
 	},

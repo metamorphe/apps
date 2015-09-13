@@ -12,8 +12,8 @@ function AnimationHandler(paper){
 }
 
 AnimationHandler.prototype = {
-	add: function(fn, duration){
-		var a = new Animation(guid(), this.t, fn, duration);
+	add: function(fn, duration, killFn){
+		var a = new Animation(guid(), this.t, fn, duration, killFn);
 		this.animations.push(a);
 		return a.id;
 	}, 
@@ -25,7 +25,7 @@ AnimationHandler.prototype = {
 }
 
 
-function Animation(id, t, fn, duration){
+function Animation(id, t, fn, duration, onKillfn){
 	this.start = t;
 	this.id = id;
 	var self = this;
@@ -36,8 +36,10 @@ function Animation(id, t, fn, duration){
 			if(event.time - self.start < duration){
 				fn(event);
 			}
-			else
+			else{
+				onKillfn();
 				designer.animation_handler.remove(self.id);
+			}
 		}
 	}
 }
