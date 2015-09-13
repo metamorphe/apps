@@ -105,23 +105,40 @@ TracePathTool.prototype = {
 			
 			// Get all conductive elements on the board
 			var terminals = designer.circuit_layer.getAllTerminals();
+			var traces = designer.traces_layer.getAllTraces();
+			var conductive = _.flatten([terminals, traces]);
+
 
 			// Find all unique non-self referential intersections with those elements
-	    	var intersects = TracePathTool.getAllIntersections(trace, terminals);
+	    	var intersects = TracePathTool.getAllIntersections(trace, conductive);
 			intersects = _.uniq(intersects);
 	    	intersects = _.reject(intersects, function(el, i, arr){
 	    		return el.parent.canvasItem.id == start_terminal.parent.canvasItem.id;
 	    	});
 
+	    	// Visual characteristics on MouseUp			
+			_.each(terminals, function(el, i, arr){
+				el.scaling = new paper.Point(1.0, 1.0);	
+			});
+			
+
+
 	    	// Handle intersections
 	    	// Hanging trace
-	    	if(intersects.length == 0) return;
-
+	    	if(intersects.length == 0){
+	    		start_terminal = null;
+	    		return;
+	    	}
 	    	// Are all connections of the same polarity
+	    	var offending_elements = [];
 	    	var valid_connection = _.reduce(intersects, function(memo, el, i, arr){
-	    		return memo && start_terminal.style.fillColor.equals(el.style.fillColor);
+	    		if(el.name == "trace")
+		    		var valid = start_terminal.style.fillColor.equals(el.style.strokeColor);
+		    	else
+		    		var valid = start_terminal.style.fillColor.equals(el.style.fillColor);
+	    		if(!valid) offending_elements.push(el);
+	    		return memo && valid;
 	    	}, true);
-
 
 	    	if(valid_connection){
 	    		trace.simplify();
@@ -130,16 +147,35 @@ TracePathTool.prototype = {
 	    	}
 	    	else{
 	    		// error message
+	    		trace.simplify();
+
+	    		var animations = [];
+    			_.each(offending_elements, function(el, i, arr){
+					console.log("Strobing", el.name);
+					el.style = {
+						shadowColor: "blue",
+						shadowBlur: 30,
+						shadowOffset: new paper.Point(0, 0)
+					}
+					animations.push(designer.animation_handler.add(function(event){
+						var t = Math.sin(event.count/5); //[-1, 1]
+						t += 1; //[0, 2];
+						t /= 2; //[0, 1];
+						el.shadowColor.alpha = t;
+					}, 1.5,
+					function(){
+						el.shadowColor.alpha = 0;
+					}));
+    			});
+
 	    		alerter.alert(TracePathTool.SHORT_MESSAGE,
 		    		function(){
-		    			// trace.flashPath();
-		    			trace.simplify();
-						// var term = this.terminals[key];
-						trace.style = {
+		    			trace.style = {
 							shadowColor: "blue",
 							shadowBlur: 30,
 							shadowOffset: new paper.Point(0, 0)
 						}
+
 						designer.animation_handler.add(function(event){
 							var t = Math.sin(event.count/5); //[-1, 1]
 							t += 1; //[0, 2];
@@ -147,53 +183,50 @@ TracePathTool.prototype = {
 							trace.shadowColor.alpha = t;
 						}, 1.5,
 						function(){
+							_.each(animations, function(el, i, arr){
+								designer.animation_handler.remove(el);
+							});
+							if(trace) trace.remove();
 							trace.shadowColor.alpha = 0;
-							trace.remove();
 						});
-		    			
-		    		}, 
+						
+					},
 		    		"Remove the shorting path"
 	    		);
 	    		
 	    	}
 
-	    	// Visual characteristics on MouseUp
-			start_terminal.scaling = new paper.Point(1.0, 1.0);
 
-			var validConnections = Fluke.getValidConnections(path);
-			_.each(validConnections, function(el, i, arr){
-				el.scaling = new paper.Point(1.0, 1.0);
-				// el.parent.canvasItem.flashTerminal(el.direction, 5);
-			});
-
-			var invalidConnections = Fluke.getInvalidConnections(path);
-			_.each(invalidConnections, function(el, i, arr){
-				el.scaling = new paper.Point(1.0, 1.0);
-			});
-
-			// State variable update
+	    	// State variable update
 			start_terminal = null;
+			
 		}
 	},
 	trace: {
 		onMouseDown: function(event, hitResult, scope){
-			var path = hitResult.item;
-			start_trace = path;
+			// var path = hitResult.item;
+			// start_trace = path;
 			
-			trace = new paper.Path({
-				strokeColor: path.style.strokeColor,
-				strokeWidth: 4,
-				name: "trace"
-			});
-	    	trace.add(event.point);
+			// trace = new paper.Path({
+			// 	strokeColor: path.style.strokeColor,
+			// 	strokeWidth: 4,
+			// 	name: "trace"
+			// });
+	  //   	trace.add(event.point);
 		}, 
 		onMouseDrag: function(event){
-			trace.add(event.point);
+			// trace.add(event.point);
 		}, 
 		onMouseUp: function(event){
-			trace.simplify();
-			trace.remove();
-    		designer.traces_layer.add(trace);
+			// var terminals = designer.circuit_layer.getAllTerminals();
+			// var traces = designer.traces_layer.getAllTraces();
+
+
+			
+
+			// trace.simplify();
+			// trace.remove();
+   //  		designer.traces_layer.add(trace);
 		}
 	},
 	led: {

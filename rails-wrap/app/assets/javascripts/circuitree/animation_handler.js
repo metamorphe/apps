@@ -19,6 +19,7 @@ AnimationHandler.prototype = {
 	}, 
 	remove: function(animation_id){
 		this.animations = _.reject(this.animations, function(el, i, arr){
+			if(el.id == animation_id) el.kill();
 			return el.id == animation_id
 		});
 	}
@@ -28,6 +29,7 @@ AnimationHandler.prototype = {
 function Animation(id, t, fn, duration, onKillfn){
 	this.start = t;
 	this.id = id;
+	this.kill = onKillfn;
 	var self = this;
 	if(_.isUndefined(duration)){
 		this.fn = function(event){ fn(event) };
@@ -37,7 +39,7 @@ function Animation(id, t, fn, duration, onKillfn){
 				fn(event);
 			}
 			else{
-				onKillfn();
+				// onKillfn();
 				designer.animation_handler.remove(self.id);
 			}
 		}

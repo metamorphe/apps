@@ -69,7 +69,9 @@ TracesLayer.prototype = {
 		paper.view.update();
 	}, 
 	getAllTraces: function(){
-		return this.collection;
+		return _.map(this.collection, function(el, i, arr){
+			return el.path.children[0]
+		});
 	}
 }
 
