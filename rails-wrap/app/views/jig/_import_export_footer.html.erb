@@ -14,22 +14,16 @@ $(function(){
    });
 });
 </script>
-<footer id="import-export">
-  <%= button_tag :id=> "coil-button", :class => "btn btn-danger btn-sm" do %>
-    <span class="glyphicon glyphicon-upload"> </span> Upload Design
-  <% end %>
+<div id="import-export">
   <div class="btn-group">
-   <%= button_tag :id=> "save-svg", :class => "btn btn-success btn-sm" do %>
-    <span class="glyphicon glyphicon-save"> </span>  SVG
+  <%= button_tag :id=> "save-svg", :class => "btn btn-ellustrator btn-sm" do %>
+    <span class="glyphicon glyphicon-floppy-disk"> </span>
   <% end %>
-  <%= button_tag :id=> "save-json", :class => "btn btn-success btn-sm" do %>
-    <span class="glyphicon glyphicon-save"> </span>  JSON
+  <%= button_tag :id=> "save-json", :class => "btn btn-ellustrator btn-sm" do %>
+    <span class="glyphicon glyphicon-save"> </span>
   <% end %>
-   <%= button_tag :id=> "save-png", :class => "btn btn-success btn-sm" do %>
-    <span class="glyphicon glyphicon-camera"> </span>  PNG
+   <%= button_tag :id=> "save-png", :class => "btn btn-ellustrator btn-sm" do %>
+    <span class="glyphicon glyphicon-camera"> </span> 
   <% end %>
 </div>
-  <%= button_tag :id=> "print", :class => "btn btn-default btn-sm" do %>
-    <span class="glyphicon glyphicon-print"> </span> Print
-  <% end %>
-</footer>
+</div>

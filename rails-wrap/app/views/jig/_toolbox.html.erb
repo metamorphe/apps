@@ -90,7 +90,6 @@
 
 
       <div class="btn-group" role="group" aria-label="pen-tools">
-
        <%= button_tag :id => "run-tool", :class => "btn btn-primary" do %>
         <span class="glyphicon glyphicon glyphicon-record"></span>
         <% end %>
@@ -102,4 +101,9 @@
         <% end %>
       </div>      
 
-  </div>    
+  </div>   
+
+  <div id="export-toolbox" class="toolbox shadowed">
+     <label> EXPORT </label>
+     <%= render :partial => "import_export_footer" %> 
+  </div>   

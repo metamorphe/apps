@@ -120,6 +120,13 @@ label{
 
 
 }
+#export-toolbox {
+  position: absolute;
+  top: 180px;
+  right: 5px;
+  /*calc(34% + 98px + 10px);*/
+  width: 120px;
+}
 #canvas-toolbox {
   position: absolute;
   top: 10px;

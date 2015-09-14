@@ -33,6 +33,7 @@ TracesLayer.prototype = {
 	tracify: function(){
 		var scope = this;
 		if(scope.trace_mode){
+			$('#sandbox').css("background", "#333");
 			_.each(scope.collection, function(el, i, arr){
 				console.log(el);
 				el.path.children[0].style = {
@@ -41,15 +42,16 @@ TracesLayer.prototype = {
 					shadowBlur: 5,
 					shadowOffset: new paper.Point(0, 0)
 				}
-
-				el.path.sendToBack();
+				
+				// el.path.sendToBack();
 			});
 		}				
 		else{
+			$('#sandbox').css("background", "");
 			_.each(scope.collection, function(el, i, arr){
 				el.path.children[0].style.strokeColor = el.polarity_color;
 				el.path.children[0].style.shadowBlur = 0;
-
+				
 			});
 		}
 	},

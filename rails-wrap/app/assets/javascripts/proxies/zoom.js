@@ -29,12 +29,13 @@ Zoom.prototype = {
 	}, 
 	show_scale: function(){
 		// console.log("showing scale");
-		var b = designer.nodes.bounds().bounds;
-		var pt = b.topLeft.clone();
+		// var b = designer.nodes.bounds().bounds;
+		var pt = paper.view.center.clone();
 
 		var diam = Ruler.mm2pts(24.26);
 		pt.x += diam;
 		pt.y += diam;
+		
 		this.scale = paper.Path.Circle({
 			center: pt, 
 			radius: diam/2, 
