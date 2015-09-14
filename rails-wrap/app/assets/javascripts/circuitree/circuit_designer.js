@@ -7,7 +7,7 @@ function CircuitDesigner(container){
 	this.circuit_layer = new CircuitLayer(paper);
 	this.art_layer = new ArtworkLayer(paper);
 	this.traces_layer = new TracesLayer(paper);
-	CircuitDesigner.defaultTool = $('#path-tool');
+	CircuitDesigner.defaultTool = $('#pan-tool').click();
 	this.init();
 	this.animations = [];
 	this.update();
