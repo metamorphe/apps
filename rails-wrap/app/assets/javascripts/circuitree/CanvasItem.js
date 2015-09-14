@@ -91,11 +91,21 @@ CanvasItem.prototype = {
 		this.terminals = {};
 		console.log("TERM", this.path.className);
 		// console.log(this.name, b);
+		lpos = b.leftCenter.clone();
+		lpos.x += 5/2;
+
+		rpos = b.rightCenter.clone();
+		rpos.x -= 5/2;
+
+		tpos = b.topCenter.clone();
+		tpos.y += 5/2;
+		bpos = b.bottomCenter.clone();
+		bpos.y -= 5/2;
 		if(this.t_config.indexOf('w') != -1){
 			this.terminals['w'] = this.paper.Path.Circle({
 				fillColor: "red", 
 				radius: 5, 
-				position: b.leftCenter, 
+				position: lpos, 
 				name: "terminal",
 				polarity: 1,
 				direction: 'w',
@@ -107,7 +117,7 @@ CanvasItem.prototype = {
 			this.terminals['e']  = this.paper.Path.Circle({
 				fillColor: "#333333", 
 				radius: 5, 
-				position: b.rightCenter, 
+				position: rpos, 
 				name: "terminal", 
 				polarity: 0,
 				direction: 'e',
@@ -118,7 +128,7 @@ CanvasItem.prototype = {
 			this.terminals['s']  = this.paper.Path.Circle({
 				fillColor: "red", 
 				radius: 5, 
-				position: b.bottomCenter, 
+				position: bpos, 
 				name: "terminal", 
 				polarity: 1, 
 				direction: 's',
@@ -129,7 +139,7 @@ CanvasItem.prototype = {
 			this.terminals['n']  = this.paper.Path.Circle({
 				fillColor: "#333333", 
 				radius: 5, 
-				position: b.topCenter, 
+				position: tpos, 
 				name: "terminal", 
 				polarity: 0,
 				direction: 'n',
