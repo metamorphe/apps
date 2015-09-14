@@ -23,6 +23,7 @@
 //= require proxies/Tools/CanvasPanTool
 //= require proxies/Tools/RunTool
 //= require proxies/Tools/DebugTool
+//= require proxies/Tools/FabTool
 //= require proxies/StatsController
 //= require proxies/Material
 //= require proxies/CircuitLayer
@@ -35,3 +36,4 @@
 //= require circuitree/TracesLayer
 //= require circuitree/animation_handler
 //= require circuitree/Alerter
+//= require circuitree/FabricationGuide

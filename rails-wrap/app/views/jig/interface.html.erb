@@ -8,7 +8,7 @@
 // `8888Y'  `Y88P' 88   YD Y888888P 88         YP    
                                                   
   var design = <%= @design %>;
-  var designer, zoom, materials, storage, alerter;
+  var designer, zoom, materials, storage, alerter, guide;
   $(function(){
     attachHandlers();
     dim = new DimensionsPreview($("#sandbox"));
@@ -26,6 +26,7 @@
     
     zoom = new Zoom(designer.paper.view.zoom, designer.paper);
     materials = new Materials($(".materials"));
+    guide = new FabricationGuide($("#fab-guide"));
 
     StatsController.DOM = $('#stat-box');
     stats = new StatsController(designer);
@@ -174,17 +175,62 @@ YP   YP    YP    YP  YP  YP Y88888P
  
   <%= render :partial => "toolbox" %>
   <div id="alert-container" class="col-xs-3 pull-right">
-  <div id="alerter" class="alert alert-danger alert-dismissible fade in" role="alert">
-      <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
-      <h4>Oh snap! That's no bueno!</h4>
-      <p id='message'>Change this and that and try again. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Cras mattis consectetur purus sit amet fermentum.</p>
-      <p>
-        <button id="action" type="button" class="btn btn-xs btn-danger" data-dismiss="alert">Take this action</button>
-        <button id="auto" type="button" class="btn btn-xs btn-default">Do this for me always.</button>
-      </p>
-      <p>
-        <button id="silence" type="button" class="btn btn-xs btn-default">Don't tell me again</button>
-      </p>
+    <div id="alerter" class="alert alert-danger alert-dismissible fade in" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+        <h4>Oh snap! That's no bueno!</h4>
+        <p id='message'>Change this and that and try again. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Cras mattis consectetur purus sit amet fermentum.</p>
+        <p>
+          <button id="action" type="button" class="btn btn-xs btn-danger" data-dismiss="alert">Take this action</button>
+          <button id="auto" type="button" class="btn btn-xs btn-default">Do this for me always.</button>
+        </p>
+        <p>
+          <button id="silence" type="button" class="btn btn-xs btn-default">Don't tell me again</button>
+        </p>
+      </div>
+  </div>
+  <div id="fab-guide" class="debug-container col-xs-3 pull-right">
+    <label class="text-shadowed"> FABRICATION GUIDE </label>
+    <div id="debugger">
+      <ul class="list-group">
+      <li class="list-group-item">
+        <p>Fix the battery to the design. Make sure the positive side is oriented correctly. </p>
+        <div class="btn-group pull-right">
+          <button class="btn btn-sm btn-success"><span class="glyphicon glyphicon-check"></span></button>
+          <!-- <button class="btn btn-sm btn-danger"><span class="glyphicon glyphicon-remove"></span></button> -->
+        </div>
+      </li>
+     <li class="list-group-item">
+        <p>Apply your LED sticker at position #1. </p>
+         <div class="btn-group pull-right">
+          <button class="btn btn-sm btn-success"><span class="glyphicon glyphicon-check"></span></button>
+          <!-- <button class="btn btn-sm btn-danger"><span class="glyphicon glyphicon-remove"></span></button> -->
+        </div>
+      </li>
+     <li class="list-group-item">
+        <p> Using your silver pen, connect the LED #1 positive terminal to the battery's positive terminal. </p>
+         <div class="btn-group pull-right">
+          <button class="btn btn-sm btn-success"><span class="glyphicon glyphicon-check"></span></button>
+          <!-- <button class="btn btn-sm btn-danger"><span class="glyphicon glyphicon-remove"></span></button> -->
+        </div>
+      </li>
+     <li class="list-group-item">
+        <p>Using your silver pen, connect the LED #1 negative terminal to the battery to the negative terminal. </p>
+         <div class="btn-group pull-right">
+          <button class="btn btn-sm btn-warning"><span class="glyphicon glyphicon-check"></span></button>
+          <!-- <button class="btn btn-sm btn-danger"><span class="glyphicon glyphicon-remove"></span></button> -->
+        </div>
+      </li>
+     <li class="list-group-item">
+        <p>Does your LED #1 light up?  </p>
+        <div class="btn-group pull-right">
+          <button class="btn btn-sm btn-warning"><span class="glyphicon glyphicon-ok"></span></button>
+          <button class="btn btn-sm btn-danger"><span class="glyphicon glyphicon-remove"></span></button>
+        </div>
+      </li>
+     <li class="list-group-item">
+        ...
+      </li>
+      </ul>
     </div>
   </div>
   <div id="sandbox" class="col-xs-12">

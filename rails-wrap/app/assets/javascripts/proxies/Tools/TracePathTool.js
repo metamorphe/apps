@@ -57,7 +57,7 @@ function TracePathTool(paper){
 				scope.clear();
 			}
 		}
-		
+
 		scope.copy_mode = event.key == "option";
 		return true;
 	}	

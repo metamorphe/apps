@@ -65,9 +65,7 @@
         <%= button_tag :id => "path-tool", :class => "btn btn-ellustrator" do %>
         <span class="icon-path-draw"></span>
         <% end %>
-        <%= button_tag :id => "ink-well-mode", :class => "btn btn-ellustrator" do %>
-        <span class="icon-inkwell"></span>
-        <% end %>
+        
     </div>
       <div class="btn-group" role="group" aria-label="pen-tools">
        <%= button_tag :id => "anchor-tool", :class => "btn btn-ellustrator" do %>
@@ -92,8 +90,12 @@
 
 
       <div class="btn-group" role="group" aria-label="pen-tools">
+
        <%= button_tag :id => "run-tool", :class => "btn btn-primary" do %>
         <span class="glyphicon glyphicon glyphicon-record"></span>
+        <% end %>
+         <%= button_tag :id => "fab-tool", :class => "btn btn-primary" do %>
+        <span class="icon-inkwell"></span>
         <% end %>
         <%= button_tag :id => "debug-tool", :class => "btn btn-primary" do %>
         <span class="icon-debug"></span>

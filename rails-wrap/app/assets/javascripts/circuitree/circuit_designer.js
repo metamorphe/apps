@@ -40,8 +40,9 @@ CircuitDesigner.prototype = {
 		this.toolbox.add("transformtool", $('#transform-tool'),  new TransformTool(this.paper));
 		this.toolbox.add("pantool", $('#pan-tool'),  new PanTool(this.paper));
 		this.toolbox.add("canvaspantool", $('#canvas-pan-tool'),  new CanvasPanTool(this.paper));
-		this.toolbox.add("run", $('#run-tool'),  new RunTool(this.paper));
-		this.toolbox.add("debug", $('#debug-tool'),  new DebugTool(this.paper));
+		this.toolbox.add("runtool", $('#run-tool'),  new RunTool(this.paper));
+		this.toolbox.add("debugtool", $('#debug-tool'),  new DebugTool(this.paper));
+		this.toolbox.add("fabtool", $('#fab-tool'),  new FabTool(this.paper));
 		
 		this.toolbox.enable("pantool");
 		return this;
