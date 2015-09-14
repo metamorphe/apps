@@ -36,8 +36,8 @@ Alerter.prototype = {
 			$("#alerter").find('.close').click();
 		});
 
-		$("#interface-container").append(dom);
-		dom.on('closed.bs.alert', function(event) {
+		$("#alert-container").append(dom);
+			dom.on('closed.bs.alert', function(event) {
 		  // fn(event);
 		});
 

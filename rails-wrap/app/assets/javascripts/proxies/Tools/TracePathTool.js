@@ -127,10 +127,13 @@ TracePathTool.prototype = {
 	    	// Hanging trace
 	    	if(intersects.length == 0){
 	    		start_terminal = null;
+	    		trace.simplify();
+	    		trace.remove();
+	    		designer.traces_layer.add(trace);
 	    		return;
 	    	}
 	    // Are all connections of the same polarity
-	    	var offending_elements = [];
+	    	var offending_elements = [trace];
 	    	var polarity = start_terminal.name == "trace" ? start_terminal.style.strokeColor : start_terminal.style.fillColor;
 	    		var valid_connection = _.reduce(intersects, function(memo, el, i, arr){
 	    			var el_polarity = el.name == "trace" ? el.style.strokeColor : el.style.fillColor;
@@ -149,46 +152,28 @@ TracePathTool.prototype = {
 	    		trace.simplify();
 
 	    		var animations = [];
-    			_.each(offending_elements, function(el, i, arr){
-					console.log("Strobing", el.name);
-					el.style = {
-						shadowColor: "blue",
-						shadowBlur: 30,
-						shadowOffset: new paper.Point(0, 0)
-					}
-					animations.push(designer.animation_handler.add(function(event){
-						var t = Math.sin(event.count/5); //[-1, 1]
-						t += 1; //[0, 2];
-						t /= 2; //[0, 1];
-						el.shadowColor.alpha = t;
-					}, 1.5,
-					function(){
-						el.shadowColor.alpha = 0;
-					}));
-    			});
+    			
 
 	    		alerter.alert(TracePathTool.SHORT_MESSAGE,
 		    		function(){
-		    			trace.style = {
-							shadowColor: "blue",
-							shadowBlur: 30,
-							shadowOffset: new paper.Point(0, 0)
-						}
-
-						designer.animation_handler.add(function(event){
-							var t = Math.sin(event.count/5); //[-1, 1]
-							t += 1; //[0, 2];
-							t /= 2; //[0, 1];
-							trace.shadowColor.alpha = t;
-						}, 1.5,
-						function(){
-							_.each(animations, function(el, i, arr){
-								designer.animation_handler.remove(el);
-							});
-							if(trace) trace.remove();
-							trace.shadowColor.alpha = 0;
+		    			_.each(offending_elements, function(el, i, arr){
+							console.log("Strobing", el.name);
+							el.style = {
+								shadowColor: "blue",
+								shadowBlur: 30,
+								shadowOffset: new paper.Point(0, 0)
+							}
+							animations.push(designer.animation_handler.add(function(event){
+								var t = Math.sin(event.count/5); //[-1, 1]
+								t += 1; //[0, 2];
+								t /= 2; //[0, 1];
+								el.shadowColor.alpha = t;
+							}, 1.5,
+							function(){
+								el.shadowColor.alpha = 0;
+								if(trace) trace.remove();
+							}));
 						});
-						
 					},
 		    		"Remove the shorting path"
 	    		);
@@ -242,10 +227,13 @@ TracePathTool.prototype = {
 	    	// Hanging trace
 	    	if(intersects.length == 0){
 	    		start_terminal = null;
+	    		trace.simplify();
+	    		trace.remove();
+	    		designer.traces_layer.add(trace);
 	    		return;
 	    	}
 	    	// Are all connections of the same polarity
-	    	var offending_elements = [];
+	    	var offending_elements = [trace];
 	    	var polarity = start_terminal.name == "trace" ? start_terminal.style.strokeColor : start_terminal.style.fillColor;
 	    		var valid_connection = _.reduce(intersects, function(memo, el, i, arr){
 	    			var el_polarity = el.name == "trace" ? el.style.strokeColor : el.style.fillColor;
@@ -264,45 +252,28 @@ TracePathTool.prototype = {
 	    		trace.simplify();
 
 	    		var animations = [];
-    			_.each(offending_elements, function(el, i, arr){
-					console.log("Strobing", el.name);
-					el.style = {
-						shadowColor: "blue",
-						shadowBlur: 30,
-						shadowOffset: new paper.Point(0, 0)
-					}
-					animations.push(designer.animation_handler.add(function(event){
-						var t = Math.sin(event.count/5); //[-1, 1]
-						t += 1; //[0, 2];
-						t /= 2; //[0, 1];
-						el.shadowColor.alpha = t;
-					}, 1.5,
-					function(){
-						el.shadowColor.alpha = 0;
-					}));
-    			});
+    			
 
 	    		alerter.alert(TracePathTool.SHORT_MESSAGE,
 		    		function(){
-		    			trace.style = {
+						_.each(offending_elements, function(el, i, arr){
+						console.log("Strobing", el.name);
+						el.style = {
 							shadowColor: "blue",
 							shadowBlur: 30,
 							shadowOffset: new paper.Point(0, 0)
 						}
-
-						designer.animation_handler.add(function(event){
+						animations.push(designer.animation_handler.add(function(event){
 							var t = Math.sin(event.count/5); //[-1, 1]
 							t += 1; //[0, 2];
 							t /= 2; //[0, 1];
-							trace.shadowColor.alpha = t;
+							el.shadowColor.alpha = t;
 						}, 1.5,
 						function(){
-							_.each(animations, function(el, i, arr){
-								designer.animation_handler.remove(el);
-							});
+							el.shadowColor.alpha = 0;
 							if(trace) trace.remove();
-							trace.shadowColor.alpha = 0;
-						});
+						}));
+	    			});
 						
 					},
 		    		"Remove the shorting path"
