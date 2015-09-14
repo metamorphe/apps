@@ -3,7 +3,7 @@ var hitOptions = {
 	segments: true,
 	stroke: true,
 	fill: true,
-	tolerance: 1
+	tolerance: 0
 };
 TracePathTool.SHORT_MESSAGE = "You are shorting your circuit. Avoid crossing any paths or connecting to terminals that aren't the same color (polarity).";
 

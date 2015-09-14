@@ -91,44 +91,93 @@ CanvasItem.prototype = {
 		this.terminals = {};
 		console.log("TERM", this.path.className);
 		// console.log(this.name, b);
+		padding = 4;
 		lpos = b.leftCenter.clone();
-		lpos.x += 5/2;
+		lpos.x += 5/2 + padding;
 
 		rpos = b.rightCenter.clone();
-		rpos.x -= 5/2;
+		rpos.x -= 5/2 + padding;
 
 		tpos = b.topCenter.clone();
-		tpos.y += 5/2;
+		tpos.y += 5/2 + padding;
+
 		bpos = b.bottomCenter.clone();
-		bpos.y -= 5/2;
+		bpos.y -= 5/2 + padding;
+
 		if(this.t_config.indexOf('w') != -1){
-			this.terminals['w'] = this.paper.Path.Circle({
+			
+
+			var c = this.paper.Path.Circle({
 				fillColor: "red", 
-				radius: 5, 
-				position: lpos, 
+				radius: 16, 
+				position: b.center, 
 				name: "terminal",
 				polarity: 1,
 				direction: 'w',
 				parent: this.path
 			});
+			rect_pos = b.topCenter.clone();
+			rect_pos.y -=2;
+			rect_pos.x -=5;
+			var r = this.paper.Path.Rectangle({
+				point: rect_pos, 
+				fillColor: "blue", 
+				size: new paper.Size(30, 50)
+			});
+			this.terminals['w'] = c.subtract(r);
+			this.terminals['w'].name =  "terminal";
+			this.terminals['w'].polarity =  1;
+			this.terminals['w'].direction =  'w';
+			this.terminals['w'].parent =  this.path;
+			r.remove();
+			c.remove();
 
 		}
 		if(this.t_config.indexOf('e') != -1){
-			this.terminals['e']  = this.paper.Path.Circle({
+			// this.terminals['e']  = this.paper.Path.Circle({
+			// 	fillColor: "#333333", 
+			// 	radius: 5, 
+			// 	position: rpos, 
+			// 	name: "terminal", 
+			// 	polarity: 0,
+			// 	direction: 'e',
+			// 	parent: this.path
+			// });
+
+			var c = this.paper.Path.Circle({
 				fillColor: "#333333", 
-				radius: 5, 
-				position: rpos, 
-				name: "terminal", 
+				radius: 16, 
+				position: b.center, 
+				name: "terminal",
 				polarity: 0,
 				direction: 'e',
 				parent: this.path
 			});
+			rect_pos = b.topCenter.clone();
+			rect_pos.y -= 2;
+			rect_pos.x -= 25;
+			var r = this.paper.Path.Rectangle({
+				point: rect_pos, 
+				fillColor: "blue", 
+				size: new paper.Size(30, 50)
+			});
+			this.terminals['e'] = c.subtract(r);
+			this.terminals['e'].name =  "terminal";
+			this.terminals['e'].polarity =  0;
+			this.terminals['e'].direction =  'e';
+			this.terminals['e'].parent =  this.path;
+
+			r.remove();
+			c.remove();
+
 		}
 		if(this.t_config.indexOf('s') != -1){
-			this.terminals['s']  = this.paper.Path.Circle({
+			bpos.x -= 20/2;
+			bpos.y -= 8/2;
+			this.terminals['s']  = this.paper.Path.Rectangle({
 				fillColor: "red", 
-				radius: 5, 
-				position: bpos, 
+				size: new paper.Size(20, 8),
+				point: bpos, 
 				name: "terminal", 
 				polarity: 1, 
 				direction: 's',
@@ -136,10 +185,12 @@ CanvasItem.prototype = {
 			});
 		}
 		if(this.t_config.indexOf('n') != -1){
-			this.terminals['n']  = this.paper.Path.Circle({
+			tpos.y += 7/2;
+			this.terminals['n']  = this.paper.Path.RegularPolygon({
 				fillColor: "#333333", 
-				radius: 5, 
-				position: tpos, 
+				radius: 7, 
+				sides: 3,
+				center: tpos, 
 				name: "terminal", 
 				polarity: 0,
 				direction: 'n',
