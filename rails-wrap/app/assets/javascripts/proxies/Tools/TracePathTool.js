@@ -12,6 +12,8 @@ function TracePathTool(paper){
 	this.selectedPoint = null;
 	this.selectedHandle = null;
 	this.selectedStroke = null;
+	this.lastTrace = null;
+
 	this.tool = new paper.Tool();
 
 	this.tool.distanceThreshold = 10;
@@ -46,7 +48,20 @@ function TracePathTool(paper){
 		scope[scope.canvas_item_type].onMouseDrag(event, scope);
 		scope.update();
 	}	
-	
+	this.tool.onKeyDown = function(event){
+		scope.onKeyDownDefault(event);
+
+		if(event.key == "-" ||event.key == "backspace"){
+			if(scope.lastTrace != null){
+				scope.lastTrace.e_layer.remove(scope.lastTrace.guid);
+				scope.clear();
+			}
+		}
+		
+		scope.copy_mode = event.key == "option";
+		return true;
+	}	
+
 }
 
 var trace;
@@ -102,7 +117,7 @@ TracePathTool.prototype = {
 		onMouseDrag: function(event){
 			trace.add(event.point);
 		}, 
-		onMouseUp: function(event){
+		onMouseUp: function(event, scope){
 			
 			// Get all conductive elements on the board
 			var terminals = designer.circuit_layer.getAllTerminals();
@@ -130,7 +145,7 @@ TracePathTool.prototype = {
 	    		start_terminal = null;
 	    		trace.simplify();
 	    		trace.remove();
-	    		designer.traces_layer.add(trace);
+	    		scope.lastTrace = designer.traces_layer.add(trace);
 	    		return;
 	    	}
 	    // Are all connections of the same polarity
@@ -146,7 +161,8 @@ TracePathTool.prototype = {
 	    	if(valid_connection){
 	    		trace.simplify();
 	    		trace.remove();
-	    		designer.traces_layer.add(trace);
+	    		scope.lastTrace = designer.traces_layer.add(trace);
+	    		
 	    	}
 	    	else{
 	    		// error message
@@ -203,7 +219,7 @@ TracePathTool.prototype = {
 		onMouseDrag: function(event){
 			trace.add(event.point);
 		}, 
-		onMouseUp: function(event){
+		onMouseUp: function(event, scope){
    			// Get all conductive elements on the board
 			var terminals = designer.circuit_layer.getAllTerminals();
 			var traces = designer.traces_layer.getAllTraces();
@@ -229,8 +245,9 @@ TracePathTool.prototype = {
 	    	if(intersects.length == 0){
 	    		start_terminal = null;
 	    		trace.simplify();
+	    		scope.lastTrace = designer.traces_layer.add(trace);
 	    		trace.remove();
-	    		designer.traces_layer.add(trace);
+	    		
 	    		return;
 	    	}
 	    	// Are all connections of the same polarity
@@ -246,7 +263,7 @@ TracePathTool.prototype = {
 	    	if(valid_connection){
 	    		trace.simplify();
 	    		trace.remove();
-	    		designer.traces_layer.add(trace);
+    			scope.lastTrace = designer.traces_layer.add(trace);;
 	    	}
 	    	else{
 	    		// error message

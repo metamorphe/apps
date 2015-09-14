@@ -18,6 +18,7 @@ CircuitLayer.prototype = {
 		ci.e_layer = this;
 		this.collection.push(ci);
 		this.update(true);
+		return ci;
 	}, 
 	remove: function(id){
 		console.log("Removing", id);

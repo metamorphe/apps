@@ -22,6 +22,7 @@ TracesLayer.prototype = {
 		console.log("RED", item.style.strokeColor.red);
 		this.collection.push(ci);
 		this.update(true);
+		return ci;
 	}, 
 	remove: function(id){
 		this.collection = _.reject(this.collection, function(el, i, arr){

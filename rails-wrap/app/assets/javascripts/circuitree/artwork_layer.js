@@ -23,6 +23,7 @@ ArtworkLayer.prototype = {
 		ci.e_layer = this;
 		this.collection.push(ci);
 		this.update(true);
+		return ci;
 	}, 
 	remove: function(id){
 		this.collection = _.reject(this.collection, function(el, i, arr){

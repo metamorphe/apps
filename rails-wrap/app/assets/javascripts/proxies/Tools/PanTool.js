@@ -53,41 +53,13 @@ function PanTool(paper){
 		scope.update();
 	}	
 	this.tool.onKeyDown = function(event){
-		console.log("KEY DOWN", event.key);
 		scope.onKeyDownDefault(event);
-
 
 		if(event.key == "-" ||event.key == "backspace"){
 			if(scope.selectedCluster != null){
 				console.log("SC", scope.selectedCluster.name, scope.selectedCluster)
 				scope.selectedCluster.canvasItem.e_layer.remove(scope.selectedCluster.canvasItem.guid);
 				scope.clear();
-			}
-		}
-
-		if(event.key == "d"){
-			if(scope.selectedStroke != null){
-				designer.activePath = scope.selectedStroke.id;
-				var dp = designer.nodes.at(designer.activePath).duplicate();
-				designer.nodes.add(dp.id, dp);
-				scope.clear();
-			}
-		}
-
-		if(event.key == "r"){
-			if(scope.selectedStroke != null){
-				designer.activePath = scope.selectedStroke.id;
-				var dp = designer.nodes.at(designer.activePath);
-				dp.reflect_x();
-				
-			}
-		}
-		if(event.key == "f"){
-			if(scope.selectedStroke != null){
-				designer.activePath = scope.selectedStroke.id;
-				var dp = designer.nodes.at(designer.activePath);
-				dp.reflect_y();
-				
 			}
 		}
 		
