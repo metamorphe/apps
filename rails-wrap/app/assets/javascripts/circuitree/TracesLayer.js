@@ -48,6 +48,8 @@ TracesLayer.prototype = {
 		else{
 			_.each(scope.collection, function(el, i, arr){
 				el.path.children[0].style.strokeColor = el.polarity_color;
+				el.path.children[0].style.shadowBlur = 0;
+
 			});
 		}
 	},

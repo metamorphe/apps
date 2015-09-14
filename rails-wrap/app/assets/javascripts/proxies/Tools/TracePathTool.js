@@ -243,11 +243,10 @@ TracePathTool.prototype = {
 	    	// Handle intersections
 	    	// Hanging trace
 	    	if(intersects.length == 0){
-	    		start_terminal = null;
 	    		trace.simplify();
-	    		scope.lastTrace = designer.traces_layer.add(trace);
 	    		trace.remove();
-	    		
+	    		scope.lastTrace = designer.traces_layer.add(trace);
+	    		start_terminal = null;
 	    		return;
 	    	}
 	    	// Are all connections of the same polarity
