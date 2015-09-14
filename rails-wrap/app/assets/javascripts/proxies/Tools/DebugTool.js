@@ -55,10 +55,12 @@ DebugTool.prototype = {
 	enable: function(){
 		designer.circuit_layer.draw_mode = true;
 		designer.circuit_layer.update();
+		debug.show();
 	},
 	disable: function(){
 		designer.circuit_layer.draw_mode = false;
 		designer.circuit_layer.update();
+		debug.hide();
 	},
 	update: function(){
 		this.paper.view.update();

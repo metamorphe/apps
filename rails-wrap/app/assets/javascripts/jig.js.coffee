@@ -37,3 +37,4 @@
 //= require circuitree/animation_handler
 //= require circuitree/Alerter
 //= require circuitree/FabricationGuide
+//= require circuitree/DebugGuide

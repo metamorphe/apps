@@ -65,6 +65,7 @@ FabTool.prototype = {
 		});	
 	},
 	disable: function(){
+		guide.hide();
 		designer.circuit_layer.draw_mode = false;
 		designer.traces_layer.trace_mode = false;
 		designer.circuit_layer.update();

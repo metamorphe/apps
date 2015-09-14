@@ -12,6 +12,11 @@
   bottom: 5px;
   right: 5px;
 }
+#confirm{
+  margin: -6px;
+  padding: 20px;
+  background: #333;
+}
   .debug-container label{
     font-family: "Helvetica", "Arial", sans-serif;
     font-weight: bold;
@@ -26,9 +31,13 @@
     background-color: rgb(93, 93, 93);
     border-color: #4d4d4d;
   }
-  .list-group-item p{
+  .debug-container p{
     width: 75%;
     display: inline-block;
+  }
+  .list-group-item .title{
+    /*background: #00A8E1;*/
+    font-weight: bold;
   }
 
 #alerter{
