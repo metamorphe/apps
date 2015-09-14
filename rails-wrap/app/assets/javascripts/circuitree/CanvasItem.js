@@ -7,6 +7,7 @@ function CanvasItem(paper, path, type, t_config){
 	this.className = "CanvasItem";
 	this.paper = paper;
 	this.id = path.id;
+	this.guid = guid();
 
 	
 	this.type = type;
@@ -36,7 +37,6 @@ function CanvasItem(paper, path, type, t_config){
 	// var g = new paper.Group([this.path, c]);
 	// paper.project.activeLayer.addChild(c);
 	// if(this.t_config.length > 0) this.addTerminals(this.t_config);
-
 }
 CanvasItem.prototype = {
 	setOpacity: function(val){
@@ -205,6 +205,14 @@ CanvasItem.prototype = {
 	}
 }
 
-
+function guid() {
+  function s4() {
+    return Math.floor((1 + Math.random()) * 0x10000)
+      .toString(16)
+      .substring(1);
+  }
+  return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+    s4() + '-' + s4() + s4() + s4();
+}
 
 

@@ -46,6 +46,7 @@ function TracePathTool(paper){
 		scope[scope.canvas_item_type].onMouseDrag(event, scope);
 		scope.update();
 	}	
+	
 }
 
 var trace;

@@ -11,6 +11,7 @@ var selectionRectangleScaleNormalized=null;
 
 function PanTool(paper){
 	this.paper = paper;
+	this.selectedCanvasItem = null;
 	this.selectedPoint = null;
 	this.selectedHandle = null;
 	this.selectedStroke = null;
@@ -22,6 +23,7 @@ function PanTool(paper){
 	this.tool.distanceThreshold = 10;
 
 	var scope = this;
+
 
 
 	this.tool.onMouseDown = function(event){
@@ -49,7 +51,49 @@ function PanTool(paper){
 		console.log("MouseDrag", scope.canvas_item_type);
 		scope[scope.canvas_item_type].onMouseDrag(event, scope);
 		scope.update();
-	}		
+	}	
+	this.tool.onKeyDown = function(event){
+		console.log("KEY DOWN", event.key);
+		scope.onKeyDownDefault(event);
+
+
+		if(event.key == "-" ||event.key == "backspace"){
+			if(scope.selectedCluster != null){
+				console.log("SC", scope.selectedCluster.name, scope.selectedCluster)
+				scope.selectedCluster.canvasItem.e_layer.remove(scope.selectedCluster.canvasItem.guid);
+				scope.clear();
+			}
+		}
+
+		if(event.key == "d"){
+			if(scope.selectedStroke != null){
+				designer.activePath = scope.selectedStroke.id;
+				var dp = designer.nodes.at(designer.activePath).duplicate();
+				designer.nodes.add(dp.id, dp);
+				scope.clear();
+			}
+		}
+
+		if(event.key == "r"){
+			if(scope.selectedStroke != null){
+				designer.activePath = scope.selectedStroke.id;
+				var dp = designer.nodes.at(designer.activePath);
+				dp.reflect_x();
+				
+			}
+		}
+		if(event.key == "f"){
+			if(scope.selectedStroke != null){
+				designer.activePath = scope.selectedStroke.id;
+				var dp = designer.nodes.at(designer.activePath);
+				dp.reflect_y();
+				
+			}
+		}
+		
+		scope.copy_mode = event.key == "option";
+		return true;
+	}	
 }
 
 
@@ -148,7 +192,6 @@ PanTool.prototype = {
 			if(["stroke", "fill", "segment"].indexOf(hitResult.type) != -1){
 			
 				var cluster = hitResult.item;
-				console.log(!_.isUndefined(cluster.canvasItem), ["Layer", "Group"].indexOf(cluster.className) == -1);
 				while(_.isUndefined(cluster.canvasItem))
 					cluster = cluster.parent;
 
@@ -179,7 +222,7 @@ PanTool.prototype = {
 			}
 		},
 		onMouseUp: function(event, scope){
-			scope.selectedCluster = null;
+			// scope.selectedCluster = null;
 		}
 	}
 }

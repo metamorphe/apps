@@ -10,6 +10,7 @@ function ArtworkLayer(paper){
 	this.collection = [];
 	this.ghost_mode = false;
 	this.lock_mode = false;
+	this.guid = guid();
 }
 
 ArtworkLayer.prototype = {
@@ -19,10 +20,16 @@ ArtworkLayer.prototype = {
 	add: function(item){
 		console.log("Adding artwork", item.id, item.name);
 		var ci = new CanvasItem(this.paper, item, this.className + "Element")
-		ci.art_id = this.collection.length;
+		ci.e_layer = this;
 		this.collection.push(ci);
 		this.update(true);
 	}, 
+	remove: function(id){
+		this.collection = _.reject(this.collection, function(el, i, arr){
+			if(el.guid == id) el.remove();
+			return el.guid == id
+		});
+	},
 	lockify: function(){
 		var scope = this;
 		if(scope.lock_mode){

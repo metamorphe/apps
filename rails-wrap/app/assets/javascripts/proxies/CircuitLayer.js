@@ -15,10 +15,17 @@ CircuitLayer.prototype = {
 	add: function(item, terminals_config){
 		console.log("Adding circuit el", item.id, item.name, terminals_config);
 		var ci = new CanvasItem(this.paper, item, this.className + "Element", terminals_config)
-		ci.art_id = guid();
+		ci.e_layer = this;
 		this.collection.push(ci);
 		this.update(true);
 	}, 
+	remove: function(id){
+		console.log("Removing", id);
+		this.collection = _.reject(this.collection, function(el, i, arr){
+			if(el.guid == id) el.remove();
+			return el.guid == id
+		});
+	},
 	drawify: function(){
 		var scope = this;
 		if(scope.draw_mode){
@@ -114,14 +121,4 @@ CircuitLayer.prototype = {
 	// length: function(){
 	// 	return Object.size(this.collection);
 	// }
-}
-
-function guid() {
-  function s4() {
-    return Math.floor((1 + Math.random()) * 0x10000)
-      .toString(16)
-      .substring(1);
-  }
-  return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
-    s4() + '-' + s4() + s4() + s4();
 }

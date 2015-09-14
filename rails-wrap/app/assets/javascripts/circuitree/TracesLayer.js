@@ -16,18 +16,31 @@ TracesLayer.prototype = {
 	add: function(item, terminals_config){
 		console.log("Adding traces el", item.id, item.name, terminals_config);
 		var ci = new CanvasItem(this.paper, item, this.className + "Element", terminals_config)
-		ci.trace_id = guid();
+		
+		ci.e_layer = this;
 		ci.polarity_color = item.style.strokeColor;
 		console.log("RED", item.style.strokeColor.red);
 		this.collection.push(ci);
 		this.update(true);
 	}, 
+	remove: function(id){
+		this.collection = _.reject(this.collection, function(el, i, arr){
+			if(el.guid == id) el.remove();
+			return el.guid == id
+		});
+	},
 	tracify: function(){
 		var scope = this;
 		if(scope.trace_mode){
 			_.each(scope.collection, function(el, i, arr){
 				console.log(el);
-				el.path.children[0].style.strokeColor = new paper.Color("#C0C0C0");
+				el.path.children[0].style = {
+					strokeColor: new paper.Color("#C0C0C0"), 
+					shadowColor: "black",
+					shadowBlur: 5,
+					shadowOffset: new paper.Point(0, 0)
+				}
+
 				el.path.sendToBack();
 			});
 		}				
@@ -75,12 +88,3 @@ TracesLayer.prototype = {
 	}
 }
 
-function guid() {
-  function s4() {
-    return Math.floor((1 + Math.random()) * 0x10000)
-      .toString(16)
-      .substring(1);
-  }
-  return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
-    s4() + '-' + s4() + s4() + s4();
-}

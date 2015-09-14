@@ -57,6 +57,7 @@ RunTool.prototype = {
 		designer.traces_layer.trace_mode = true;
 		designer.circuit_layer.update();
 		designer.traces_layer.update();
+		
 		var lights = designer.circuit_layer.getAllLights();
 		_.each(lights, function(el, i, arr){
 			el.ledOn(true);
