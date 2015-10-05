@@ -8,3 +8,5 @@
 //= require circuitree/terminal
 //= require circuitree/circuits
 //= require circuitree/tree
+//= require circuitree/june
+//= require jig

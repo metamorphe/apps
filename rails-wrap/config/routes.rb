@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
 
   get 'circuit/sandbox'
+  get 'circuit/june_sandbox'
 
   resources :designs do
     get 'interface' =>"jig#interface"
