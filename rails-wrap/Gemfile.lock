@@ -170,7 +170,7 @@ DEPENDENCIES
   jbuilder (~> 2.0)
   jquery-rails
   markdown-rails
-  mysql2
+  mysql2 (= 0.3.16)
   normalize-rails
   rails (= 4.1.4)
   sass-rails (~> 4.0.3)
@@ -182,3 +182,6 @@ DEPENDENCIES
   turbolinks
   uglifier (>= 1.3.0)
   underscore-rails
+
+BUNDLED WITH
+   1.10.6

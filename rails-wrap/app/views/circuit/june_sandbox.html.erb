@@ -7,14 +7,55 @@
 // `8888Y'  `Y88P' 88   YD Y888888P 88         YP    
   var june; 
   $(function(){
-   june = new JunePlayground($("#sandbox"));
-   var p = june.paper;
-     p.Path.Circle({
-      radius: 4, 
-      position: new p.Point(p.view.center),
-      fillColor: "green"
-     });
+    june = new JunePlayground($("#sandbox"));
+    var p = june.paper;
+      
+
+    var circle = p.Path.Circle({
+        radius: 70, 
+        position: new p.Point(p.view.center),
+        fillColor: "pink",
+        strokeColor: "black"
+    });
+
+
+    var length = circle.length;
+    var step_size = length/25;
+    var circle2;
+
+    circle.onClick = function(event) {
+      
+      var dc = document.getElementById('dotColor').value
+      var sw = Number(document.getElementById('strokeWidth').value)
+      var fc = document.getElementById('fillColor').value
+
+      for (var i = 0; i < length; i += step_size) {
+        var point = circle.getPointAt(i);
+
+        // Create a small circle at the point:
+        circle2 = new p.Path.Circle({
+          center: point,
+          radius: sw,
+          fillColor: dc
+        });
+      }
+      //get rid of old stroke color
+
+      this.strokeColor = null;
+      this.fillColor = fc;
+      
+    }
+
+    circle.onDoubleClick = function(event) {
+    
+      circle2.remove();
+      console.log("double");
+      debugger
+    }
+
+
   });
+
 </script>
 
 <!-- 
@@ -42,6 +83,13 @@ body, html{
   width: 100%;
   height: 100%;
 }
+input {
+  margin-right: 20px;
+}
+p{
+  margin-top: 10px;
+}
+
 </style>
 
 <!-- 
@@ -53,6 +101,15 @@ db   db d888888b .88b  d88. db
 YP   YP    YP    YP  YP  YP Y88888P  
 -->
                                     
+
+Dot Color: <input type="text" id="dotColor" name="FirstName" placeholder="Grey">
+Stroke Width: <input type="text" id="strokeWidth" name="LastName" placeholder="3">
+Circle Fill Color: <input type="text" id="fillColor" name="LastName" placeholder="Pink">
+
+
+<button onclick="circle.onKeyDown">Delete Stroke</button>
+
+<p>Type your input into the boxes and then press on the circle to see it change.</p>
 
 <div id="interface-container" class="row">   
   <div id="sandbox" class="col-xs-12">
