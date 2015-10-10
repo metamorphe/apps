@@ -9,7 +9,6 @@
   $(function(){
     june = new JunePlayground($("#sandbox"));
     var p = june.paper;
-      
 
     var circle = p.Path.Circle({
         radius: 70, 
@@ -22,6 +21,7 @@
     var length = circle.length;
     var step_size = length/25;
     var circle2;
+    var list = [];
 
     circle.onClick = function(event) {
       
@@ -38,6 +38,9 @@
           radius: sw,
           fillColor: dc
         });
+
+        list.push(circle2);
+
       }
       //get rid of old stroke color
 
@@ -47,10 +50,13 @@
     }
 
     circle.onDoubleClick = function(event) {
-    
+
       circle2.remove();
-      console.log("double");
-      debugger
+
+      for (var i = 0; i < list.length; i ++) {
+        list[i].remove()
+
+      }
     }
 
 
