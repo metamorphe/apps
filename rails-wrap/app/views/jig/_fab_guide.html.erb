@@ -1,3 +1,15 @@
+<script type="text/javascript">
+var steps = 
+$(function(){
+  var container = $("#fab-guide");
+  var item = template.clone();
+  item.find('.msg').html("Next");
+  container.append(item);
+});
+
+var template = $('<li class="list-group-item"><p class="msg">Fix the battery to the design. Make sure the positive side is oriented correctly. </p><div class="btn-group pull-right"><button class="btn btn-sm btn-success"><span class="glyphicon glyphicon-check"></span></button><!-- <button class="btn btn-sm btn-danger"><span class="glyphicon glyphicon-remove"></span></button> --></div></li>');
+</script>
+
 <div id="fab-guide" class="debug-container col-xs-3 pull-right">
     <label class="text-shadowed"> FABRICATION GUIDE </label>
     <div id="debugger">
