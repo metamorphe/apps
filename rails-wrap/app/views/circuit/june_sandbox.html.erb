@@ -6,61 +6,138 @@
 // db   8D Y8b  d8 88 `88.   .88.   88         88    
 // `8888Y'  `Y88P' 88   YD Y888888P 88         YP    
   var june; 
+  var blobstyle = {
+    strokeWidth: 10,
+    strokeColor: new paper.Color(0, .659, .882, .7),
+    strokeCap: 'round'
+  };
+
+  var hitOptions = {
+    segments: true,
+    stroke: true,
+    fill: false,
+    tolerance: 5
+  };
+
+  function BlobSelectTool(){
+    this.name = "BlobSelectTool";
+    this.tool = new paper.Tool();
+    this.tool.distanceThreshold = .01;
+    this.array = [];
+    this.blob = null;
+    var scope = this;
+
+
+    this.tool.onMouseDown = function(event){
+      if (event.modifiers.shift) { //if the shift key held, check this point for intersecting paths
+
+        var hitResult = paper.project.hitTest(event.point, hitOptions);
+
+        if (!hitResult){ //nothing at this point
+          scope.blob = new paper.Path(blobstyle);
+        } else { //hit something
+          scope.blob = hitResult.item;
+          // var nearestPoint = scope.blob.getNearestPoint(event.point);
+
+          // scope.blob.bringToFront(nearestPoint);
+          // scope.blob.firstChild.replaceWith(nearestPoint);
+          scope.blob.appendTop(event.point);
+
+        };
+
+      } else {
+        scope.blob = new paper.Path(blobstyle);
+
+      };
+    };
+
+    this.tool.onMouseDrag = function(event){
+      scope.blob.add(event.point);
+
+    };
+
+    this.tool.onMouseUp = function(event){  
+      scope.blob.unite(event.point);
+      scope.blob.closed = true;
+      scope.blob.selected = false;
+    };
+
+  }
+
+  // class methods
+  BlobSelectTool.prototype = {
+    enable: function(){
+
+    }, 
+    disable: function(){
+
+    }
+  }
+
+
   $(function(){
     june = new JunePlayground($("#sandbox"));
     var p = june.paper;
-
-    var circle = p.Path.Circle({
-        radius: 70, 
-        position: new p.Point(p.view.center),
-        fillColor: "pink",
-        strokeColor: "black"
-    });
+    var t = new BlobSelectTool();
+    paper.tool = t.tool;
 
 
-    var length = circle.length;
-    var step_size = length/25;
-    var circle2;
-    var list = [];
 
-    circle.onClick = function(event) {
+
+// Everything below is for part 2
+
+    // var circle = p.Path.Circle({
+    //     radius: 70, 
+    //     position: new p.Point(p.view.center),
+    //     fillColor: "pink",
+    //     strokeColor: "black"
+    // });
+
+
+    // var length = circle.length;
+    // var step_size = length/25;
+    // var circle2;
+    // var list = [];
+
+    // circle.onClick = function(event) {
       
-      var dc = document.getElementById('dotColor').value
-      var sw = Number(document.getElementById('strokeWidth').value)
-      var fc = document.getElementById('fillColor').value
+    //   var dc = document.getElementById('dotColor').value
+    //   var sw = Number(document.getElementById('strokeWidth').value)
+    //   var fc = document.getElementById('fillColor').value
 
-      for (var i = 0; i < length; i += step_size) {
-        var point = circle.getPointAt(i);
+    //   for (var i = 0; i < length; i += step_size) {
+    //     var point = circle.getPointAt(i);
 
-        // Create a small circle at the point:
-        circle2 = new p.Path.Circle({
-          center: point,
-          radius: sw,
-          fillColor: dc
-        });
+    //     // Create a small circle at the point:
+    //     circle2 = new p.Path.Circle({
+    //       center: point,
+    //       radius: sw,
+    //       fillColor: dc
+    //     });
 
-        list.push(circle2);
+    //     list.push(circle2);
 
-      }
-      //get rid of old stroke color
+    //   }
+    //   //get rid of old stroke color
 
-      this.strokeColor = null;
-      this.fillColor = fc;
+    //   this.strokeColor = null;
+    //   this.fillColor = fc;
       
-    }
+    // }
 
-    circle.onDoubleClick = function(event) {
+    // circle.onDoubleClick = function(event) {
 
-      circle2.remove();
+    //   circle2.remove();
 
-      for (var i = 0; i < list.length; i ++) {
-        list[i].remove()
+    //   for (var i = 0; i < list.length; i ++) {
+    //     list[i].remove()
 
-      }
-    }
+    //   }
+    // }
 
-
+  p.view.update();
   });
+
 
 </script>
 
@@ -107,15 +184,18 @@ db   db d888888b .88b  d88. db
 YP   YP    YP    YP  YP  YP Y88888P  
 -->
                                     
-
+<!-- 
 Dot Color: <input type="text" id="dotColor" name="FirstName" placeholder="Grey">
 Stroke Width: <input type="text" id="strokeWidth" name="LastName" placeholder="3">
 Circle Fill Color: <input type="text" id="fillColor" name="LastName" placeholder="Pink">
 
 <p>Type your input into the boxes and then press on the circle to see it change.</p>
-<p>Double click the circle to delete the stroke.</p>
+<p>Double click the circle to delete the stroke.</p> -->
 
 <div id="interface-container" class="row">   
   <div id="sandbox" class="col-xs-12">
   </div>
 </div>
+
+
+

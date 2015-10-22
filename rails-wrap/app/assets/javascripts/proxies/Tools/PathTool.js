@@ -10,6 +10,7 @@ function VectorTool(paper){
 	var scope = this;
 
 	this.tool.onMouseDown = function(event){
+		
 	}
 
 	this.tool.onMouseUp = function(event){
