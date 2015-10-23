@@ -12,12 +12,19 @@
     strokeCap: 'round'
   };
 
+  var blobclearstyle = {
+    strokeWidth: 1,
+    strokeColor: new paper.Color(0, .659, .882, .7),
+    strokeCap: 'round'
+  };
+
   var hitOptions = {
     segments: true,
     stroke: true,
     fill: false,
     tolerance: 5
   };
+
 
   function BlobSelectTool(){
     this.name = "BlobSelectTool";
@@ -26,27 +33,36 @@
     this.array = [];
     this.blob = null;
     var scope = this;
+    this.toolBool = false;
 
 
     this.tool.onMouseDown = function(event){
-      if (event.modifiers.shift) { //if the shift key held, check this point for intersecting paths
+      if (!this.toolBool){
+        var raster = new paper.Raster('toolOptions');
+        raster.position = new paper.Point(800, 500);
+        raster.scale(0.5);
+        scope.toolBool == true;
+      };
 
-        var hitResult = paper.project.hitTest(event.point, hitOptions);
-
-        if (!hitResult){ //nothing at this point
-          scope.blob = new paper.Path(blobstyle);
-        } else { //hit something
-          scope.blob = hitResult.item;
-          // var nearestPoint = scope.blob.getNearestPoint(event.point);
-
-          // scope.blob.bringToFront(nearestPoint);
-          // scope.blob.firstChild.replaceWith(nearestPoint);
-          scope.blob.appendTop(event.point);
-
-        };
+      if (event.modifiers.shift) { //if the shift key held, you want to append to the blob on the screen
+        debugger
+        scope.blob = new paper.Path(blobstyle);
+        scope.array.push(scope.blob);
 
       } else {
+
+        if (scope.blob){ //already a blob on the page, clear it and make a new blob
+          scope.blob.removeSegments(0);
+
+          for (i in scope.array){
+            var temp = scope.array[i];
+            temp.remove();
+          };
+          scope.array = [];
+        };
+
         scope.blob = new paper.Path(blobstyle);
+        scope.array.push(scope.blob);
 
       };
     };
@@ -54,13 +70,35 @@
     this.tool.onMouseDrag = function(event){
       scope.blob.add(event.point);
 
+
     };
 
-    this.tool.onMouseUp = function(event){  
-      scope.blob.unite(event.point);
-      scope.blob.closed = true;
-      scope.blob.selected = false;
-    };
+    this.tool.onMouseUp = function(event){
+
+      var unitedblob = scope.blob.clone(); 
+
+      scope.array.push(unitedblob);
+      for (i in scope.array){
+        unitedblob.unite(scope.array[i]);
+      };
+
+      unitedblob.closed = true;
+      unitedblob.selected = true;
+      unitedblob.strokeColor = new paper.Color(.3, .3, .3, .7);
+      unitedblob.fillColor = new paper.Color(.3, .3, .3, .5);
+      
+      unitedblob.simplify(1);
+      unitedblob.smooth();
+
+
+      // // hit test to select path
+      // var hitResult = paper.project.hitTest(event.point, hitOptions);
+      //   if (hitResult){ //nothing at this location
+      //     hitResult.item.selected = true;
+      //   };
+
+    }; 
+
 
   }
 
@@ -74,14 +112,73 @@
     }
   }
 
-
+  // testing
   $(function(){
     june = new JunePlayground($("#sandbox"));
     var p = june.paper;
     var t = new BlobSelectTool();
     paper.tool = t.tool;
 
+    var testing = new paper.Path({
+      segments: [
+      [404.5555419921875, 492.6666666666667], 
+      [397.2222086588542, 298],
+      [396.5555419921875, 304],
+      [385.2222086588542, 334.6666666666667],
+      [346.5555419921875, 340],
+      [337.8888753255208, 317.3333333333333],
+      [354.5555419921875, 280],
+      [367.8888753255208, 271.3333333333333],
+      [383.2222086588542, 271.3333333333333],
+      [335.8888753255208, 226],
+      [406.5555419921875, 237.33333333333334],
+      [407.8888753255208, 232],
+      [420.5555419921875, 218],
+      [489.2222086588542, 212.66666666666666],
+      [489.8888753255208, 226],
+      [435.8888753255208, 273.3333333333333],
+      [505.8888753255208, 300.6666666666667],
+      [513.8888753255209, 318.6666666666667],
+      [455.8888753255208, 332],
+      [436.5555419921875, 316.6666666666667],
+      [429.2222086588542, 310.6666666666667],
+      [428.5555419921875, 308],
+      [435.8888753255208, 352],
+      [439.2222086588542, 484.6666666666667]
+      ],
+      strokeColor: 'red',
+      strokeWidth: 10,
+      strokeCap: 'round',
+      selected: false
+    });
+  
+  var testing = new paper.Path({
+      segments: [
+      [367.8888753255208, 496], 
+      [367.8888753255208, 412.6666666666667],
+      [363.8888753255208, 381.3333333333333],
+      [306.5555419921875, 338],
+      [321.2222086588542, 280],
+      [321.2222086588542, 277.3333333333333],
+      //
+      [316.5555419921875, 262.6666666666667],
+      [305.8888753255208, 202.66666666666666],
 
+      [374.5555419921875, 202],
+      [513.2222086588541, 192],
+      [563.8888753255209, 216],
+      [573.2222086588541, 274],
+      [553.8888753255209, 384],
+      [526.5555419921875, 454.6666666666667],
+      [509.2222086588542, 479.3333333333333],
+      [491.8888753255208, 508.6666666666667],
+      [481.8888753255208, 518.6666666666666],
+      ],
+      strokeColor: 'black',
+      strokeWidth: 10,
+      strokeCap: 'round',
+      selected: false
+    });
 
 
 // Everything below is for part 2
@@ -173,6 +270,12 @@ p{
   margin-top: 10px;
 }
 
+.invisible {
+    visibility: hidden;
+
+}
+
+
 </style>
 
 <!-- 
@@ -194,8 +297,15 @@ Circle Fill Color: <input type="text" id="fillColor" name="LastName" placeholder
 
 <div id="interface-container" class="row">   
   <div id="sandbox" class="col-xs-12">
+    
   </div>
 </div>
+
+
+<img src="\bloboptions.jpg"  class="invisible" id="toolOptions" />
+
+
+
 
 
 
