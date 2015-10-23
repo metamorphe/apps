@@ -53,8 +53,10 @@
 	        	<a href="/"> Home</a>
 	        </li>
 	        <li class="<%= params[:action] == "interface" ? "active" : "" %>">
-	        	<%= link_to "Circuit Design", jig_interface_path(1) %>
+	        	<%= link_to "Circuit Design", jig_interface_path(2) %>
 	        </li>
+
+
 
 	        
 	        <li class="dropdown">
@@ -67,6 +69,12 @@
 	          <ul class="dropdown-menu" role="menu">
 	          	<li class="<%= params[:action] == "designer" ? "active" : "" %>">
 	        	<%= link_to "Bill of Materials", jig_bom_path, :class=> "navbar-link" %>
+		        </li>	
+		        <li class="<%= params[:action] == "debugs" ? "active" : "" %>">
+	        	<%= link_to "Debug", debugs_path, :class=> "navbar-link" %>
+		        </li>   
+		        <li class="<%= params[:action] == "fab_guides" ? "active" : "" %>">
+	        	<%= link_to "FabGuides", fab_guides_path, :class=> "navbar-link" %>
 		        </li>
 		        
 	          </ul>
