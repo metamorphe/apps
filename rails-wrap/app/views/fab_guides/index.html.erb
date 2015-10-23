@@ -27,7 +27,8 @@
           <% if fab_guide.debug_id.nil? %> 
            None
           <% else %>
-            <% link_to fab_guide.debug.name, debugs_path(Debug.find(fab_guide.debug_id)) %>
+            <%= Debug.find(fab_guide.debug_id).name %>
+           
           <% end %>
         </td>
         <td><%= link_to 'Show', fab_guide %></td>
