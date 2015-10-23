@@ -7,7 +7,7 @@
 // `8888Y'  `Y88P' 88   YD Y888888P 88         YP    
   var june; 
   var blobstyle = {
-    strokeWidth: 1,
+    strokeWidth: 10,
     strokeColor: new paper.Color(0, .659, .882, .3),
     strokeCap: 'round'
   };
@@ -67,18 +67,17 @@
 
     this.tool.onMouseUp = function(event){
 
+      scope.blob.strokeColor = null;
       var unitedblob = scope.blob; 
 
       for (i in scope.array){
         unitedblob.unite(scope.array[i]);
-        console.log(unitedblob, scope.array[i]);
       };
-
 
       unitedblob.closed = true;
       unitedblob.selected = true;
-      unitedblob.strokeColor = new paper.Color(.3, .3, .3, .7);
-      unitedblob.fillColor = new paper.Color(.3, .3, .3, .5);
+      unitedblob.strokeColor = blobstyle.strokeColor;
+      unitedblob.fillColor = new paper.Color(0, .659, .882, .3);
       
       unitedblob.simplify(1);
       unitedblob.smooth();
