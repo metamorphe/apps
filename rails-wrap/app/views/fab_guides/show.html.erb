@@ -32,7 +32,7 @@
 
 <p>
   <strong>Debug:</strong>
-  <%= Debug.find(@fab_guide.debug_id).name %>
+  <%= @fab_guide.debug_id.nil? ? "None" : Debug.find(@fab_guide.debug_id).name %>
 </p>
 
 <%= link_to 'Edit', edit_fab_guide_path(@fab_guide) %> |

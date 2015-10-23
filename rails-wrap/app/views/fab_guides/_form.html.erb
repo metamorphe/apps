@@ -18,7 +18,7 @@
   </div>
   <div class="field">
     <%= f.label :instruction_order %><br>
-    <%= f.number_field :instruction_order, :class=>"form-control"%>
+    <%= f.number_field :instruction_order, :value=> Design.last.fab_guides.length + 1,:class=>"form-control"%>
   </div>
   <div class="field">
     <%= f.label :main_message %><br>
@@ -26,7 +26,7 @@
   </div>
   <div class="field">
     <%= f.label :guide_type %><br>
-    <%= select("fab_guide", "guide_type", [[ "Confirmation", 0 ], ["Checkpoint", 1]], :class=> "form-control") %>
+    <%= select("fab_guide", "guide_type", FabGuide.guide_key, :class=> "form-control") %>
 
   </div>
   <div class="field">

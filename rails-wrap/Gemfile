@@ -54,3 +54,4 @@ gem 'normalize-rails'
 
 gem 'csg', '~> 0.1.5'
 gem 'underscore-rails'
+gem 'redcarpet'
