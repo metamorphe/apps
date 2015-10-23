@@ -7,23 +7,17 @@
 // `8888Y'  `Y88P' 88   YD Y888888P 88         YP    
   var june; 
   var blobstyle = {
-    strokeWidth: 10,
-    strokeColor: new paper.Color(0, .659, .882, .7),
-    strokeCap: 'round'
-  };
-
-  var blobclearstyle = {
     strokeWidth: 1,
     strokeColor: new paper.Color(0, .659, .882, .7),
     strokeCap: 'round'
   };
 
-  var hitOptions = {
-    segments: true,
-    stroke: true,
-    fill: false,
-    tolerance: 5
-  };
+  // var hitOptions = {
+  //   segments: true,
+  //   stroke: true,
+  //   fill: false,
+  //   tolerance: 5
+  // };
 
 
   function BlobSelectTool(){
@@ -35,7 +29,6 @@
     var scope = this;
     this.toolBool = false;
 
-
     this.tool.onMouseDown = function(event){
       if (!this.toolBool){
         var raster = new paper.Raster('toolOptions');
@@ -44,15 +37,16 @@
         scope.toolBool == true;
       };
 
+
       if (event.modifiers.shift) { //if the shift key held, you want to append to the blob on the screen
-        debugger
         scope.blob = new paper.Path(blobstyle);
         scope.array.push(scope.blob);
 
       } else {
 
         if (scope.blob){ //already a blob on the page, clear it and make a new blob
-          scope.blob.removeSegments(0);
+          
+          scope.blob.removeOnDown();
 
           for (i in scope.array){
             var temp = scope.array[i];
@@ -69,18 +63,17 @@
 
     this.tool.onMouseDrag = function(event){
       scope.blob.add(event.point);
-
-
     };
 
     this.tool.onMouseUp = function(event){
 
-      var unitedblob = scope.blob.clone(); 
+      var unitedblob = scope.blob; 
 
-      scope.array.push(unitedblob);
       for (i in scope.array){
         unitedblob.unite(scope.array[i]);
+        console.log(unitedblob, scope.array[i]);
       };
+
 
       unitedblob.closed = true;
       unitedblob.selected = true;
@@ -89,7 +82,6 @@
       
       unitedblob.simplify(1);
       unitedblob.smooth();
-
 
       // // hit test to select path
       // var hitResult = paper.project.hitTest(event.point, hitOptions);
