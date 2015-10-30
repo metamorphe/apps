@@ -100,13 +100,6 @@
     this.hitResult;
 
     this.tool.onMouseDown = function(event){
-      if (!this.toolBool){
-        var raster = new paper.Raster('toolOptions');
-        raster.position = new paper.Point(800, 500);
-        raster.scale(0.5);
-        scope.toolBool == true;
-      };
-
 
       if (event.modifiers.shift) { //if the shift key held, you want to append to the blob on the screen
         scope.blob = new paper.Path(blobstyle);
@@ -139,26 +132,62 @@
 
     this.tool.onMouseUp = function(event){
 
+      if (!this.toolBool){
+        var raster = new paper.Raster('toolOptions');
+        raster.position = new paper.Point(event.point.x + 300, event.point.y + 300);
+        raster.scale(0.5);
+        scope.toolBool == true;
+      };
+
       scope.blob.strokeColor = null;
       var unitedblob = scope.blob; 
 
-      for (i in scope.array){
-        unitedblob.unite(scope.array[i]);
-      };
-
-      unitedblob.closed = true;
-      unitedblob.strokeColor = blobstyle.strokeColor;
+      unitedblob.closePath(true);
+      unitedblob.selected = true;
+  
       unitedblob.fillColor = new paper.Color(0, .659, .882, .3);
-      
-      unitedblob.simplify(1);
       unitedblob.smooth();
 
-      if (unitedblob.intersects(testing2)){
-        testing2.selected = true;
+      //everything above makes the blue bubble
+
+      x = unitedblob.getIntersections(testing2);
+      y = unitedblob.getIntersections(testing1);
+
+      //draw line for Testing 2
+      arr2 = [testing2.getOffsetOf(x[0].point), testing2.getOffsetOf(x[1].point)] //store array of length of selected area on testing line
+      var begin = testing2.getLocationAt(arr2[0])
+      var end = testing2.getLocationAt(arr2[1])
+      var distance = (arr2[1] - arr2[0])/15
+      var holder = arr2[0]
+      var movePath2 = new paper.Path({
+        strokeColor: 'pink',
+        strokeWidth: 5
+      });
+      scope.array.push(movePath2)
+
+      for (i = 0; i < 15; i++) {
+        movePath2.add(testing2.getLocationAt(holder));
+        holder += distance
       };
-      if (unitedblob.intersects(testing1)){
-        testing1.selected = true;
+
+
+      //draw line for Testing 1
+      arr1 = [testing1.getOffsetOf(y[0].point), testing1.getOffsetOf(y[1].point)] //store array of length of selected area on testing line
+      var begin = testing1.getLocationAt(arr1[0])
+      var end = testing1.getLocationAt(arr1[1])
+      var distance = (arr1[1] - arr1[0])/15
+      var holder = arr1[0]
+      var movePath1 = new paper.Path({
+        strokeColor: 'blue',
+        strokeWidth: 5
+      });
+      scope.array.push(movePath1)
+
+      for (i = 0; i < 15; i++) {
+        movePath1.add(testing1.getLocationAt(holder));
+        holder += distance
       };
+    
 
     }; 
 
