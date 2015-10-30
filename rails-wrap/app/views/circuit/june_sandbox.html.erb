@@ -4,113 +4,15 @@
 // `8bo.   8P      88oobY'    88    88oodD'    88    
 //   `Y8b. 8b      88`8b      88    88~~~      88    
 // db   8D Y8b  d8 88 `88.   .88.   88         88    
-// `8888Y'  `Y88P' 88   YD Y888888P 88         YP    
-  var june; 
-  var blobstyle = {
-    strokeWidth: 10,
-    strokeColor: new paper.Color(0, .659, .882, .3),
-    strokeCap: 'round'
-  };
-
-  // var hitOptions = {
-  //   segments: true,
-  //   stroke: true,
-  //   fill: false,
-  //   tolerance: 5
-  // };
-
-
-  function BlobSelectTool(){
-    this.name = "BlobSelectTool";
-    this.tool = new paper.Tool();
-    this.tool.distanceThreshold = .01;
-    this.array = [];
-    this.blob = null;
-    var scope = this;
-    this.toolBool = false;
-
-    this.tool.onMouseDown = function(event){
-      if (!this.toolBool){
-        var raster = new paper.Raster('toolOptions');
-        raster.position = new paper.Point(800, 500);
-        raster.scale(0.5);
-        scope.toolBool == true;
-      };
-
-
-      if (event.modifiers.shift) { //if the shift key held, you want to append to the blob on the screen
-        scope.blob = new paper.Path(blobstyle);
-        scope.array.push(scope.blob);
-
-      } else {
-
-        if (scope.blob){ //already a blob on the page, clear it and make a new blob
-          
-          scope.blob.removeOnDown();
-
-          for (i in scope.array){
-            var temp = scope.array[i];
-            temp.remove();
-          };
-          scope.array = [];
-        };
-
-        scope.blob = new paper.Path(blobstyle);
-        scope.array.push(scope.blob);
-
-      };
-    };
-
-    this.tool.onMouseDrag = function(event){
-      scope.blob.add(event.point);
-    };
-
-    this.tool.onMouseUp = function(event){
-
-      scope.blob.strokeColor = null;
-      var unitedblob = scope.blob; 
-
-      for (i in scope.array){
-        unitedblob.unite(scope.array[i]);
-      };
-
-      unitedblob.closed = true;
-      unitedblob.selected = true;
-      unitedblob.strokeColor = blobstyle.strokeColor;
-      unitedblob.fillColor = new paper.Color(0, .659, .882, .3);
-      
-      unitedblob.simplify(1);
-      unitedblob.smooth();
-
-      // // hit test to select path
-      // var hitResult = paper.project.hitTest(event.point, hitOptions);
-      //   if (hitResult){ //nothing at this location
-      //     hitResult.item.selected = true;
-      //   };
-
-    }; 
-
-
-  }
-
-  // class methods
-  BlobSelectTool.prototype = {
-    enable: function(){
-
-    }, 
-    disable: function(){
-
-    }
-  }
-
-  // testing
+// `8888Y'  `Y88P' 88   YD Y888888P 88         YP   
+ // testing
   $(function(){
     june = new JunePlayground($("#sandbox"));
     var p = june.paper;
     var t = new BlobSelectTool();
     paper.tool = t.tool;
 
-    var testing = new paper.Path({
+    var testing1 = new paper.Path({
       segments: [
       [404.5555419921875, 492.6666666666667], 
       [397.2222086588542, 298],
@@ -143,7 +45,7 @@
       selected: false
     });
   
-  var testing = new paper.Path({
+  var testing2 = new paper.Path({
       segments: [
       [367.8888753255208, 496], 
       [367.8888753255208, 412.6666666666667],
@@ -170,6 +72,137 @@
       strokeCap: 'round',
       selected: false
     });
+
+
+  var june; 
+  var blobstyle = {
+    strokeWidth: 10,
+    strokeColor: new paper.Color(0, .659, .882, .3),
+    strokeCap: 'round'
+  };
+
+  var hitOptions = {
+    segments: true,
+    stroke: true,
+    fill: false,
+    tolerance: 5
+  };
+
+
+  function BlobSelectTool(){
+    this.name = "BlobSelectTool";
+    this.tool = new paper.Tool();
+    this.tool.distanceThreshold = .01;
+    this.array = [];
+    this.blob = null;
+    var scope = this;
+    this.toolBool = false;
+    this.hitResult;
+
+    this.tool.onMouseDown = function(event){
+
+      if (event.modifiers.shift) { //if the shift key held, you want to append to the blob on the screen
+        scope.blob = new paper.Path(blobstyle);
+        scope.array.push(scope.blob);
+
+      } else {
+        testing1.selected = false;
+        testing2.selected = false;
+
+        if (scope.blob){ //already a blob on the page, clear it and make a new blob
+          scope.blob.removeOnDown();
+
+          for (i in scope.array){
+            var temp = scope.array[i];
+            temp.remove();
+          };
+          scope.array = [];
+        };
+
+        scope.blob = new paper.Path(blobstyle);
+        scope.array.push(scope.blob);
+
+      };
+    };
+
+    this.tool.onMouseDrag = function(event){
+      scope.blob.add(event.point);
+
+    };
+
+    this.tool.onMouseUp = function(event){
+
+      if (!this.toolBool){
+        var raster = new paper.Raster('toolOptions');
+        raster.position = new paper.Point(event.point.x + 300, event.point.y + 300);
+        raster.scale(0.5);
+        scope.toolBool == true;
+      };
+
+      scope.blob.strokeColor = null;
+      var unitedblob = scope.blob; 
+
+      unitedblob.closePath(true);
+      unitedblob.selected = true;
+  
+      unitedblob.fillColor = new paper.Color(0, .659, .882, .3);
+      unitedblob.smooth();
+
+      //everything above makes the blue bubble
+
+      x = unitedblob.getIntersections(testing2);
+      y = unitedblob.getIntersections(testing1);
+
+      //draw line for Testing 2
+      arr2 = [testing2.getOffsetOf(x[0].point), testing2.getOffsetOf(x[1].point)] //store array of length of selected area on testing line
+      var begin = testing2.getLocationAt(arr2[0])
+      var end = testing2.getLocationAt(arr2[1])
+      var distance = (arr2[1] - arr2[0])/15
+      var holder = arr2[0]
+      var movePath2 = new paper.Path({
+        strokeColor: 'pink',
+        strokeWidth: 5
+      });
+      scope.array.push(movePath2)
+
+      for (i = 0; i < 15; i++) {
+        movePath2.add(testing2.getLocationAt(holder));
+        holder += distance
+      };
+
+
+      //draw line for Testing 1
+      arr1 = [testing1.getOffsetOf(y[0].point), testing1.getOffsetOf(y[1].point)] //store array of length of selected area on testing line
+      var begin = testing1.getLocationAt(arr1[0])
+      var end = testing1.getLocationAt(arr1[1])
+      var distance = (arr1[1] - arr1[0])/15
+      var holder = arr1[0]
+      var movePath1 = new paper.Path({
+        strokeColor: 'blue',
+        strokeWidth: 5
+      });
+      scope.array.push(movePath1)
+
+      for (i = 0; i < 15; i++) {
+        movePath1.add(testing1.getLocationAt(holder));
+        holder += distance
+      };
+    
+
+    }; 
+
+
+  }
+
+  // class methods
+  BlobSelectTool.prototype = {
+    enable: function(){
+
+    }, 
+    disable: function(){
+
+    }
+  }
 
 
 // Everything below is for part 2
