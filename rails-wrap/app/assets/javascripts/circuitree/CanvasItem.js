@@ -56,8 +56,10 @@ CanvasItem.prototype = {
 			this.path.led_on = true;
 			this.path.children[0].style = {
 				shadowColor: "yellow",
-				shadowBlur: 60,
-				shadowOffset: new paper.Point(0, 0)
+				shadowBlur: 100,
+				shadowOffset: new paper.Point(0, 0), 
+				strokeWidth: 2, 
+				strokeColor: "yellow"
 			}
 			this.path.children[0].opacity = 1;
 		} else {
