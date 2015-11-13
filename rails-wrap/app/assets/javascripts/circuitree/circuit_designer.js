@@ -1,5 +1,4 @@
-CircuitDesigner.defaultTool;
-
+CircuitDesigner.defaultTool = '#transform-tool'
 
 function CircuitDesigner(container){
 	this.paper = paper;
@@ -7,7 +6,8 @@ function CircuitDesigner(container){
 	this.circuit_layer = new CircuitLayer(paper);
 	this.art_layer = new ArtworkLayer(paper);
 	this.traces_layer = new TracesLayer(paper);
-	CircuitDesigner.defaultTool = $('#pan-tool').click();
+	console.log($(CircuitDesigner.defaultTool));
+	$(CircuitDesigner.defaultTool).click();
 	this.init();
 	this.animations = [];
 	this.update();
@@ -37,14 +37,14 @@ CircuitDesigner.prototype = {
 	    this.toolbox = new Toolbox(this.paper, $("#toolbox"));	
 	    this.toolbox.add("anchortool", $('#anchor-tool'), new AnchorPointTool(this.paper));
 		this.toolbox.add("pathtool", $('#path-tool'),  new TracePathTool(this.paper));
-		this.toolbox.add("transformtool", $('#transform-tool'),  new TransformTool(this.paper));
+		this.toolbox.add("transformtool", $('#transform-tool'),  new TransformTool2(this.paper));
 		this.toolbox.add("pantool", $('#pan-tool'),  new PanTool(this.paper));
 		this.toolbox.add("canvaspantool", $('#canvas-pan-tool'),  new CanvasPanTool(this.paper));
 		this.toolbox.add("runtool", $('#run-tool'),  new RunTool(this.paper));
 		this.toolbox.add("debugtool", $('#debug-tool'),  new DebugTool(this.paper));
 		this.toolbox.add("fabtool", $('#fab-tool'),  new FabTool(this.paper));
 		
-		this.toolbox.enable("pantool");
+		this.toolbox.enable("transformtool");
 		return this;
 	},
 	update: function(){
@@ -129,7 +129,7 @@ CircuitDesigner.decomposeImport = function(item, position, callback, scope){
 		else scope.circuit_layer.add(path);
 	});
 
-	CircuitDesigner.defaultTool.click().focus();
+	$(CircuitDesigner.defaultTool).click().focus();
 }
 
 
