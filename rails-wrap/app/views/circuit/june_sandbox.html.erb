@@ -159,7 +159,7 @@
       //draw line for Testing 2
       if (x.length > 0){
         arr2 = [testing2.getOffsetOf(x[0].point), testing2.getOffsetOf(x[1].point)] //store array of length of selected area on testing line
-        var distance = (arr2[1] - arr2[0])/15
+        var distance = (arr2[1] - arr2[0])/35
         var holder = arr2[0]
         var movePath2 = new paper.Path({
           strokeColor: 'pink',
@@ -167,7 +167,7 @@
         });
         scope.array.push(movePath2)
 
-        for (i = 0; i < 15; i++) {
+        for (i = 0; i < 35; i++) {
           movePath2.add(testing2.getLocationAt(holder));
           holder += distance
         };
@@ -176,7 +176,7 @@
       if (y.length > 0){
         //draw line for Testing 1
         arr1 = [testing1.getOffsetOf(y[0].point), testing1.getOffsetOf(y[1].point)] //store array of length of selected area on testing line
-        var distance1 = (arr1[1] - arr1[0])/15
+        var distance1 = (arr1[1] - arr1[0])/35
         var holder1 = arr1[0]
         var movePath1 = new paper.Path({
           strokeColor: 'blue',
@@ -184,7 +184,7 @@
         });
         scope.array.push(movePath1)
 
-        for (i = 0; i < 15; i++) {
+        for (i = 0; i < 35; i++) {
           movePath1.add(testing1.getLocationAt(holder1));
           holder1 += distance1
         };
