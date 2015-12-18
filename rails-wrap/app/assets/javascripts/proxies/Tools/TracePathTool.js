@@ -132,13 +132,11 @@ TracePathTool.prototype = {
 	    		return el.parent.canvasItem.id == start_terminal.parent.canvasItem.id;
 	    	});
 
-	    	// Visual characteristics on MouseUp			
+	    	// Reset visual characteristics on MouseUp			
 			_.each(terminals, function(el, i, arr){
 				el.scaling = new paper.Point(1.0, 1.0);	
 			});
 			
-
-
 	    	// Handle intersections
 	    	// Hanging trace
 	    	if(intersects.length == 0){
@@ -335,7 +333,17 @@ TracePathTool.prototype = {
 TracePathTool.getAllIntersections = function(path, wires){
 		intersections = _.reduce(wires, function(memo, el){
 	 		var a = path.getIntersections(el);
+	 		// console.log(a);
 			if(a.length > 0) memo.push(el);
+			return memo;
+	 	}, []);
+		return _.flatten(intersections);
+	} 
+TracePathTool.getAllIntersectionsRaw = function(path, wires){
+		intersections = _.reduce(wires, function(memo, el){
+	 		var a = path.getIntersections(el);
+	 		// console.log(a);
+			if(a.length > 0) memo.push({trace: el, locations: a});
 			return memo;
 	 	}, []);
 		return _.flatten(intersections);

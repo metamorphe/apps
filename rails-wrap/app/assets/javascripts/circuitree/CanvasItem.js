@@ -30,7 +30,7 @@ function CanvasItem(paper, path, type, t_config){
 	
 	this.init_bounds = path.bounds.clone().expand(10, 10);
 	this.selection_rectangle = this.initSelectionRectangle();
-	
+	this.circuit_label = "";
 	// c.remove();
 	// c.parent.removeChild(c);
 	// this.path.addChild(c);

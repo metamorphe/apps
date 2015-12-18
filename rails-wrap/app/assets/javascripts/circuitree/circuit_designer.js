@@ -16,6 +16,115 @@ function CircuitDesigner(container){
 }
 
 CircuitDesigner.prototype = {
+	getTree: function(){
+		var scope = this;
+		var traces = designer.traces_layer.getAllTraces();
+		_.each(traces, function(el, i, arr){
+			scope.getConnection(el);
+		});
+	}, 
+	getConnection: function(trace){
+			var terminals = designer.circuit_layer.getAllTerminals();
+			var traces = designer.traces_layer.getAllTraces();
+			var conductive = _.flatten([terminals, traces]);
+
+
+			// Find all unique non-self referential intersections with those elements
+	    	var intersects = TracePathTool.getAllIntersectionsRaw(trace, conductive);
+	    	// console.log(intersects);
+			intersects = _.uniq(intersects);
+
+			_.each(intersects, function(el, i, arr){
+				_.each(el.locations, function(loc, j, arr2){
+					var c = new paper.Path.Circle({
+						center: loc.point, 
+						radius: 4, 
+						fillColor: "purple"
+					});
+				});
+			});
+
+			intersects = _.map(intersects, function(el, i, arr){
+				// console.log(el);
+				var el = el.trace;
+				while(_.isUndefined(el.canvasItem))
+					el = el.parent;
+				console.log(el.canvasItem.name);
+				return el.canvasItem;
+			});
+
+
+	    	console.log(intersects);
+
+	    	console.log(trace.bounds);
+
+	    	var traceItem = trace;
+	    	while(_.isUndefined(traceItem.canvasItem))
+					traceItem = traceItem.parent;
+			traceItem = traceItem.canvasItem;
+
+			var circuit_label = traceItem.circuit_label;
+			console.log(traceItem);
+			console.log("polarity", traceItem.polarity_color.equals(CircuitLayer.POSITIVE));
+
+			if(traceItem.polarity_color.equals(CircuitLayer.POSITIVE)){
+				if(circuit_label == "") 
+					circuit_label = _.some(intersects, function(el, i, arr){ return el.name == "battery"}) ? "R1": circuit_label;
+				console.log("CIRCUIT r1", circuit_label);
+				if(circuit_label == "") 
+					circuit_label = _.some(intersects, function(el, i, arr){ return el.circuit_label == "R1"}) ? "R2": circuit_label;
+				if(circuit_label == "") 
+					circuit_label = _.some(intersects, function(el, i, arr){ return el.circuit_label == "R2"}) ? "R3": circuit_label;
+				if(circuit_label == "") 
+					circuit_label = _.some(intersects, function(el, i, arr){ return el.circuit_label == "R3"}) ? "R4": circuit_label;
+				if(circuit_label == "") 
+					circuit_label = _.some(intersects, function(el, i, arr){ return el.circuit_label == "R4"}) ? "R5": circuit_label;
+				if(circuit_label == "") 
+					circuit_label = _.some(intersects, function(el, i, arr){ return el.circuit_label == "R5"}) ? "R6": circuit_label;
+				
+				traceItem.circuit_label = circuit_label;
+			}
+			console.log(traceItem);
+			textPos = trace.bounds.leftCenter.clone();
+			textPos.x -= 20;
+	    	var text = new paper.PointText({
+			    point: textPos,
+			    content: traceItem.circuit_label,
+			    fillColor: 'black',
+			    fontFamily: 'Futura PT',
+			    // fontWeight: 'bold',
+			    justification: "right",
+			    fontSize: 18
+			});
+			console.log(trace.length + " Ω");
+
+			var ohms = new paper.PointText({
+			    point: text.bounds.expand(10).bottomCenter.clone(),
+			    content: trace.length.toFixed(2) + " Ω",
+			    fillColor: 'black',
+			    fontFamily: 'Futura PT',
+			    // fontWeight: 'bold',
+			    justification: "center",
+			    fontSize: 12
+			});
+			
+
+
+			paper.view.update();
+
+	    	// Handle intersections
+	    	// Hanging trace
+	    
+	    	// Are all connections of the same polarity
+	    	// var offending_elements = [trace];
+	    	// var polarity = start_terminal.name == "trace" ? start_terminal.style.strokeColor : start_terminal.style.fillColor;
+	    	// 	var valid_connection = _.reduce(intersects, function(memo, el, i, arr){
+	    	// 		var el_polarity = el.name == "trace" ? el.style.strokeColor : el.style.fillColor;
+	    	// 		var valid = polarity.equals(el_polarity);
+	    	// 		if(!valid) offending_elements.push(el);
+	    	// 		return memo && valid;
+	    	// }, true);
+	},
 	init: function(){
 		// setups paperjs 
 		var c = this.container;

@@ -53,15 +53,19 @@ var start_terminal = null;
 var start_trace = null;
 RunTool.prototype = {
 	enable: function(){
-		designer.circuit_layer.draw_mode = false;
-		designer.traces_layer.trace_mode = true;
-		designer.circuit_layer.update();
-		designer.traces_layer.update();
 		
-		var lights = designer.circuit_layer.getAllLights();
-		_.each(lights, function(el, i, arr){
-			el.ledOn(true);
-		});	
+		// designer.circuit_layer.draw_mode = false;
+		// designer.traces_layer.trace_mode = true;
+		// designer.circuit_layer.update();
+		// designer.traces_layer.update();
+		
+		// var lights = designer.circuit_layer.getAllLights();
+		// _.each(lights, function(el, i, arr){
+		// 	el.ledOn(true);
+		// });	
+		designer.circuit_layer.draw_mode = true;
+		designer.circuit_layer.update();
+		designer.getTree();
 	},
 	disable: function(){
 		designer.circuit_layer.draw_mode = false;
