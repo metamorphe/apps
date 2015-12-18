@@ -19,6 +19,7 @@
 //= require proxies/Tools/AnchorPointTool
 //= require proxies/Tools/VectorTool
 //= require proxies/Tools/TransformTool
+//= require proxies/Tools/TransformTool2
 //= require proxies/Tools/PanTool
 //= require proxies/Tools/CanvasPanTool
 //= require proxies/Tools/RunTool

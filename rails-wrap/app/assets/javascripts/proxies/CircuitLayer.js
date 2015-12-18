@@ -1,3 +1,5 @@
+CircuitLayer.POSITIVE = new paper.Color("red");
+CircuitLayer.NEGATIVE = new paper.Color("black");
 function CircuitLayer(paper){
 	this.paper = paper;
 	this.className = "CircuitLayer";
