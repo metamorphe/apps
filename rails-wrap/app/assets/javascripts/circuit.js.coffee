@@ -10,3 +10,4 @@
 //= require circuitree/tree
 //= require circuitree/june
 //= require jig
+//= require dropzone

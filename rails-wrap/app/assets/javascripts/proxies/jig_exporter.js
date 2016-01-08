@@ -10,10 +10,10 @@ EXPORT_DEFAULT: 0
 
 JigExporter.export = function(paper, canvas, mode, downloadFlag){
 
-	var prev = paper.view.zoom;
-	paper.view.zoom = 1;
-	b = designer.nodes.bounds();
-	paper.view.zoom *= b.zoomFactor;
+	// var prev = paper.view.zoom;
+	// paper.view.zoom = 1;
+	// b = designer.nodes.bounds();
+	// paper.view.zoom *= b.zoomFactor;
 	// default
 	var exp;
 	
@@ -61,9 +61,9 @@ JigExporter.export = function(paper, canvas, mode, downloadFlag){
 		});
 		
 	}
-	var b = designer.nodes.bounds().bounds;
-	console.log("width", Ruler.pts2mm(b.width), "height", Ruler.pts2mm(b.height));
-	paper.view.zoom = prev;
+	// var b = designer.nodes.bounds().bounds;
+	// console.log("width", Ruler.pts2mm(b.width), "height", Ruler.pts2mm(b.height));
+	// paper.view.zoom = prev;
 
 	return exp;
 }

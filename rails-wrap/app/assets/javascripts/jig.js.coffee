@@ -39,3 +39,4 @@
 //= require circuitree/Alerter
 //= require circuitree/FabricationGuide
 //= require circuitree/DebugGuide
+//= require dropzone

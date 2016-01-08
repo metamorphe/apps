@@ -68,6 +68,8 @@ GEM
       railties (>= 3.2.6, < 5)
       thread_safe (~> 0.1)
       warden (~> 1.2.3)
+    dropzonejs-rails (0.7.2)
+      rails (> 3.1)
     erubis (2.7.0)
     eventmachine (1.0.5)
     execjs (2.2.2)
@@ -167,6 +169,7 @@ DEPENDENCIES
   csg (~> 0.1.5)
   d3-rails
   devise
+  dropzonejs-rails
   jbuilder (~> 2.0)
   jquery-rails
   markdown-rails

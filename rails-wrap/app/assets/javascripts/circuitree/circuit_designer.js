@@ -176,9 +176,10 @@ CircuitDesigner.prototype = {
 		this.paper.project.importSVG(filename, {
 	    	onLoad: function(item) { 
 	    		if(fileType == "artwork"){
+	    			item.sendToBack();
 	    			scope.art_layer.add(item);
 			    	CircuitDesigner.retainGroup(item, position, callback, scope);
-			    	item.sendToBack();
+			    	// item.sendToBack();
 	    		}
 	    	}
 		});
@@ -227,7 +228,6 @@ CircuitDesigner.decomposeImport = function(item, position, callback, scope){
 
 	_.each(Utility.unpackChildren(item, []), function(value, key, arr){
 		var path = value;
-		// console.log(path.name);
 		if(path.name == "trace"){ path.remove(); return; }
 		else if(path.name == "sticker_led"){ 
 			scope.circuit_layer.add(path, ['n', 's']);

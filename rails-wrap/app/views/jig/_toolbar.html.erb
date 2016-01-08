@@ -1,0 +1,211 @@
+<script type="text/javascript">
+$(function(){
+	$('#collection').hide();
+	$('#add-library').click(function(){
+		$('#collection').slideDown(500);
+	});
+	$('#send-to-print').click(function(){
+    JigExporter.export(designer.paper, designer.canvas, JigExporter.SVG);
+   });
+   $('#save-json').click(function(){
+    JigExporter.export(designer.paper, designer.canvas, JigExporter.JSON);
+   });
+  $('#save-png').click(function(){
+    JigExporter.export(designer.paper, designer.canvas, JigExporter.PNG);
+   });
+  $('#print').click(function(){
+    window.location = "/jig/generator";
+   });
+});
+
+
+</script>
+<!-- _toolbar.html.erb -->
+<nav class="navbar navbar-default shadowed" role="navigation">
+	  <div class="container-fluid">
+	    <!-- Brand and toggle get grouped for better mobile display -->
+	    <div class="navbar-header">
+	      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+	        <span class="sr-only">Toggle navigation</span>
+	        <span class="icon-bar"></span>
+	        <span class="icon-bar"></span>
+	        <span class="icon-bar"></span>
+	      </button>
+	      <a class="navbar-brand" href="/">
+	      	<b id='logo'>
+	      		<img src="/led.svg"/>
+	      	</b>
+	      </a>
+	      <div id="design-name" class="navbar-brand" href="">
+	      	<b contentEditable="true"> My Ellustrate Design </b>
+	      </span>
+	      </div>
+	    </div>
+
+	    <!-- Collect the nav links, forms, and other content for toggling -->
+	    <div class="collapse navbar-collapse" >
+	    	<div id="main-actions">
+		  <%= render :partial => "usernav.html.erb" %>
+
+	      <ul class="nav navbar-nav pull-right">
+	      	    <li>
+		        	<%= link_to :id=>"revert", :class=>"btn btn-md btn-default" do %>
+		          		<span class="glyphicon glyphicon-refresh"></span>
+		        		Revert
+		        	<% end %>
+		        </li>
+		        <li>
+		        	<%= link_to :id=>"undo", :class=>"btn btn-md btn-ellustrator" do %>
+		          		<span class="glyphicon glyphicon-step-backward"></span>
+		        	<% end %>
+		        </li>
+		        <li>
+		        	<%= link_to :id=>"save-progress", :class=>"btn btn-md btn-ellustrator" do %>
+		          		<span class="glyphicon glyphicon-floppy-disk"></span>
+		        	<% end %>
+		        </li>
+		        <li>
+		        	<%= link_to :id=>"redo", :class=>"btn btn-md btn-ellustrator" do %>
+		          		<span class="glyphicon glyphicon-step-forward"></span>
+		        	<% end %>
+		        </li>
+		        <!-- <li>
+		        	<%= link_to :id=>"fast-forward", :class=>"btn btn-md btn-ellustrator" do %>
+		          		<span class="glyphicon glyphicon-repeat"></span>
+		        	<% end %>
+		        </li> -->
+	       </ul>
+	      </div>
+	    </div><!-- /.navbar-collapse -->
+	    
+	  </div><!-- /.container-fluid -->
+	</nav>
+	<nav class="navbar-secondary" role="navigation">
+	
+
+
+
+		<button id="add-library" class="pull-left btn btn-xs btn-ellustrator">
+			<span class='glyphicon glyphicon-plus'></span>
+			ADD FROM LIBRARY
+		</button>
+   
+
+      	<button id="send-to-print" class="pull-right btn btn-xs btn-ellustrator">
+			<span class='glyphicon glyphicon-print'></span>
+			Print
+		</button>
+
+
+	</nav>
+	
+	  <div class="container">
+	  	<% if notice %>
+		  <p class="alert alert-success"><%= notice %></p>
+		<% end %>
+		<% if alert %>
+		  <p class="alert alert-danger"><%= alert %></p>
+		<% end %>
+	    <%= yield %>
+	  </div>
+
+<style>
+.btn-group{
+	/*padding-right: 10px;*/
+}
+.navbar-default{
+	/*box-shadow: 1px 1px 5px 1px rgba(0, 0, 0, 0.3);*/
+	background: #484848;
+	position: relative;
+	/*top: -1px;*/
+	border: none;
+	border-radius: 0;
+}
+.navbar-secondary{
+	position: relative;
+	top: -20px;
+	height: 40px !important;
+	/*overflow: hidden;*/
+	background: #333;
+	/*background: rgba(220, 220, 220, 0.9);*/
+	padding: 6px 15px;
+	margin-bottom: 0;
+	border: none;
+	z-index: 100;
+}
+.navbar-secondary .btn-group, .navbar-secondary > .btn{
+	margin-right: 5px;
+}
+
+.navbar-brand{
+	margin-right: -15px;
+}
+.navbar-header #design-name{	
+	padding: 15px 15px;
+	margin-right: -15px;
+	margin-left: -15px;
+	border-right: 1px solid rgba(0, 0, 0, 0.1) ;
+}
+#design-name b{
+	font-weight: normal;
+	background: white;
+	padding: 14px;
+	padding-right: 300px;
+	margin-right: -15px;
+	/*box-shadow: 1px 1px 1px 1px rgba(0, 0, 0, 0.1);*/
+}
+#design-name b:focus{
+	padding: 11.5px;
+	padding-right: 300px;
+}
+#logo{
+	background: #F7941E;
+	color: white;
+	padding: 17px;
+	position: relative;
+	top: -1px;
+	left: -1px;
+}
+[class^='icon-']:before {
+    display: inline-block;
+    font-family: 'Glyphter';
+    font-style: normal;
+    font-weight: normal;
+    line-height: 0.4;
+    font-size: 18pt;
+    padding-top: 0px;
+    padding-bottom: 0px;
+    position: relative;
+    top: 6px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+#logo img{
+	width: 20px;
+}
+#main-actions{
+	/*background: white !important;*/
+	float: right;
+	position: absolute;
+	right: 15px;
+}
+[class^='icon-']:before {
+    display: inline-block;
+    font-family: 'Glyphter';
+    font-style: normal;
+    font-weight: normal;
+    line-height: 1.5;
+    font-size: 10pt;
+    padding-top: 0px;
+    padding-bottom: 0px;
+    position: relative;
+    top: 2px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+.container-fluid{
+	padding-left: 0px;
+	padding-right: 0px;
+}
+</style>

@@ -22,6 +22,18 @@ class JigController < ApplicationController
   end
 
 
+  def upload
+    uploaded_io = params["file"]
+    File.open(Rails.root.join('public', 'primitives', "uploads_" + uploaded_io.original_filename), 'wb') do |file|
+      file.write(uploaded_io.read)
+    end
+    render :json => "uploads_" + uploaded_io.original_filename
+  end
+  def primitives
+    @files = get_primitives()
+    render :json => @files
+  end
+
   # HELPER METHODS
   def get_primitives
     files = {path: "/primitives/", filenames: Dir.glob("public/primitives/*").collect!{|c| c.split('/')[2..-1].join('/')}}
