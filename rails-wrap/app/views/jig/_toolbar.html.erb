@@ -2,11 +2,32 @@
 $(function(){
 	$('#collection').hide();
 	$('#add-library').click(function(){
-		$('#collection').slideDown(500);
+		$('#collection').slideToggle(500);
 	});
 	$('#send-to-print').click(function(){
-    JigExporter.export(designer.paper, designer.canvas, JigExporter.SVG);
-   });
+		designer.traces_layer.print_mode = true;
+		designer.circuit_layer.draw_mode = false;
+
+		designer.traces_layer.update();
+		designer.circuit_layer.update();
+
+    	JigExporter.export(designer.paper, designer.canvas, JigExporter.SVG);
+    	designer.traces_layer.print_mode = false;
+		designer.traces_layer.update();
+		designer.circuit_layer.update();
+   	});
+   	$('#send-to-print').hover(function(){
+   		designer.traces_layer.print_mode = true;
+   		designer.circuit_layer.draw_mode = false;
+		designer.traces_layer.update();
+		designer.circuit_layer.update();
+   	}, function(){
+   		designer.traces_layer.print_mode = false;
+   		designer.circuit_layer.draw_mode = true;
+		designer.traces_layer.update();
+		designer.circuit_layer.update();
+   	})
+
    $('#save-json').click(function(){
     JigExporter.export(designer.paper, designer.canvas, JigExporter.JSON);
    });
@@ -16,7 +37,16 @@ $(function(){
   $('#print').click(function(){
     window.location = "/jig/generator";
    });
+  calibrationScripts();
 });
+
+function calibrationScripts(){
+	$('#calibration-toolbox').hide();
+	$('#calibrate').click(function(){
+		$('#calibration-toolbox').slideToggle(300);
+	});
+
+}
 
 
 </script>
@@ -49,23 +79,23 @@ $(function(){
 
 	      <ul class="nav navbar-nav pull-right">
 	      	    <li>
-		        	<%= link_to :id=>"revert", :class=>"btn btn-md btn-default" do %>
+		        	<%= link_to "javascript:void(0)", :id=>"revert", :class=>"" do %>
 		          		<span class="glyphicon glyphicon-refresh"></span>
 		        		Revert
 		        	<% end %>
 		        </li>
 		        <li>
-		        	<%= link_to :id=>"undo", :class=>"btn btn-md btn-ellustrator" do %>
+		        	<%= link_to "javascript:void(0)", :id=>"undo", :class=>"" do %>
 		          		<span class="glyphicon glyphicon-step-backward"></span>
 		        	<% end %>
 		        </li>
 		        <li>
-		        	<%= link_to :id=>"save-progress", :class=>"btn btn-md btn-ellustrator" do %>
+		        	<%= link_to "javascript:void(0)", :id=>"save-json", :class=>"" do %>
 		          		<span class="glyphicon glyphicon-floppy-disk"></span>
 		        	<% end %>
 		        </li>
 		        <li>
-		        	<%= link_to :id=>"redo", :class=>"btn btn-md btn-ellustrator" do %>
+		        	<%= link_to "javascript:void(0)", :id=>"redo" do %>
 		          		<span class="glyphicon glyphicon-step-forward"></span>
 		        	<% end %>
 		        </li>
@@ -88,6 +118,12 @@ $(function(){
 		<button id="add-library" class="pull-left btn btn-xs btn-ellustrator">
 			<span class='glyphicon glyphicon-plus'></span>
 			ADD FROM LIBRARY
+		</button>
+
+
+		<button id="calibrate" class="pull-left btn btn-xs btn-ellustrator">
+			<span class='glyphicon glyphicon-tasks'></span>
+			CALIBRATE MATERIAL
 		</button>
    
 

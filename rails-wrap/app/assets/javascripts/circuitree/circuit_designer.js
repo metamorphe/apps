@@ -1,6 +1,8 @@
-CircuitDesigner.defaultTool = '#transform-tool'
+var sr_model;
+CircuitDesigner.defaultTool = $('#transform-tool')
 
 function CircuitDesigner(container){
+	sr_model = new SheetResistanceModel(10);
 	this.paper = paper;
 	this.container = container;
 	this.circuit_layer = new CircuitLayer(paper);
@@ -152,6 +154,7 @@ CircuitDesigner.prototype = {
 		this.toolbox.add("runtool", $('#run-tool'),  new RunTool(this.paper));
 		this.toolbox.add("debugtool", $('#debug-tool'),  new DebugTool(this.paper));
 		this.toolbox.add("fabtool", $('#fab-tool'),  new FabTool(this.paper));
+		this.toolbox.add("ohmtool", $('#ohm-tool'),  new OhmTool(this.paper));
 		
 		this.toolbox.enable("transformtool");
 		return this;
@@ -188,7 +191,8 @@ CircuitDesigner.prototype = {
 		var scope = this;
 
 		var item = this.paper.project.importJSON(json); 
-		var layer = item[0].children[0];	
+		// var layer = item[0].children[0];	
+		var layer = item[0];	
 		console.log("Loading json", layer);
 		// if valid JSON
 		if(!_.isUndefined(layer) && !_.isUndefined(layer.children)){  
@@ -228,7 +232,10 @@ CircuitDesigner.decomposeImport = function(item, position, callback, scope){
 
 	_.each(Utility.unpackChildren(item, []), function(value, key, arr){
 		var path = value;
-		if(path.name == "trace"){ path.remove(); return; }
+		if(path.name == "trace"){ 
+			// path.remove(); return; 
+			designer.traces_layer.add(path);
+		}
 		else if(path.name == "sticker_led"){ 
 			scope.circuit_layer.add(path, ['n', 's']);
 		}

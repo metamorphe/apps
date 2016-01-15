@@ -7,6 +7,7 @@ function TracesLayer(paper){
 	this.well_mode = false;
 	this.debug_mode = false;
 	this.trace_mode = false;
+	this.print_mode = false;
 }
 
 TracesLayer.prototype = {
@@ -68,6 +69,35 @@ TracesLayer.prototype = {
 			});
 		}
 	},
+	printerize: function(){
+		var scope = this;
+		if(scope.print_mode){
+			$('#sandbox').css("background", "#FFF");
+			// Turn all lines into dashes
+			_.each(scope.collection, function(el, i, arr){
+				console.log(el);
+				el.path.children[0].style = {
+					strokeColor: new paper.Color("#666"), 
+					// shadowColor: "black",
+					shadowBlur: 0,
+					// shadowOffset: new paper.Point(0, 0),
+					// strokeWidth: 3,
+					strokeCap: 'round',
+					dashArray: [5, 7]
+				}
+			});
+		}				
+		else{
+			$('#sandbox').css("background", "");
+			_.each(scope.collection, function(el, i, arr){
+				el.path.children[0].style = {
+					strokeColor: el.polarity_color,
+					shadowBlur: 0,
+					dashArray: []
+				}
+			});
+		}		
+	},
 	lockify: function(){
 		var scope = this;
 		if(scope.lock_mode){
@@ -84,6 +114,7 @@ TracesLayer.prototype = {
 		this.lockify();
 		this.tracify();
 		this.drawify();
+		this.printerize();
 		paper.view.update();
 	}, 
 	getAllTraces: function(){

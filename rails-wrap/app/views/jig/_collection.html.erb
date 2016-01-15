@@ -16,6 +16,7 @@
   /*height: calc(100% - 111px);*/
   height: calc(200px);
   width: 100%;
+  z-index: 1000000000;
 }
 #collection-panel{
    overflow-y: scroll;
@@ -223,6 +224,36 @@ Collection.prototype = {
   }
 }
 
+function dropLogic(){
+    // DROP LOGIC
+    $('#sandbox canvas').on("drop", function(event){
+      event.preventDefault();  
+      event.stopPropagation();
+      var filename = event.originalEvent.dataTransfer.getData("text");
+      var position = paper.view.viewToProject(new paper.Point(event.originalEvent.x, event.originalEvent.y));
+      console.log(event.originalEvent.dataTransfer.getData("text"));
+      var filetype = filename.split('.');
+      filetype = filetype[filetype.length - 1];
+
+      console.log("Dropped!", filename , position, event, filetype);
+      if(filetype == "svg")
+        designer.addSVG(filename, position);
+      else if(filetype == "json")
+        designer.addJSON(filename, position);
+    }).on("dragover", function(event) {
+      event.preventDefault();  
+      event.stopPropagation();
+      $(this).addClass('dragging');
+    }).on("dragleave", function(event) {
+      event.preventDefault();  
+      event.stopPropagation();
+      $(this).removeClass('dragging');
+    });
+
+    $('img').on('dragstart', function(event){
+      event.originalEvent.dataTransfer.setData("text", $(this).attr('src'));
+    });
+  }
 </script>
 
 <div id="collection" class="no-select shadowed">
