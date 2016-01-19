@@ -1,46 +1,91 @@
+<script>
+function FabricationGuide(dom){
+  this.dom = dom;
+  this.hide();
+}
 
-<div id="fab-guide" class="debug-container col-xs-3 pull-right">
-    <label class="text-shadowed"> FABRICATION GUIDE </label>
-    <div id="debugger">
-      <ul class="list-group">
-      <li class="list-group-item">
-        <p>Fix the battery to the design. Make sure the positive side is oriented correctly. </p>
-        <div class="btn-group pull-right">
-          <button class="btn btn-sm btn-success"><span class="glyphicon glyphicon-check"></span></button>
-          <!-- <button class="btn btn-sm btn-danger"><span class="glyphicon glyphicon-remove"></span></button> -->
-        </div>
-      </li>
-     <li class="list-group-item">
-        <p>Apply your LED sticker at position #1. </p>
-         <div class="btn-group pull-right">
-          <button class="btn btn-sm btn-success"><span class="glyphicon glyphicon-check"></span></button>
-          <!-- <button class="btn btn-sm btn-danger"><span class="glyphicon glyphicon-remove"></span></button> -->
-        </div>
-      </li>
-     <li class="list-group-item">
-        <p> Using your silver pen, connect the LED #1 positive terminal to the battery's positive terminal. </p>
-         <div class="btn-group pull-right">
-          <button class="btn btn-sm btn-success"><span class="glyphicon glyphicon-check"></span></button>
-          <!-- <button class="btn btn-sm btn-danger"><span class="glyphicon glyphicon-remove"></span></button> -->
-        </div>
-      </li>
-     <li class="list-group-item">
-        <p>Using your silver pen, connect the LED #1 negative terminal to the battery to the negative terminal. </p>
-         <div class="btn-group pull-right">
-          <button class="btn btn-sm btn-warning"><span class="glyphicon glyphicon-check"></span></button>
-          <!-- <button class="btn btn-sm btn-danger"><span class="glyphicon glyphicon-remove"></span></button> -->
-        </div>
-      </li>
-     <li class="list-group-item">
-        <p>Does your LED #1 light up?  </p>
-        <div class="btn-group pull-right">
-          <button class="btn btn-sm btn-warning"><span class="glyphicon glyphicon-ok"></span></button>
-          <button class="btn btn-sm btn-danger"><span class="glyphicon glyphicon-remove"></span></button>
-        </div>
-      </li>
-     <li class="list-group-item">
-        ...
-      </li>
-      </ul>
-    </div>
+FabricationGuide.prototype = {
+  init: function(){
+
+  },
+  show: function() {
+    this.dom.show();
+  }, 
+  hide: function() {
+    this.dom.hide();
+  }
+}
+</script>
+<style type="text/css">
+  .template{
+    display: hidden;
+  }
+
+
+  .debug-container{
+    border: #999 1px solid;
+    background: #484848;
+    border-left: 3px solid #5d5d5d;
+    border-right: 3px solid #5d5d5d;
+    padding: 4px;
+    padding-top: 22px;
+    z-index: 200; 
+    color: white;
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+  }
+      .debug-container label{
+        font-family: "Helvetica", "Arial", sans-serif;
+        font-weight: bold;
+        color: #ddddd;
+        font-size: 6.43pt;
+        margin: 2px;
+        margin-top: -16px;
+
+        position: absolute;
+      }
+       .debug-container .list-group-item{
+          background-color: rgb(93, 93, 93);
+          border-color: #4d4d4d;
+        }
+        .debug-container p{
+          width: 75%;
+          display: inline-block;
+        }
+
+  #confirm{
+    margin: -6px;
+    padding: 20px;
+    background: #333;
+  }
+
+  .list-group-item .title{
+    font-weight: bold;
+  }
+
+</style>
+<!-- ITEM TEMPLATE -->
+<li "template" class="list-group-item template">
+  <p class="body-text">Fix the battery to the design. Make sure the positive side is oriented correctly. </p>
+  <div class="fab-options btn-group pull-right">
+    <button class="btn btn-sm btn-success"><span class="glyphicon glyphicon-check"></span></button>
+    <button class="btn btn-sm btn-danger"><span class="glyphicon glyphicon-remove"></span></button>
+    <button class="btn btn-sm btn-warning"><span class="glyphicon glyphicon-ok"></span></button>
+    <button class="btn btn-sm btn-danger"><span class="glyphicon glyphicon-remove"></span></button>
   </div>
+</li>
+<!-- END ITEM TEMPLATE -->
+
+
+
+<!-- GUIDE -->
+<div id="fab-guide" class="debug-container col-xs-3 pull-right">
+  <label class="text-shadowed"> FABRICATION GUIDE </label>
+  <div id="debugger">
+    <ul class="list-group">
+        <!-- STEPS GO HERE -->
+    </ul>
+  </div>
+</div>
+<!-- END GUID -->
