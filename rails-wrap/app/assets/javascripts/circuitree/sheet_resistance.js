@@ -6,7 +6,7 @@ $(function(){
     if(val == "" || val < 0){
       sys.alert("You need to provide a valid sheet resistance value.");
     } else{
-      sr_model.update();
+      sr_model.update(val);
       sys.show("Sheet resistance set to " + val + " Ω");
       $('#calibrate').click();
     }
