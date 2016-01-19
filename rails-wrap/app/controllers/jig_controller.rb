@@ -8,14 +8,18 @@ class JigController < ApplicationController
     render :layout => "full_screen"
   end
   def form
+    design = Design.find(2)
+    @guides = design.fab_guides.to_json.html_safe
   	@files = get_primitives()
   	render :layout => "full_screen"
   end
   def interface
-    @design = Design.find(params[:id]).to_json.html_safe
+    design = Design.find(params[:id])
+    @design = design.to_json.html_safe
     @files = get_primitives()
-    # render :layout => "full_screen"
-    render :json => FabGuide.all
+    @guides = design.fab_guides.to_json.html_safe
+    render :layout => "full_screen"
+    # render :json =>  
   	# render :json => @files
   end
 
