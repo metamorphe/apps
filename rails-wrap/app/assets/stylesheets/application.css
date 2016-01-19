@@ -11,6 +11,8 @@
  * file per style scope.
  *
  * require_tree .
+ *= require dropzone/basic
+ *= require dropzone/dropzone
  *= require_self
  */
 

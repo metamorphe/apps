@@ -19,11 +19,13 @@
 //= require proxies/Tools/AnchorPointTool
 //= require proxies/Tools/VectorTool
 //= require proxies/Tools/TransformTool
+//= require proxies/Tools/TransformTool2
 //= require proxies/Tools/PanTool
 //= require proxies/Tools/CanvasPanTool
 //= require proxies/Tools/RunTool
 //= require proxies/Tools/DebugTool
 //= require proxies/Tools/FabTool
+//= require proxies/Tools/OhmTool
 //= require proxies/StatsController
 //= require proxies/Material
 //= require proxies/CircuitLayer
@@ -38,3 +40,5 @@
 //= require circuitree/Alerter
 //= require circuitree/FabricationGuide
 //= require circuitree/DebugGuide
+//= require circuitree/sheet_resistance
+//= require dropzone

@@ -13,7 +13,10 @@ Rails.application.routes.draw do
     get 'designer', :as => "designer"
     get 'generator', :as => "generator"
     get 'bom', :as => "bom"
+    post 'upload'
     get 'form', :as => "form"
+    get 'primitives'
+
   end
   
   get 'jig/interface/:id' => "jig#interface",  :as => "jig_interface"

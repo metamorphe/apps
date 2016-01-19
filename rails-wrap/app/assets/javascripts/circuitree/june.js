@@ -24,7 +24,9 @@ JunePlayground.prototype = {
     this.paper.view.zoom = 1.5; 
     var scope = this; 
 
-    
+    // this.toolbox = new Toolbox(this.paper, $("#toolbox"));  
+    // this.toolbox.add("junetool", $('#june-tool'),  new JuneTool(this.paper));
+        
     return this;
   },
   update: function(){

@@ -14,13 +14,26 @@ class JigController < ApplicationController
   def interface
     @design = Design.find(params[:id]).to_json.html_safe
     @files = get_primitives()
-    render :layout => "full_screen"
+    # render :layout => "full_screen"
+    render :json => FabGuide.all
   	# render :json => @files
   end
 
   def bom
   end
 
+
+  def upload
+    uploaded_io = params["file"]
+    File.open(Rails.root.join('public', 'primitives', "uploads_" + uploaded_io.original_filename), 'wb') do |file|
+      file.write(uploaded_io.read)
+    end
+    render :json => "uploads_" + uploaded_io.original_filename
+  end
+  def primitives
+    @files = get_primitives()
+    render :json => @files
+  end
 
   # HELPER METHODS
   def get_primitives
