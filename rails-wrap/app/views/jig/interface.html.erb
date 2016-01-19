@@ -40,37 +40,11 @@
     alerter = new Alerter($('#alerter'));
     dropLogic();
   });
+
+
+
   getActiveTool = function(){ return paper.tool.toolholder; }
-  function dropLogic(){
-    // DROP LOGIC
-    $('#sandbox canvas').on("drop", function(event){
-      event.preventDefault();  
-      event.stopPropagation();
-      var filename = event.originalEvent.dataTransfer.getData("text");
-      var position = paper.view.viewToProject(new paper.Point(event.originalEvent.x, event.originalEvent.y));
-      console.log(event.originalEvent.dataTransfer.getData("text"));
-      var filetype = filename.split('.');
-      filetype = filetype[filetype.length - 1];
-
-      console.log("Dropped!", filename , position, event, filetype);
-      if(filetype == "svg")
-        designer.addSVG(filename, position);
-      else if(filetype == "json")
-        designer.addJSON(filename, position);
-    }).on("dragover", function(event) {
-      event.preventDefault();  
-      event.stopPropagation();
-      $(this).addClass('dragging');
-    }).on("dragleave", function(event) {
-      event.preventDefault();  
-      event.stopPropagation();
-      $(this).removeClass('dragging');
-    });
-
-    $('img').on('dragstart', function(event){
-      event.originalEvent.dataTransfer.setData("text", $(this).attr('src'));
-    });
-  }
+  
   function attachHandlers(){
     WirePath.DOM = $("#wirepath_controller");
      $("#bring-to-front").click(function(){
@@ -189,8 +163,13 @@ YP   YP    YP    YP  YP  YP Y88888P
         </p>
       </div>
   </div>
+  <%= render :partial => "toolbar" %>
+  <% render :partial => "toolbox" %>
   <%= render :partial => "debug" %>
   <%= render :partial => "fab_guide" %>
+  <%= render :partial => "calibration_modal" %>
+  <%= render :partial => "conductivity_modal" %>
+  <%= render :partial => "system_dialog" %>
   <div id="sandbox" class="col-xs-12">
     <!-- <canvas id="sandboxy" resize></canvas> -->
   </div>

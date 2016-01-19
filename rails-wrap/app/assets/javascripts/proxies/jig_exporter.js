@@ -12,13 +12,15 @@ JigExporter.export = function(paper, canvas, mode, downloadFlag){
 
 	var prev = paper.view.zoom;
 	paper.view.zoom = 1;
-	b = designer.nodes.bounds();
-	paper.view.zoom *= b.zoomFactor;
+	// b = designer.nodes.bounds();
+	// paper.view.zoom *= b.zoomFactor;
 	// default
 	var exp;
 	
 
-	var filename = $('#filename').val();
+	var filename = $('#design-name b').html().trim().replace(/ /g, "_").toLowerCase();
+ 
+
 	if(_.isUndefined(filename)) filename = "export";
 	if(filename == "") filename = "export"; 
 	filename = filename.split('.')[0];
@@ -33,7 +35,8 @@ JigExporter.export = function(paper, canvas, mode, downloadFlag){
 	
 	if(mode == JigExporter.SVG){
 		console.log("Exporting file as SVG");
-		zoom = 4;
+		zoom = 1;
+
 		paper.view.update();
 		// zoom = Ruler.pts2mm(1);
 		exp = paper.project.exportSVG({ 
@@ -61,8 +64,8 @@ JigExporter.export = function(paper, canvas, mode, downloadFlag){
 		});
 		
 	}
-	var b = designer.nodes.bounds().bounds;
-	console.log("width", Ruler.pts2mm(b.width), "height", Ruler.pts2mm(b.height));
+	// var b = designer.nodes.bounds().bounds;
+	// console.log("width", Ruler.pts2mm(b.width), "height", Ruler.pts2mm(b.height));
 	paper.view.zoom = prev;
 
 	return exp;

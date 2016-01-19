@@ -111,7 +111,7 @@ CanvasItem.prototype = {
 
 			var c = this.paper.Path.Circle({
 				fillColor: "red", 
-				radius: 16, 
+				radius: Ruler.mm2pts(9), 
 				position: b.center, 
 				name: "terminal",
 				polarity: 1,
@@ -124,7 +124,7 @@ CanvasItem.prototype = {
 			var r = this.paper.Path.Rectangle({
 				point: rect_pos, 
 				fillColor: "blue", 
-				size: new paper.Size(30, 50)
+				size: new paper.Size(30, 60)
 			});
 			this.terminals['w'] = c.subtract(r);
 			this.terminals['w'].name =  "terminal";
@@ -148,7 +148,7 @@ CanvasItem.prototype = {
 
 			var c = this.paper.Path.Circle({
 				fillColor: "#333333", 
-				radius: 16, 
+				radius: Ruler.mm2pts(9), 
 				position: b.center, 
 				name: "terminal",
 				polarity: 0,
@@ -157,11 +157,11 @@ CanvasItem.prototype = {
 			});
 			rect_pos = b.topCenter.clone();
 			rect_pos.y -= 2;
-			rect_pos.x -= 25;
+			rect_pos.x -= 30;
 			var r = this.paper.Path.Rectangle({
 				point: rect_pos, 
 				fillColor: "blue", 
-				size: new paper.Size(30, 50)
+				size: new paper.Size(35, 60)
 			});
 			this.terminals['e'] = c.subtract(r);
 			this.terminals['e'].name =  "terminal";

@@ -1,11 +1,112 @@
+
+
 <style>
 .toolbox .btn-group{
   margin-right: 5px;
 }
+#calibration-toolbox {
+  position: absolute;
+  top: 146px;
+  left: 50%;
+  margin-left: -200px;
+  width: 400px;
+  font-family: "museo-sans";
+}
+  #calibration-toolbox #sheet-resistance{
+    text-align: left;
+  }
+#artwork-toolbox {
+  position: absolute;
+  bottom: 220px;
+  right: 0px;
+  width: 98px;
+}
+#export-toolbox {
+  position: absolute;
+  top: 280px;
+  right: 5px;
+  /*calc(34% + 98px + 10px);*/
+  width: 120px;
+}
+#canvas-toolbox {
+  position: absolute;
+  top: 89px;
+  left: 0px;
+  /*calc(34% + 98px + 10px);*/
+  width: 310px;
+}
+#circuit-toolbox{
+  position: absolute;
+  top: 89px;
+  /*left: 10px;*/
+  /*left: 310px;*/
+  right: 0px;
+  width: 350px;
+}
+.btn-ellustrator{
+  color: #FFF;
+  background: #5d5d5d;
+}
+.btn-ellustrator:not(.btn-xs), #run-tool, #ohm-tool{
+  height: 36px;
+  overflow: hidden;
+}
+.glyphicon-record:before {
+  position: relative;
+  top: 2px;
+}
+#ohm-tool{
+  line-height: 1.9;
+}
+.btn-ellustrator:hover{
+  color: #DDD;
+  text-decoration: none;
+}
+.btn-ellustrator:visited{
+  color: #FFF;
+  text-decoration: none;
+}
+.btn-ellustrator:focus{
+  color: #FFF;
+  text-decoration: none;
+}
+
+.toolbox{
+  height: 56px;
+  border-bottom: #999 1px solid;
+  background: #484848;
+  border-left: 3px solid #5d5d5d;
+  border-right: 3px solid #5d5d5d;
+  padding: 4px;
+  padding-top: 14px;
+  z-index: 200; 
+  font-family: "Glyphter";
+  color: white;
+}
+  .toolbox label:not(.info){
+    font-family: "Helvetica", "Arial", sans-serif;
+    font-weight: bold;
+    color: #ddddd;
+    font-size: 6.43pt;
+    margin: 2px;
+    margin-top: -12px;
+
+    position: absolute;
+  }
+  .info{
+    font-family: "Helvetica", "Arial", sans-serif;
+    font-weight: bold;
+    color: #ddddd;
+    font-size: 6.43pt;
+    margin: 2px;
+    margin-top: -12px;
+    cursor: pointer;
+  }
 </style> 
+
 <div id="artwork-toolbox" class="toolbox shadowed">
    <label class="text-shadowed"> ARTWORK </label>
-   <div class="btn-group" role="group" id="zoom-ui" aria-label="zoom-tools">
+   <div class="btn-group" role="group">
      
         <%= button_tag :id=>"lock", :class=>"btn btn-md btn-ellustrator" do %>
           <span class="icon-lock2"></span>
@@ -16,10 +117,37 @@
    </div>
 </div>
 
-<div id="canvas-toolbox" class="toolbox shadowed">
+
+<div id="calibration-toolbox" class="toolbox shadowed">
+   <div class="row">
+   <div class="col-xs-8">
+      <label class="text-shadowed"> CALIBRATE MATERIAL SHEET RESISTANCE</label>
+    </div>
+    <div class="col-xs-4">
+     <label class="info pull-right text-shadowed"> 
+      <!-- Button trigger modal -->
+      <span id="calibration-info" data-toggle="modal" data-target="#myModal" class="glyphicon glyphicon-info-sign" title="How do I measure sheet resistance?"></span>
+     </label>
+   </div>
+   </div>
+   <!-- <div class="col-xs-12"> -->
+   <!-- <div class="input-group"> -->
+    <form id="sheet-resistance" class="input-group">
+      <input type="text" class="form-control" placeholder="Measure Ω of 0.25 inch square (default 0.5).">
+      <span class="input-group-btn">
+        <button type="submit" class="btn btn-primary" type="button">SAVE</button>
+      </span>
+    </form>
+    <!-- /input-group -->
+</div>
+
+
+
+  <!-- SELECTION TOOLS -->
+   
+  <div id="canvas-toolbox" class="toolbox shadowed">
    <label class="text-shadowed"> CANVAS </label>
-    <!-- SELECTION TOOLS -->
-      <div class="btn-group" role="group" aria-label="pen-tools">
+       <div class="btn-group" role="group" aria-label="pen-tools">
       <%= button_tag :id => "transform-tool", :class => "btn btn-ellustrator" do %>
         <span class="icon-primary-cursor"></span>
       <% end %>
@@ -31,6 +159,8 @@
         <span class="icon-pan"></span>
       <% end %>   
     </div>
+
+
    <!-- ZOOM TOOLS -->
       <div class="btn-group" role="group" id="zoom-ui" aria-label="zoom-tools">
        
@@ -93,6 +223,9 @@
        <%= button_tag :id => "run-tool", :class => "btn btn-primary" do %>
         <span class="glyphicon glyphicon glyphicon-record"></span>
         <% end %>
+          <%= button_tag :id => "ohm-tool", :class => "btn btn-primary" do %>
+        Ω
+        <% end %>
          <%= button_tag :id => "fab-tool", :class => "btn btn-primary" do %>
         <span class="icon-inkwell"></span>
         <% end %>
@@ -100,10 +233,5 @@
         <span class="icon-debug"></span>
         <% end %>
       </div>      
-
-  </div>   
-
-  <div id="export-toolbox" class="toolbox shadowed">
-     <label> EXPORT </label>
-     <%= render :partial => "import_export_footer" %> 
+      
   </div>   

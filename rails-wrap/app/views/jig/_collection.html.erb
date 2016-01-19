@@ -8,19 +8,20 @@
   padding-left: 0px;
   padding-right: 0px;
   padding-left: 5px;
-  top: 0px;
+  /*margin-left: 9px;*/
+  border-radius: 5px;
+  bottom: 0px;
+  left: 0px;
   background: #ddd;
-  /*height: calc(100% - 75px);*/
-  height: 100%;
-
-
- 
-  
+  /*height: calc(100% - 111px);*/
+  height: calc(200px);
+  width: 100%;
+  z-index: 1000000000;
 }
 #collection-panel{
    overflow-y: scroll;
-   /*height: calc(100% - 61px);*/
-   height: 100%;
+   height: calc(100% - 61px);
+   /*height: 100%;*/
 }
 #collection.collapsed {
   left: -22%;
@@ -147,20 +148,26 @@
 
 var files = <%= @files.to_json.html_safe %>;
 var collections; 
+var myDropzone;
 
 $(function(){
   $('#toggle-switch').click(function(){
-    is_collapsed = $(this).parents('#collection').hasClass("collapsed");
-    if(is_collapsed){
-      $(this).parents('#collection').removeClass("collapsed");
-       $(this).removeClass("glyphicon-arrow-right").addClass("glyphicon-arrow-left");
-
-    } else{
-      $(this).parents('#collection').addClass("collapsed");
-       $(this).removeClass("glyphicon-arrow-left").addClass("glyphicon-arrow-right");
-    }
+     $(this).parents('#collection').slideUp();
   });
   collections = new Collection(files);
+    Dropzone.autoDiscover = false;
+  myDropzone = new Dropzone("#svgUpload", { url: "/jig/upload"});
+  // dz = new Dropzone("#svgUpload", { url: "/jig/upload"});
+  myDropzone.on("complete", function(file) {
+    console.log("uploaded")
+    console.log(file);
+
+    $.getJSON("/jig/primitives", function(data){files = data;
+      collections = new Collection(files);
+      collections.switchTo("Uploads");
+    });
+  });
+
 });
 var testC; 
 function Collection(files){
@@ -180,7 +187,7 @@ Collection.prototype = {
     var scope = this;
     // console.log(this.materials[material]);
     var els = _.map(this.materials[material], function(el, i, arr){
-      var dom = $('<div class="responsive-container col-xs-12 col-sm-4 col-xs-3 no-select">' +
+      var dom = $('<div class="responsive-container col-xs-2 col-sm-2 col-xs-2 no-select">' +
             '<div class="dummy"></div>' +
             '<div class="img-container no-select">' + '</div>' +
         '</div>');
@@ -193,33 +200,80 @@ Collection.prototype = {
    });
    $(this.main_container).append(els);
   },
+  switchTo: function(collectionName){
+    var scope = this;
+    this.main_container.children().not("#dropzone").remove();
+    this.elementAdd(collectionName);
+    $('select#collection-type').val(collectionName);
+  },
   selectorAdd: function(){
     var scope = this;
     var container = $('#collection-type').on('change', function(){
-      scope.main_container.html("");
-      scope.elementAdd($(this).val());
+      scope.switchTo($(this).val());
     });
     container.html('');
-    // console.log(this.collections);
+    console.log(this.collections);
 
-    options = _.map(this.collections, function(el, i, arr){
+    scope.options = _.map(this.collections, function(el, i, arr){
        var dom = $('<option></option>').html(el).attr('id', i).attr('value', el.collection);
        if(el == "Primitives")
         dom.attr('selected', 'true');
       return dom;
     });
-    container.append(options);
+    container.append(scope.options);
   }
 }
 
+function dropLogic(){
+    // DROP LOGIC
+    $('#sandbox canvas').on("drop", function(event){
+      event.preventDefault();  
+      event.stopPropagation();
+      var filename = event.originalEvent.dataTransfer.getData("text");
+      var position = paper.view.viewToProject(new paper.Point(event.originalEvent.x, event.originalEvent.y));
+      console.log(event.originalEvent.dataTransfer.getData("text"));
+      var filetype = filename.split('.');
+      filetype = filetype[filetype.length - 1];
+
+      console.log("Dropped!", filename , position, event, filetype);
+      if(filetype == "svg")
+        designer.addSVG(filename, position);
+      else if(filetype == "json")
+        designer.addJSON(filename, position);
+    }).on("dragover", function(event) {
+      event.preventDefault();  
+      event.stopPropagation();
+      $(this).addClass('dragging');
+    }).on("dragleave", function(event) {
+      event.preventDefault();  
+      event.stopPropagation();
+      $(this).removeClass('dragging');
+    });
+
+    $('img').on('dragstart', function(event){
+      event.originalEvent.dataTransfer.setData("text", $(this).attr('src'));
+    });
+  }
 </script>
 
-<div id="collection" class="col-xs-3 no-select">
-	<div class="title text-shadowed">
-		<h4> Collection - <select id="collection-type">
-    </select> <span id="toggle-switch" class="badge glyphicon glyphicon-arrow-right pull-right">  </span></h4> 
+<div id="collection" class="no-select shadowed">
+  <div class="title">
+    <h4> Collection - <select id="collection-type">
+    </select> 
+    <span id="toggle-switch" class="badge glyphicon glyphicon-remove pull-right">  </span></h4> 
     
-	</div>
+  </div>
   <div id="collection-panel">
+    <div id='dropzone' class="col-xs-4">
+      <br>
+      <%= form_tag({action: :upload}, multipart: true, enctype: "multipart/form-data", :id=> "svgUpload", :class=> "dropzone") do %>
+        <div class="fallback">
+          <input name="file" type="file" multiple />
+        </div>
+      <% end %>
+      <br>
+    </div>
+    <div class="collection-items" class="col-xs-8">
+    </div>
   </div>
 </div>
