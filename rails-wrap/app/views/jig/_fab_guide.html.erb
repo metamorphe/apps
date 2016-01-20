@@ -1,4 +1,4 @@
-<script>
+<script type="text/javascript">
 var guides = eval(<%= @guides.to_json.html_safe %>);
 
 $(function(){
@@ -82,6 +82,7 @@ FabricationGuide.prototype = {
   }
 }
 </script>
+
 <style type="text/css">
   .template{
     display: none;
