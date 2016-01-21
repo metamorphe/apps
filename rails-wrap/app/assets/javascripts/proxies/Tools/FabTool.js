@@ -58,14 +58,14 @@ FabTool.prototype = {
 		designer.circuit_layer.update();
 		designer.traces_layer.update();
 		
-		guide.show();
+		fg.show();
 		var lights = designer.circuit_layer.getAllLights();
 		_.each(lights, function(el, i, arr){
 			el.ledOn(true);
 		});	
 	},
 	disable: function(){
-		guide.hide();
+		fg.hide();
 		designer.circuit_layer.draw_mode = false;
 		designer.traces_layer.trace_mode = false;
 		designer.circuit_layer.update();
