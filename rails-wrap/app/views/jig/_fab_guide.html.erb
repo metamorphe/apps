@@ -1,8 +1,8 @@
 <script type="text/javascript">
 var guides = eval(<%= @guides.to_json.html_safe %>);
-
+var fg;
 $(function(){
-  var fg = new FabricationGuide($('#fab-guide'), guides, $('.list-group-item.template'));
+  fg = new FabricationGuide($('#fab-guide'), guides, $('#item-template'));
 });
 function Timer(seconds, updatefield){
   this.time_remaining = seconds;
@@ -30,21 +30,28 @@ function FabricationGuide(dom, guides, item_template){
   this.dom = dom;
   this.guides = guides;
   this.template = item_template;
+  this.position = 0;
+  this.guidesDOM = [];
   this.init();
 }
 
 FabricationGuide.prototype = {
   init: function(){
+
     var self = this;
     _.each(self.guides, function(el, i, arr){
+      // TYPES OF GUIDES
       var isCheckpoint = el.guide_type == "Checkpoint";
       var isConfirmation = el.guide_type == "Confirmation";
       var isTimed = el.main_message.indexOf("second") > -1;
 
-      var cloned = self.template.clone();
-      cloned.removeClass('template')
+      // GENERATE AND ADJUST DOM FOR GUIDES
+      var cloned = self.template.clone().attr('id', '')
+        .removeClass('template');
+      
       cloned.find('.body-text')
             .html(el.main_message);
+
       if(isConfirmation) cloned.find('.checkpoint').remove();
       if(isCheckpoint) cloned.find('.confirm').remove();
       if(!isTimed){
@@ -57,19 +64,25 @@ FabricationGuide.prototype = {
           t.start();
         });
       }
+
+
       // Interactive properties
         cloned.find('.checkpoint, .confirm.check').click(function(){
-          $(this).parent().parent().remove();
+          self.position++;
+          self.update();
         });
-
-
-      // 
-      cloned.find
-      cloned.appendTo(
-                self.dom
-                    .find("#steps")
-                    );
+        self.guidesDOM.push(cloned);
     });
+    this.update();
+    return this;
+  },
+  update: function(){
+    if(this.position >= guides.length){
+      this.dom.find("#steps").html($('#end-item-template').clone().removeClass('template').attr('id', ''));
+    } else{
+      var stepToDisplay = this.guidesDOM[this.position];
+      this.dom.find("#steps").html(stepToDisplay);
+    }
     return this;
   },
   show: function() {
@@ -104,7 +117,7 @@ FabricationGuide.prototype = {
   }
   .guide-container.expanded {
     width: 50%;
-    height: 150px;
+    height: 127px;
     overflow: hidden;
   }
   .guide-container.expanded #steps{
@@ -153,7 +166,7 @@ FabricationGuide.prototype = {
 
 </style>
 <!-- ITEM TEMPLATE -->
-<li class="list-group-item template">
+<li id="item-template" class="list-group-item template">
   <p class="body-text">Some message. </p>
   <div class="fab-options btn-group pull-right">
     <button class="checkpoint btn btn-sm btn-success"><span class="glyphicon glyphicon-check"></span></button>
@@ -171,7 +184,11 @@ FabricationGuide.prototype = {
 
 </li>
 <!-- END ITEM TEMPLATE -->
-
+<!-- ITEM TEMPLATE -->
+<li id="end-item-template" class="list-group-item template">
+  <p class="body-text"> <strong>CONGRATS!</strong> You have fabricated your design. </p>
+</li>
+<!-- END ITEM TEMPLATE -->
 
 
 <!-- GUIDE -->
