@@ -67,20 +67,58 @@ FabricationGuide.prototype = {
 
 
       // Interactive properties
-        cloned.find('.checkpoint, .confirm.check').click(function(){
-          self.position++;
-          self.update();
-        });
+        // cloned.find('.checkpoint, .confirm.check').click(function(){
+        //   self.position++;
+        //   self.update();
+        // });
+        // cloned.find('.history-next').click(function(){
+        //   self.position++;
+        //   self.update();
+        //   console.log(self.position);
+        // });
+
+        // cloned.find('.history-prev').click(function(){
+        //   self.position--;
+        //   self.update();
+        //   console.log(self.position);
+        // });
+        cloned = self.interact(cloned);
+
         self.guidesDOM.push(cloned);
     });
     this.update();
     return this;
   },
+  interact: function(el){
+    var self = this;
+    el.find('.checkpoint, .confirm.check').unbind().click(function(){
+          self.position++;
+          self.update();
+        });
+    el.find('.history-next').unbind().click(function(){
+      self.position++;
+      self.update();
+      console.log(self.position);
+    });
+
+    el.find('.history-prev').unbind().click(function(){
+      self.position--;
+      self.update();
+      console.log(self.position);
+    });
+    return el;
+  },
   update: function(){
-    if(this.position >= guides.length){
+    if(this.position < 0){
+      console.log("First step");
+      this.position = 0;
+      return;
+    } else if(this.position >= guides.length){
       this.dom.find("#steps").html($('#end-item-template').clone().removeClass('template').attr('id', ''));
     } else{
+      console.log("Setting to ", this.guidesDOM[this.position]);
       var stepToDisplay = this.guidesDOM[this.position];
+      if(!_.isUndefined(stepToDisplay)) stepToDisplay = this.interact(stepToDisplay);
       this.dom.find("#steps").html(stepToDisplay);
     }
     return this;
@@ -117,7 +155,7 @@ FabricationGuide.prototype = {
   }
   .guide-container.expanded {
     width: 50%;
-    height: 127px;
+    height: 135px;
     overflow: hidden;
   }
   .guide-container.expanded #steps{
@@ -126,7 +164,7 @@ FabricationGuide.prototype = {
     width: 99%;
   }
     .guide-container.expanded #steps .list-group-item{
-      height: 115px;
+      height: 125px;
       margin-bottom: 10px;
     }
       .guide-container.expanded #steps .list-group-item .body-text{
@@ -145,15 +183,21 @@ FabricationGuide.prototype = {
           background-color: rgb(93, 93, 93);
           border-color: #4d4d4d;
         }
-        .guide-container  p{
-          width: 75%;
+      /*  .guide-container  p{
+          width: 65%;
           display: inline-block;
-        }
+        }*/
         .timer input.form-control{
              width: 57px;
             float: right;
             height: 30px;
         }
+        .history{
+          position: absolute;
+          bottom: 3px;
+          width: 95%;
+        }
+
   #confirm{
     margin: -6px;
     padding: 20px;
@@ -167,21 +211,35 @@ FabricationGuide.prototype = {
 </style>
 <!-- ITEM TEMPLATE -->
 <li id="item-template" class="list-group-item template">
-  <p class="body-text">Some message. </p>
-  <div class="fab-options btn-group pull-right">
-    <button class="checkpoint btn btn-sm btn-success"><span class="glyphicon glyphicon-check"></span></button>
-    <button class="check confirm btn btn-sm btn-warning"><span class="glyphicon glyphicon-ok"></span></button>
-    <button class="error confirm btn btn-sm btn-danger"><span class="glyphicon glyphicon-remove"></span></button>
-  </div>
-  <br>
   
-  <div class="timer input-group">
-      <input type="number" class="btn-sm form-control" value="10">
-      <span class="input-group-btn">
-          <button class="btn btn-sm btn-primary"><span class="glyphicon glyphicon-time"></span></button>
-      </span>
-  </div><!-- /input-group -->
+  <p class="body-text col-xs-9">Some message. </p>
 
+  <div class="fab-options col-xs-3">
+    <div class="btn-group pull-right">
+        <button class="checkpoint btn btn-sm btn-success"><span class="glyphicon glyphicon-check"></span></button>
+      <button class="check confirm btn btn-sm btn-warning"><span class="glyphicon glyphicon-ok"></span></button>
+      <button class="error confirm btn btn-sm btn-danger"><span class="glyphicon glyphicon-remove"></span></button>
+    </div>
+    <br class="clearfix">
+    <br>
+    <div class="timer input-group">
+        <input type="number" class="btn-sm form-control" value="10">
+        <span class="input-group-btn">
+            <button class="btn btn-sm btn-primary"><span class="glyphicon glyphicon-time"></span></button>
+        </span>
+    </div><!-- /input-group -->
+  </div>
+  
+
+  <br class="clearfix">
+  <div class="history">
+     <button class="history-prev btn btn-xs btn-ellustrator pull-left">
+        <span class="glyphicon glyphicon-arrow-left"></span>
+      </button>
+     <button class="history-next btn btn-xs btn-ellustrator pull-right">
+      <span class="glyphicon glyphicon-arrow-right"></span>
+    </button>
+  </div>
 </li>
 <!-- END ITEM TEMPLATE -->
 <!-- ITEM TEMPLATE -->
