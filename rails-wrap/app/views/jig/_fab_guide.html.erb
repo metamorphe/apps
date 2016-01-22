@@ -96,6 +96,9 @@ FabricationGuide.prototype = {
           self.position++;
           self.update();
         });
+    el.find('.confirm.error').unbind().click(function(){
+      $('#debug-tool').click();
+    });
     el.find('.history-next').unbind().click(function(){
       self.position++;
       self.update();
