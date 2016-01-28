@@ -39,16 +39,11 @@ CircuitDesigner.prototype = {
 
 		// Setups tools
 	    this.toolbox = new Toolbox(this.paper, $("#toolbox"));	
-	    this.toolbox.add("anchortool", $('#anchor-tool'), new AnchorPointTool(this.paper));
-		this.toolbox.add("pathtool", $('#path-tool'),  new TracePathTool(this.paper));
-		this.toolbox.add("transformtool", $('#transform-tool'),  new TransformTool2(this.paper));
-		this.toolbox.add("pantool", $('#pan-tool'),  new PanTool(this.paper));
-		this.toolbox.add("canvaspantool", $('#canvas-pan-tool'),  new CanvasPanTool(this.paper));
-		this.toolbox.add("runtool", $('#run-tool'),  new RunTool(this.paper));
-		this.toolbox.add("debugtool", $('#debug-tool'),  new DebugTool(this.paper));
-		this.toolbox.add("fabtool", $('#fab-tool'),  new FabTool(this.paper));
-		this.toolbox.add("ohmtool", $('#ohm-tool'),  new OhmTool(this.paper));
-		
+	    _.each(tool_config, function(el, i, arr){
+	    	var toolStr = "new " + el.js + "(scope.paper)";
+	    	scope.toolbox.add(el.name, $(el.dom), eval(toolStr));
+	    });
+
 		this.toolbox.enable("transformtool");
 		return this;
 	},

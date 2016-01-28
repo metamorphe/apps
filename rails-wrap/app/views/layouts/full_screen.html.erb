@@ -2,16 +2,18 @@
 <html>
 <head>
   <title>Ellustrate - <%= params[:action].humanize %></title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>   
   <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
+
   <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
     <%= stylesheet_link_tag params[:controller], media: 'all', 'data-turbolinks-track' => true %>
   <%= javascript_include_tag params[:controller], 'data-turbolinks-track' => true %>
-	
+	<!-- 
 	<script src="https://use.typekit.net/swf3anw.js"></script>
 	<script>try{Typekit.load({ async: true });}catch(e){}</script>
-
+	 -->
   <%= csrf_meta_tags %>
-  <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+  <!-- <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"> -->
   <script type="text/javascript">
 	  $(function(){
 		// PREVENT BROWSER BUMP

@@ -26,13 +26,8 @@
 //= require proxies/Tools/DebugTool
 //= require proxies/Tools/FabTool
 //= require proxies/Tools/OhmTool
-//= require proxies/StatsController
-//= require proxies/Material
 //= require proxies/CircuitLayer
-//= require proxies/WirePath
 //= require clipper
-//= require circuitree/fluke
-//= require circuitree/api
 //= require circuitree/CanvasItem
 //= require circuitree/artwork_layer
 //= require circuitree/TracesLayer
@@ -42,3 +37,4 @@
 //= require circuitree/DebugGuide
 //= require circuitree/sheet_resistance
 //= require dropzone
+//= require hammer

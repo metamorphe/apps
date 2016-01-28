@@ -11,3 +11,4 @@
 //= require circuitree/june
 //= require jig
 //= require dropzone
+//= require hammer

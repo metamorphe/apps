@@ -25,47 +25,21 @@
     
     
     zoom = new Zoom(designer.paper.view.zoom, designer.paper);
-    materials = new Materials($(".materials"));
     guide = new FabricationGuide($("#fab-guide"));
     debug = new DebugGuide($("#debug-guide"));
 
-    StatsController.DOM = $('#stat-box');
-    stats = new StatsController(designer);
-    
     resp = $.getJSON(design.json.url, function(resp){
        designer.loadJSON(resp);
     });
 
-    api = new API(designer.nodes);
     alerter = new Alerter($('#alerter'));
     // dropLogic();
+   
   });
-
-
 
   getActiveTool = function(){ return paper.tool.toolholder; }
   
   function attachHandlers(){
-    WirePath.DOM = $("#wirepath_controller");
-     $("#bring-to-front").click(function(){
-        var stroke = getActiveTool().selectedStroke;
-        if(! _.isNull(stroke)){
-          stroke.parent.bringToFront();
-          paper.view.update();
-        } 
-      });
-
-     $("#send-to-back").click(function(){
-        var stroke = getActiveTool().selectedStroke;
-        if(! _.isNull(stroke)){
-          stroke.parent.sendToBack();
-          paper.view.update();
-        } 
-      });
-      $("#fluke-calc").click(function(){
-        Fluke.calculateCircuitState();
-      });
-
     $("#zoom-in").click(function(){zoom.in();});
     $("#zoom-out").click(function(){zoom.out();});
     $("#scale").click(function(){
@@ -77,27 +51,7 @@
         zoom.show_scale();
       }
     });
-      
     
-    var sb = new SidebarController();
-
-  }
-
-  function SidebarController(){
-
-    $(".materials").change(function(){
-      var matIdx = parseInt($(this).val());
-      var componentType = $(this).data("component-type");
-      var material = materials.at(componentType, matIdx);
-      
-      if(designer.activePath){
-        designer.nodes.at(designer.activePath).material = material;
-
-        designer.nodes.at(designer.activePath).update();
-        designer.nodes.at(designer.activePath).updateDOM();
-        designer.paper.view.update();
-      }
-    });
 
     $('#ghost').click(function(){
       designer.art_layer.ghost_mode = !designer.art_layer.ghost_mode; 
@@ -124,8 +78,11 @@
      });
      $('#clear-history').click(function(){
       designer.clear_history();
-     });
+     });      
+    
   }
+
+
 
 
 </script>

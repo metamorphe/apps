@@ -56,3 +56,5 @@ gem 'csg', '~> 0.1.5'
 gem 'underscore-rails'
 gem 'redcarpet'
 gem 'dropzonejs-rails'
+
+gem 'hammerjs-rails'

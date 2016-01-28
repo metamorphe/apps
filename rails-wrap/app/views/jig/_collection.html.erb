@@ -197,13 +197,22 @@ Collection.prototype = {
       // img.on('dragstart', function(event){
       //   event.originalEvent.dataTransfer.setData("text", $(this).attr('src'));
       // });
-      // Tablet click to add function
 
-      img.click(function(){
-        console.log("Adding element", "/primitives/" + el.filename);
-        var position = paper.view.center.clone();
-        position.y -= 100;
-        designer.addSVG("/primitives/" + el.filename, position);
+      // Tablet click to add function
+      // img.click(function(){
+      //   console.log("Adding element", "/primitives/" + el.filename);
+      //   var position = paper.view.center.clone();
+      //   position.y -= 100;
+      //   designer.addSVG("/primitives/" + el.filename, position);
+      // });
+
+      var hammertime = new Hammer(img[0]);
+      hammertime.on('press', function(ev) {
+          console.log(ev);
+          console.log("Adding element", "/primitives/" + el.filename);
+          var position = paper.view.center.clone();
+          position.y -= 100;
+          designer.addSVG("/primitives/" + el.filename, position);
       });
 
       dom.find('.img-container').append(img);
@@ -274,6 +283,9 @@ function dropLogic(){
   <div class="title">
     <h4> Collection - <select id="collection-type">
     </select> 
+    <span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      Press-and-Hold to ADD element </span>
     <span id="toggle-switch" class="badge glyphicon glyphicon-remove pull-right">  </span></h4> 
     
   </div>

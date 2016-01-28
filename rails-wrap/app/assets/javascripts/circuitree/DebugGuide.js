@@ -1,3 +1,4 @@
+
 function DebugGuide(dom){
 	this.dom = dom;
 	this.hide();

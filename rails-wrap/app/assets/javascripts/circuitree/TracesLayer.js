@@ -1,3 +1,4 @@
+
 function TracesLayer(paper){
 	this.paper = paper;
 	this.className = "TracesLayer";
