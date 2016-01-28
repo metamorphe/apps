@@ -38,7 +38,7 @@
 
     api = new API(designer.nodes);
     alerter = new Alerter($('#alerter'));
-    dropLogic();
+    // dropLogic();
   });
 
 
@@ -81,12 +81,6 @@
     
     var sb = new SidebarController();
 
-    $('.download').click(function(){
-    	if($(this).attr("name") == "svg")
-	      $(this).attr('href', 'data:text/svg,' + designer.export(TextureGenerator.SVG) ).attr('download', 'mytexture.svg');
-	    else if($(this).attr("name") == "png")
-		    $(this).attr('href', designer.export(TextureGenerator.PNG) ).attr('download', 'mytexture.png');
-    });
   }
 
   function SidebarController(){

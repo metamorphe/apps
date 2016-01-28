@@ -8,8 +8,9 @@ function CircuitDesigner(container){
 	this.circuit_layer = new CircuitLayer(paper);
 	this.art_layer = new ArtworkLayer(paper);
 	this.traces_layer = new TracesLayer(paper);
-	console.log($(CircuitDesigner.defaultTool));
+
 	$(CircuitDesigner.defaultTool).click();
+	
 	this.init();
 	this.animations = [];
 	this.update();
@@ -18,6 +19,39 @@ function CircuitDesigner(container){
 }
 
 CircuitDesigner.prototype = {
+
+	init: function(){
+		// setups paperjs 
+		var c = this.container;
+		this.canvas = DOM.tag("canvas")
+				.prop('resize', true)
+				.height(c.height())
+				.width(c.width());
+
+		c.append(this.canvas);	
+
+		this.paper = new paper.PaperScope();
+		this.paper.setup(this.canvas[0]);
+		this.height = this.paper.view.size.height;
+		this.width = this.paper.view.size.width;
+		this.paper.view.zoom = 1.5;	
+		var scope = this; 
+
+		// Setups tools
+	    this.toolbox = new Toolbox(this.paper, $("#toolbox"));	
+	    this.toolbox.add("anchortool", $('#anchor-tool'), new AnchorPointTool(this.paper));
+		this.toolbox.add("pathtool", $('#path-tool'),  new TracePathTool(this.paper));
+		this.toolbox.add("transformtool", $('#transform-tool'),  new TransformTool2(this.paper));
+		this.toolbox.add("pantool", $('#pan-tool'),  new PanTool(this.paper));
+		this.toolbox.add("canvaspantool", $('#canvas-pan-tool'),  new CanvasPanTool(this.paper));
+		this.toolbox.add("runtool", $('#run-tool'),  new RunTool(this.paper));
+		this.toolbox.add("debugtool", $('#debug-tool'),  new DebugTool(this.paper));
+		this.toolbox.add("fabtool", $('#fab-tool'),  new FabTool(this.paper));
+		this.toolbox.add("ohmtool", $('#ohm-tool'),  new OhmTool(this.paper));
+		
+		this.toolbox.enable("transformtool");
+		return this;
+	},
 	getTree: function(){
 		var scope = this;
 		var traces = designer.traces_layer.getAllTraces();
@@ -127,38 +161,6 @@ CircuitDesigner.prototype = {
 	    	// 		return memo && valid;
 	    	// }, true);
 	},
-	init: function(){
-		// setups paperjs 
-		var c = this.container;
-		this.canvas = DOM.tag("canvas")
-				.prop('resize', true)
-				.height(c.height())
-				.width(c.width());
-
-		c.append(this.canvas);	
-
-		this.paper = new paper.PaperScope();
-		this.paper.setup(this.canvas[0]);
-		this.height = this.paper.view.size.height;
-		this.width = this.paper.view.size.width;
-		this.paper.view.zoom = 1.5;	
-		var scope = this; 
-
-		// Setups tools
-	    this.toolbox = new Toolbox(this.paper, $("#toolbox"));	
-	    this.toolbox.add("anchortool", $('#anchor-tool'), new AnchorPointTool(this.paper));
-		this.toolbox.add("pathtool", $('#path-tool'),  new TracePathTool(this.paper));
-		this.toolbox.add("transformtool", $('#transform-tool'),  new TransformTool2(this.paper));
-		this.toolbox.add("pantool", $('#pan-tool'),  new PanTool(this.paper));
-		this.toolbox.add("canvaspantool", $('#canvas-pan-tool'),  new CanvasPanTool(this.paper));
-		this.toolbox.add("runtool", $('#run-tool'),  new RunTool(this.paper));
-		this.toolbox.add("debugtool", $('#debug-tool'),  new DebugTool(this.paper));
-		this.toolbox.add("fabtool", $('#fab-tool'),  new FabTool(this.paper));
-		this.toolbox.add("ohmtool", $('#ohm-tool'),  new OhmTool(this.paper));
-		
-		this.toolbox.enable("transformtool");
-		return this;
-	},
 	update: function(){
 		if(typeof this.paper == "undefined") return;
 		paper.view.update();
@@ -169,7 +171,6 @@ CircuitDesigner.prototype = {
 		this.update();
 	},
 	addSVG: function(filename, position, callback){
-		
 		var scope = this;
 		var fileType = filename.split('/');
 		fileType = fileType[fileType.length - 1];
@@ -178,7 +179,7 @@ CircuitDesigner.prototype = {
 		console.log("filename", fileType, filename);
 		this.paper.project.importSVG(filename, {
 	    	onLoad: function(item) { 
-	    		if(fileType == "artwork"){
+	    		if(fileType == "artwork" || fileType == "battery" || fileType == "prettycircuit"){
 	    			item.sendToBack();
 	    			scope.art_layer.add(item);
 			    	CircuitDesigner.retainGroup(item, position, callback, scope);
@@ -216,10 +217,10 @@ CircuitDesigner.prototype = {
 }
                  
 
-
 CircuitDesigner.retainGroup = function(item, position, callback, scope){
 	console.log("Retaining group", item.className);
 	item.position = position;
+
 	CircuitDesigner.defaultTool.click().focus();
 }
 

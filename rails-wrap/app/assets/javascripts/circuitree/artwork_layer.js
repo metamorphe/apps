@@ -2,7 +2,7 @@
 // Artwork elements are CanvasElements
 // Applies filters to all Artwork elements added
 // Lock/unlock position
-
+var last_added = null;
 
 function ArtworkLayer(paper){
 	this.paper = paper;
@@ -19,6 +19,7 @@ ArtworkLayer.prototype = {
 	},
 	add: function(item){
 		console.log("Adding artwork", item.id, item.name);
+		last_added = item;
 		var ci = new CanvasItem(this.paper, item, this.className + "Element")
 		ci.e_layer = this;
 		this.collection.push(ci);
