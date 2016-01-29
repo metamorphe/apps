@@ -26,6 +26,9 @@ function CanvasPanTool(paper){
 
 
 CanvasPanTool.prototype = {
+	enable: function(){
+		console.log("Canvas Pan Activated");
+	},
 	update: function(){
 		this.paper.view.update();
 	}, 

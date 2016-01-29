@@ -1,3 +1,4 @@
+Toolbox.defaultTool = "transformtool";
 
 function Toolbox(paper, dom){
 	this.paper = paper;
@@ -8,7 +9,12 @@ function Toolbox(paper, dom){
 
 Toolbox.prototype={
 	init: function(){
+		var scope = this;
 		// this.add("vectortool", new VectorTool(this.paper));
+		_.each(tool_config, function(el, i, arr){
+	    	var toolStr = "new " + el.js + "(scope.paper)";
+	    	scope.add(el.name, $("#" + el.dom), eval(toolStr));
+	    });
 	},
 	getActive: function(){
 		if(_.isNull(paper.tool))
@@ -37,6 +43,10 @@ Toolbox.prototype={
 			dom.addClass('btn-warning').removeClass('btn-ellustrate');
 			scope.enable(name);
 		});
+		if(Toolbox.defaultTool == name){
+			dom.click().focus();
+		}
+
 		var origOnKeyDown = tool.onKeyDown;
 		var scope = this;
 		tool.onKeyDownDefault = function(event){

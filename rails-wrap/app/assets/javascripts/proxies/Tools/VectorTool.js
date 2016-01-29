@@ -9,8 +9,6 @@ function VectorTool(paper){
 
 	var scope = this;
 
-	
-
 	this.tool.onMouseDown = function(event){
 		hitResult = scope.paper.project.hitTest(event.point, {stroke: true});
 		console.log("HR", hitResult);
@@ -47,20 +45,6 @@ function VectorTool(paper){
 	}		
 }
 
-  //  var hammertime = Hammer($('canvas')[0]);
-  //   hammertime.get('pinch').set({ enable: true });
-  //   hammertime.on('pinchstart', pinchStart);
-  //   hammertime.on('pinchend', pinchEnd);
-  //   hammertime.on('pinch', pinching);
-  // function pinching(ev){
-  //   console.log("Pinching", ev.scale);
-  // }
-  // function pinchStart(ev){
-  //   console.log("Gesture detected!", ev.type);
-  // }
-  // function pinchEnd(ev){
-  //   console.log("Gesture detected!", ev);
-  // }
 
 VectorTool.prototype = {
 	update: function(){

@@ -13,6 +13,7 @@
 //= require proxies/utility
 //= require proxies/jig_exporter
 //= require circuitree/circuit_designer
+//= require circuitree/fluke
 //= require proxies/zoom
 //= require proxies/Tools/Toolbox
 //= require proxies/Tools/TracePathTool

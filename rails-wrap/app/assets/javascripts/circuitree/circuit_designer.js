@@ -1,5 +1,5 @@
 var sr_model;
-CircuitDesigner.defaultTool = $('#transform-tool')
+// CircuitDesigner.defaultTool = $('#transform-tool');
 
 function CircuitDesigner(container){
 	sr_model = new SheetResistanceModel(10);
@@ -39,12 +39,7 @@ CircuitDesigner.prototype = {
 
 		// Setups tools
 	    this.toolbox = new Toolbox(this.paper, $("#toolbox"));	
-	    _.each(tool_config, function(el, i, arr){
-	    	var toolStr = "new " + el.js + "(scope.paper)";
-	    	scope.toolbox.add(el.name, $(el.dom), eval(toolStr));
-	    });
-
-		this.toolbox.enable("transformtool");
+	    // CircuitDesigner.defaultTool.click();
 		return this;
 	},
 	getTree: function(){
@@ -241,7 +236,7 @@ CircuitDesigner.decomposeImport = function(item, position, callback, scope){
 		else scope.circuit_layer.add(path);
 	});
 
-	$(CircuitDesigner.defaultTool).click().focus();
+	// $(CircuitDesigner.defaultTool).click().focus();
 }
 
 
