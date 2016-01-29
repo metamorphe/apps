@@ -107,14 +107,14 @@ function TransformTool2(paper){
 	}
 	this.tool.onPinchMove = function(event){
 		scope.pinching = true;
-		route(event, ["element"], "onPinchMove");
+		route(event, ["canvas", "element"], "onPinchMove");
 	}
 	this.tool.onPinchStart = function(event){
-		route(event, ["element"], "onPinchStart");
+		route(event, ["canvas", "element"], "onPinchStart");
 	}
 	this.tool.onPinchEnd = function(event){
 		scope.pinching = false;
-		route(event, ["element"], "onPinchEnd");
+		route(event, ["canvas", "element"], "onPinchEnd");
 	}
 	this.tool.onRotateMove = function(event){
 		scope.rotating = true;
@@ -244,6 +244,19 @@ TransformTool2.prototype = {
 		}
 	},
 	canvas: {
+		onPinchStart: function(event, scope){
+			console.log("pStart");
+			scope.pinching = true;
+		},
+		onPinchMove: function(event, scope){
+			console.log("pMove");
+			scope.pinching = true;
+			scope.sm.scale(event.scale, event.scale);
+		},
+		onPinchEnd: function(event, scope){
+			console.log("pEnd");
+			scope.pinching = false;
+		},
 		onRotateStart: function(event, hitResult, scope){
 			console.log("rStart");
 			scope.rotating = true;
