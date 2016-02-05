@@ -143,6 +143,7 @@ TracePathTool.prototype = {
 	    		trace.simplify();
 	    		
 	    		trace.name = "C" + polarity + "P: trace";
+	    		
 	    		trace.polarity = pLetterToCLPolarity(polarity);
 	    		designer.circuit_layer.add(trace, true);
 	    		trace = null;
@@ -190,7 +191,7 @@ TracePathTool.isValidPath = function(trace, scope){
 TracePathTool.getAllIntersections = function(path, wires){
 	var intersects = [];
 	for(var i in wires){
-		var s = trace.getIntersections(wires[i]);
+		var s = path.getIntersections(wires[i]);
 		if(s.length > 0)
 			intersects.push(s);
 	}

@@ -30,6 +30,7 @@ CircuitLayer.prototype = {
 				name: "CP: Added trace"
 			});
 			cp.remove();
+			cp.canvasItem = true;
 			scope.layer.addChild(cp);
 			cp.addChild(layer);
 			// scope.layer.addChild(layer);
