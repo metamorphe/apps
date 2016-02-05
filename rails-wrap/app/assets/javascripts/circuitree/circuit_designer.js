@@ -304,7 +304,6 @@ EllustrateSVG.prototype = {
 			);
 
 		_.each(COMPONENTS, function(el, i, arr){
-			console.log(el.name);
 			el.canvasItem = true;
 		});
 		console.log("4º: Add components", COMPONENTS);

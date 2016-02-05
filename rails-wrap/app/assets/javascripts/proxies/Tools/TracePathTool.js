@@ -69,102 +69,116 @@ TracePathTool.prototype = {
 			});
 
 	    	trace.add(event.point);
+
+	    	var polarity = detectPolarity(trace);
+
+	    	var terminals = ["C"+ polarity +"T"];
+			terminals = EllustrateSVG.match(designer.circuit_layer.layer, { prefix: terminals });
+			
+			_.each(terminals, function(el, i, arr){
+				el.scaling = new paper.Point(1.1, 1.1);	
+			});
 		}, 
 		onMouseDrag: function(event){
 			trace.add(event.point);
 		}, 
 		onMouseUp: function(event, scope){
-   			// Get all conductive elements on the board
-			// var terminals = designer.circuit_layer.getAllTerminals();
-			// var traces = designer.traces_layer.getAllTraces();
-			// var conductive = _.flatten([terminals, traces]);
+			
+			var polarity = detectPolarity(trace);
 
+			// GET ALL CONDUCTIVE offending_elements
+			var conductive = ["CGP", "CVP", "CNP", "CGB", "CVB", "CNB"];
+			conductive = EllustrateSVG.match(designer.circuit_layer.layer, { prefix: conductive });
+		
 
-			// // Find all unique non-self referential intersections with those elements
-	  //   	var intersects = TracePathTool.getAllIntersections(trace, conductive);
-			// intersects = _.uniq(intersects);
-	  //   	intersects = _.reject(intersects, function(el, i, arr){
-	  //   		return el.parent.canvasItem.id == start_terminal.parent.canvasItem.id;
-	  //   	});
-
-	  //   	// Visual characteristics on MouseUp			
-			// _.each(terminals, function(el, i, arr){
-			// 	el.scaling = new paper.Point(1.0, 1.0);	
-			// });
+	     	// Visual characteristics on MouseUp			
+			var terminals = ["CGT", "CVT", "CNT"];
+			terminals = EllustrateSVG.match(designer.circuit_layer.layer, { prefix: terminals });
+			
+			_.each(terminals, function(el, i, arr){
+				el.scaling = new paper.Point(1.0, 1.0);	
+			});
+			
+			// var intersects = TracePathTool.getAllIntersections(trace, conductive);
+			// conductive[2].selected = true;
 			
 
-
-	  //   	// Handle intersections
-	  //   	// Hanging trace
-	  //   	if(intersects.length == 0){
-	  //   		trace.simplify();
-	  //   		trace.remove();
-	  //   		scope.lastTrace = designer.traces_layer.add(trace);
-	  //   		start_terminal = null;
-	  //   		return;
-	  //   	}
-	  //   	// Are all connections of the same polarity
-	  //   	var offending_elements = [trace];
-	  //   	var polarity = start_terminal.name == "trace" ? start_terminal.style.strokeColor : start_terminal.style.fillColor;
-	  //   		var valid_connection = _.reduce(intersects, function(memo, el, i, arr){
-	  //   			var el_polarity = el.name == "trace" ? el.style.strokeColor : el.style.fillColor;
-	  //   			var valid = polarity.equals(el_polarity);
-	  //   			if(!valid) offending_elements.push(el);
-	  //   			return memo && valid;
-	  //   	}, true);
-
-	  //   	if(valid_connection){
-	  //   		trace.simplify();
-	  //   		trace.remove();
-   //  			scope.lastTrace = designer.traces_layer.add(trace);;
-	  //   	}
-	  //   	else{
-	  //   		// error message
-	  console.log(trace);
-	  		if(_.isNull(trace)) return;
+			var intersects = TracePathTool.getAllIntersections(trace, conductive)
+			// console.log("WHY", intersects[1]._curve.path.name);
+			// console.log("WHY", intersects[1]._curve2.path.name);
+			var i_group = new paper.Group();
+			_.each(intersects, function(el, i, arr){
+				var c = new paper.Path.Circle({
+					position: el.point,
+					radius: el.path.strokeWidth * 1.1, 
+					fillColor: el._curve2.path.style.strokeColor
+				});
+				i_group.addChild(c);
+			});
+			// intersects[0].path.remove();			
+			// Are all connections of the same polarity
+			var valid_connection = true;
+			var offending_elements = [trace];
+			for(var i in intersects){
+				var el = intersects[i];
+				if(detectPolarity(el._curve2.path) != polarity){
+					valid_connection = false;
+					offending_elements.push(el.path);
+					break;
+				}
+			}
+			if(valid_connection){
+				if(_.isNull(trace)) return;
     		
-    		trace.simplify();
-    		var polarity = detectPolarity(trace);
-    		trace.name = "C" + polarity + "P: trace";
-    		designer.circuit_layer.add(trace, true);
-    		trace = null;
-	  //   		var animations = [];
-    			
-
-	  //   		alerter.alert(TracePathTool.SHORT_MESSAGE,
-		 //    		function(){
-			// 			_.each(offending_elements, function(el, i, arr){
-			// 			console.log("Strobing", el.name);
-			// 			el.style = {
-			// 				shadowColor: "blue",
-			// 				shadowBlur: 30,
-			// 				shadowOffset: new paper.Point(0, 0)
-			// 			}
-			// 			animations.push(designer.animation_handler.add(function(event){
-			// 				var t = Math.sin(event.count/5); //[-1, 1]
-			// 				t += 1; //[0, 2];
-			// 				t /= 2; //[0, 1];
-			// 				el.shadowColor.alpha = t;
-			// 			}, 1.5,
-			// 			function(){
-			// 				el.shadowColor.alpha = 0;
-			// 				if(trace) trace.remove();
-			// 			}));
-	  //   			});
-						
-			// 		},
-		 //    		"Remove the shorting path"
-	  //   		);
+	    		trace.simplify();
 	    		
-	  //   	}
+	    		trace.name = "C" + polarity + "P: trace";
+	    		designer.circuit_layer.add(trace, true);
+	    		trace = null;
+
+			} else{
 
 
-	  //   	// State variable update
-			// start_terminal = null;
+	    		var animations = [];
+				alerter.alert(TracePathTool.SHORT_MESSAGE,
+			    		function(){
+							_.each(offending_elements, function(el, i, arr){
+							console.log("Strobing", el.name);
+							el.style = {
+								shadowColor: "blue",
+								shadowBlur: 30,
+								shadowOffset: new paper.Point(0, 0)
+							}
+							animations.push(designer.animation_handler.add(function(event){
+								var t = Math.sin(event.count/5); //[-1, 1]
+								t += 1; //[0, 2];
+								t /= 2; //[0, 1];
+								el.shadowColor.alpha = t;
+							}, 1.5,
+							function(){
+								el.shadowColor.alpha = 0;
+								if(trace) trace.remove();
+								i_group.remove();
+							}));
+		    			});
+							
+						},
+			    		"Remove the shorting path"
+		    		);
+		    }
 		}
 	},
 
 }
+TracePathTool.getAllIntersections = function(path, wires){
+	var intersects = [];
+	for(var i in wires){
+		var s = trace.getIntersections(wires[i]);
+		if(s.length > 0)
+			intersects.push(s);
+	}
+	return _.flatten(intersects);
+} 
 
 function detectPolarity(trace){
 	if(trace.style.strokeColor.equals(CircuitLayer.POSITIVE))

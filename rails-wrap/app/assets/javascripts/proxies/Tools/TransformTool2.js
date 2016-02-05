@@ -355,9 +355,13 @@ SelectionManager.prototype = {
 	}, 
 	clear: function(){
 		var scope = this;
+		_.each(this.selection_group, function(el, i, arr){
+			el.selected = false;
+		});
+		this.selection_group = [];
 		// _.each(this.collection, function(el, i, arr){
 		// scope.remove(el);
-		scope.remove();
+		// scope.remove();
 		// });
 		// this.collection = {};
 		// this.update();
