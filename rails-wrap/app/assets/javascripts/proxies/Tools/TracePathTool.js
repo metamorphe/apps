@@ -1,5 +1,7 @@
 TracePathTool.SHORT_MESSAGE = "You are shorting your circuit. Avoid crossing any paths or connecting to terminals that aren't the same color (polarity).";
-
+TracePathTool.MAX_BRUSH_SIZE = 10;
+TracePathTool.BRUSH_SIZE = 4;
+TracePathTool.MIN_BRUSH_SIZE = 1;
 var hitOptions = {
 	segments: true,
 	stroke: true,
@@ -64,7 +66,7 @@ TracePathTool.prototype = {
 
 			trace = new paper.Path({
 				strokeColor: path.polarity,
-				strokeWidth: 4,
+				strokeWidth: TracePathTool.BRUSH_SIZE,
 				name: "trace"
 			});
 
@@ -78,13 +80,14 @@ TracePathTool.prototype = {
 			_.each(terminals, function(el, i, arr){
 				el.scaling = new paper.Point(1.1, 1.1);	
 			});
+			scope.intersects = new paper.Group();
 		}, 
-		onMouseDrag: function(event){
+		onMouseDrag: function(event, scope){
 			var trace_scope = trace;
 			if(_.isNull(trace)) return;
 
 			trace.add(event.point);
-			valid = TracePathTool.isValidPath(trace);
+			valid = TracePathTool.isValidPath(trace, scope);
 			if(! valid.connection){
 				// trace.simplify();
 
@@ -107,7 +110,7 @@ TracePathTool.prototype = {
 							function(){
 								el.shadowColor.alpha = 0;
 								if(trace_scope) trace_scope.remove();
-
+								if(valid.intersects) valid.intersects.remove();
 							}));
 		    			});
 							
@@ -132,7 +135,7 @@ TracePathTool.prototype = {
 				el.scaling = new paper.Point(1.0, 1.0);	
 			});
 			
-			valid = TracePathTool.isValidPath(trace);
+			valid = TracePathTool.isValidPath(trace, scope);
 
 			if(valid.connection){
 				if(_.isNull(trace)) return;
@@ -144,41 +147,13 @@ TracePathTool.prototype = {
 	    		designer.circuit_layer.add(trace, true);
 	    		trace = null;
 
-			} else{
-
-
-	    		var animations = [];
-				alerter.alert(TracePathTool.SHORT_MESSAGE,
-			    		function(){
-							_.each(valid.error , function(el, i, arr){
-							console.log("Strobing", el.name);
-							el.style = {
-								shadowColor: "blue",
-								shadowBlur: 30,
-								shadowOffset: new paper.Point(0, 0)
-							}
-							animations.push(designer.animation_handler.add(function(event){
-								var t = Math.sin(event.count/5); //[-1, 1]
-								t += 1; //[0, 2];
-								t /= 2; //[0, 1];
-								el.shadowColor.alpha = t;
-							}, 1.5,
-							function(){
-								el.shadowColor.alpha = 0;
-								if(trace) trace.remove();
-							}));
-		    			});
-							
-						},
-			    		"Remove the shorting path"
-		    		);
-		    }
+			}
 		}
 	},
 
 }
 
-TracePathTool.isValidPath = function(trace){
+TracePathTool.isValidPath = function(trace, scope){
 	var polarity = detectPolarity(trace);
 
 	// GET ALL CONDUCTIVE offending_elements
@@ -188,7 +163,6 @@ TracePathTool.isValidPath = function(trace){
 	// CIRCUIT VALIDATION
 	var intersects = TracePathTool.getAllIntersections(trace, conductive)
 
-	var i_group = new paper.Group();
 	_.each(intersects, function(el, i, arr){
 		var c = new paper.Path.Circle({
 			position: el.point,
@@ -196,7 +170,7 @@ TracePathTool.isValidPath = function(trace){
 			fillColor: el._curve2.path.style.strokeColor
 		});
 		c.remove();
-		i_group.addChild(c);
+		scope.intersects.addChild(c);
 	});
 
 	// SHORT DETECTION
@@ -210,8 +184,8 @@ TracePathTool.isValidPath = function(trace){
 			break;
 		}
 	}
-	if(!valid_connection) i_group.remove();
-	return {connection: valid_connection, intersects: i_group, error: offending_elements};
+	if(!valid_connection) scope.intersects.remove();
+	return {connection: valid_connection, intersects: scope.intersects , error: offending_elements};
 }
 TracePathTool.getAllIntersections = function(path, wires){
 	var intersects = [];

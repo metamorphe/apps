@@ -54,6 +54,26 @@
     });
     
 
+    // BRUSH CONTROLS
+    $('#brush-size-increase').click(function(){
+      if(TracePathTool.BRUSH_SIZE + 1 > TracePathTool.MAX_BRUSH_SIZE){
+        sys.show("The maximum brush size ("+TracePathTool.MAX_BRUSH_SIZE+") has been reached!")
+        return;
+      }
+      TracePathTool.BRUSH_SIZE ++;
+      sys.show("Brush size set to: " + TracePathTool.BRUSH_SIZE);
+    });  
+
+    $('#brush-size-decrease').click(function(){
+      if(TracePathTool.BRUSH_SIZE - 1  < TracePathTool.MIN_BRUSH_SIZE){
+        sys.show("The minumum brush size ("+TracePathTool.MIN_BRUSH_SIZE+") has been reached!")
+        return;
+      }
+      TracePathTool.BRUSH_SIZE --;
+      sys.show("Brush size set to: " + TracePathTool.BRUSH_SIZE);
+    });  
+
+
     $('#ghost').click(function(){
       $(this).toggleClass("btn-warning");
       designer.art_layer.ghostify();
