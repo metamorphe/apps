@@ -88,10 +88,10 @@
       designer.server_save();
      });
      $('#undo').click(function(){
-      designer.undo();
+      designer.findRoot();
      });
      $('#redo').click(function(){
-      designer.redo();
+      designer.nextNode();
      });
      $('#revert').click(function(){
       designer.revert();

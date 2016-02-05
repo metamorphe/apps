@@ -25,7 +25,7 @@ function TracePathTool(paper){
 			path = hitResult.item;
 			var prefix = EllustrateSVG.getPrefixItem(path.name);
 
-			if(["CGT", "CVT", "CNT"].indexOf(prefix) != -1) scope.canvas_item_type = "trace";
+			if(["CGT", "CVT", "CVTB", "CGTB", "CNT"].indexOf(prefix) != -1) scope.canvas_item_type = "trace";
 			else if(["CGP", "CVP", "CNP"].indexOf(prefix) != -1) scope.canvas_item_type = "trace";
 			else if(["CGB", "CVB", "CNB"].indexOf(prefix) != -1) scope.canvas_item_type = "blob";
 			else scope.canvas_item_type = "canvas";
@@ -128,7 +128,7 @@ TracePathTool.prototype = {
 		
 
 	     	// Visual characteristics on MouseUp			
-			var terminals = ["CGT", "CVT", "CNT"];
+			var terminals = ["CGT", "CVT", "CNT", "CGTB", "CVTB"];
 			terminals = EllustrateSVG.match(designer.circuit_layer.layer, { prefix: terminals });
 			
 			_.each(terminals, function(el, i, arr){

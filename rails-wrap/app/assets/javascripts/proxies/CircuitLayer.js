@@ -46,22 +46,22 @@ CircuitLayer.prototype = {
 	},
 	print_view: function(){
 		CircuitLayer.select_and_color_and_code(this.layer, ["CNP", "CGP", "CVP"], { strokeColor: "#C0C0C0", dashArray:[10, 1]});
-		CircuitLayer.select_and_color_and_code(this.layer, ["CNT", "CGT", "CVT"], { fillColor: "#C0C0C0", dashArray: [10, 1]});
+		CircuitLayer.select_and_color_and_code(this.layer, ["CNT", "CGT", "CVT", "CVTB", "CGTB"], { fillColor: "#C0C0C0", dashArray: [10, 1]});
 
 		paper.view.update();
 	},
 	trace_view: function(){
 		CircuitLayer.select_and_color_and_code(this.layer, ["CNP", "CGP", "CVP"], { strokeColor: "#C0C0C0", dashArray:[]});
-		CircuitLayer.select_and_color_and_code(this.layer, ["CNT", "CGT", "CVT"], { fillColor: "#C0C0C0", dashArray:[]});
+		CircuitLayer.select_and_color_and_code(this.layer, ["CNT", "CGT", "CVT", "CVTB", "CGTB"], { fillColor: "#C0C0C0", dashArray:[]});
 
 		paper.view.update();
 	},
 	circuit_view: function(){
 		CircuitLayer.select_and_color_and_code(this.layer, ["CNT"], { fillColor: CircuitLayer.NEUTRAL}, CircuitLayer.NEUTRAL);
 		CircuitLayer.select_and_color_and_code(this.layer, ["CNP"], { strokeColor: CircuitLayer.NEUTRAL}, CircuitLayer.NEUTRAL);
-		CircuitLayer.select_and_color_and_code(this.layer, ["CVT"], { fillColor: CircuitLayer.POSITIVE}, CircuitLayer.POSITIVE);
+		CircuitLayer.select_and_color_and_code(this.layer, ["CVT", "CVTB"], { fillColor: CircuitLayer.POSITIVE}, CircuitLayer.POSITIVE);
 		CircuitLayer.select_and_color_and_code(this.layer, ["CVP"], { strokeColor: CircuitLayer.POSITIVE}, CircuitLayer.POSITIVE);
-		CircuitLayer.select_and_color_and_code(this.layer, ["CGT"], { fillColor: CircuitLayer.NEGATIVE}, CircuitLayer.NEGATIVE);
+		CircuitLayer.select_and_color_and_code(this.layer, ["CGT", "CGTB"], { fillColor: CircuitLayer.NEGATIVE}, CircuitLayer.NEGATIVE);
 		CircuitLayer.select_and_color_and_code(this.layer, ["CGP"], { strokeColor: CircuitLayer.NEGATIVE}, CircuitLayer.NEGATIVE);
 
 		paper.view.update();
