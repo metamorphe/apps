@@ -80,15 +80,48 @@ TracePathTool.prototype = {
 			});
 		}, 
 		onMouseDrag: function(event){
+			var trace_scope = trace;
+			if(_.isNull(trace)) return;
+
 			trace.add(event.point);
+			valid = TracePathTool.isValidPath(trace);
+			if(! valid.connection){
+				// trace.simplify();
+
+	    		var animations = [];
+				alerter.alert(TracePathTool.SHORT_MESSAGE,
+			    		function(){
+							_.each(valid.error , function(el, i, arr){
+							console.log("Strobing", el.name);
+							el.style = {
+								shadowColor: "blue",
+								shadowBlur: 30,
+								shadowOffset: new paper.Point(0, 0)
+							}
+							animations.push(designer.animation_handler.add(function(event){
+								var t = Math.sin(event.count/5); //[-1, 1]
+								t += 1; //[0, 2];
+								t /= 2; //[0, 1];
+								el.shadowColor.alpha = t;
+							}, 1.5,
+							function(){
+								el.shadowColor.alpha = 0;
+								if(trace_scope) trace_scope.remove();
+
+							}));
+		    			});
+							
+						},
+			    		"Remove the shorting path"
+		    		);
+				 trace = null;
+		    }
+
 		}, 
 		onMouseUp: function(event, scope){
-			
+			if(_.isNull(trace)) return;
 			var polarity = detectPolarity(trace);
 
-			// GET ALL CONDUCTIVE offending_elements
-			var conductive = ["CGP", "CVP", "CNP", "CGB", "CVB", "CNB"];
-			conductive = EllustrateSVG.match(designer.circuit_layer.layer, { prefix: conductive });
 		
 
 	     	// Visual characteristics on MouseUp			
@@ -99,35 +132,9 @@ TracePathTool.prototype = {
 				el.scaling = new paper.Point(1.0, 1.0);	
 			});
 			
-			// var intersects = TracePathTool.getAllIntersections(trace, conductive);
-			// conductive[2].selected = true;
-			
+			valid = TracePathTool.isValidPath(trace);
 
-			var intersects = TracePathTool.getAllIntersections(trace, conductive)
-			// console.log("WHY", intersects[1]._curve.path.name);
-			// console.log("WHY", intersects[1]._curve2.path.name);
-			var i_group = new paper.Group();
-			_.each(intersects, function(el, i, arr){
-				var c = new paper.Path.Circle({
-					position: el.point,
-					radius: el.path.strokeWidth * 1.1, 
-					fillColor: el._curve2.path.style.strokeColor
-				});
-				i_group.addChild(c);
-			});
-			// intersects[0].path.remove();			
-			// Are all connections of the same polarity
-			var valid_connection = true;
-			var offending_elements = [trace];
-			for(var i in intersects){
-				var el = intersects[i];
-				if(detectPolarity(el._curve2.path) != polarity){
-					valid_connection = false;
-					offending_elements.push(el.path);
-					break;
-				}
-			}
-			if(valid_connection){
+			if(valid.connection){
 				if(_.isNull(trace)) return;
     		
 	    		trace.simplify();
@@ -142,7 +149,7 @@ TracePathTool.prototype = {
 	    		var animations = [];
 				alerter.alert(TracePathTool.SHORT_MESSAGE,
 			    		function(){
-							_.each(offending_elements, function(el, i, arr){
+							_.each(valid.error , function(el, i, arr){
 							console.log("Strobing", el.name);
 							el.style = {
 								shadowColor: "blue",
@@ -158,7 +165,6 @@ TracePathTool.prototype = {
 							function(){
 								el.shadowColor.alpha = 0;
 								if(trace) trace.remove();
-								i_group.remove();
 							}));
 		    			});
 							
@@ -169,6 +175,42 @@ TracePathTool.prototype = {
 		}
 	},
 
+}
+
+TracePathTool.isValidPath = function(trace){
+	var polarity = detectPolarity(trace);
+
+	// GET ALL CONDUCTIVE offending_elements
+	var conductive = ["CGP", "CVP", "CNP", "CGB", "CVB", "CNB"];
+	conductive = EllustrateSVG.match(designer.circuit_layer.layer, { prefix: conductive });
+
+	// CIRCUIT VALIDATION
+	var intersects = TracePathTool.getAllIntersections(trace, conductive)
+
+	var i_group = new paper.Group();
+	_.each(intersects, function(el, i, arr){
+		var c = new paper.Path.Circle({
+			position: el.point,
+			radius: el.path.strokeWidth * 1.1, 
+			fillColor: el._curve2.path.style.strokeColor
+		});
+		c.remove();
+		i_group.addChild(c);
+	});
+
+	// SHORT DETECTION
+	var valid_connection = true;
+	var offending_elements = [trace];
+	for(var i in intersects){
+		var el = intersects[i];
+		if(detectPolarity(el._curve2.path) != polarity){
+			valid_connection = false;
+			offending_elements.push(el.path);
+			break;
+		}
+	}
+	if(!valid_connection) i_group.remove();
+	return {connection: valid_connection, intersects: i_group, error: offending_elements};
 }
 TracePathTool.getAllIntersections = function(path, wires){
 	var intersects = [];

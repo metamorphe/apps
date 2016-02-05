@@ -20,6 +20,10 @@ Alerter.prototype = {
 		};
 
 		var dom = this.template.clone();
+		$("#alerter").find('.close').click(function(){
+			console.log("CLOSE");
+			$(this).hide();
+		});
 		dom.find('#message').html(message);
 		dom.find('#action').html(action_message);
 		dom.find("#silence").click(function(){

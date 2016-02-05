@@ -59,8 +59,10 @@
       designer.art_layer.update();
     });
     $('#lock').click(function(){
-      designer.art_layer.lock_mode = !designer.art_layer.lock_mode; 
-      designer.art_layer.update();
+      $(this).toggleClass("btn-warning");
+      ArtworkLayer.scaleable = !ArtworkLayer.scaleable;
+      ArtworkLayer.translateable = !ArtworkLayer.translateable;
+      ArtworkLayer.rotateable = !ArtworkLayer.rotateable;
     });
      $('#save-progress').click(function(){
       designer.server_save();
