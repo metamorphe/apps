@@ -55,8 +55,8 @@
     
 
     $('#ghost').click(function(){
-      designer.art_layer.ghost_mode = !designer.art_layer.ghost_mode; 
-      designer.art_layer.update();
+      $(this).toggleClass("btn-warning");
+      designer.art_layer.ghostify();
     });
     $('#lock').click(function(){
       $(this).toggleClass("btn-warning");

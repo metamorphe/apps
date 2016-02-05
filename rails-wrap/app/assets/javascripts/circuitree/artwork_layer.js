@@ -28,5 +28,12 @@ ArtworkLayer.prototype = {
 	}, 
 	remove: function(id){
 		
+	}, 
+	ghostify: function(){
+		if(this.layer.opacity == 1)
+			this.layer.opacity = 0.5;
+		else
+			this.layer.opacity = 1;
+		paper.view.update();
 	}
 }
