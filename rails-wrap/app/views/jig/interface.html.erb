@@ -34,6 +34,7 @@
 
     alerter = new Alerter($('#alerter'));
     // dropLogic();
+    // designer.addSVG("/primitives/PrettyCircuit_Bird.svg", paper.view.center);
    
   });
 
@@ -62,7 +63,7 @@
       designer.art_layer.update();
     });
      $('#save-progress').click(function(){
-      designer.save();
+      designer.server_save();
      });
      $('#undo').click(function(){
       designer.undo();

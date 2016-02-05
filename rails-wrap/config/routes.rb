@@ -7,6 +7,9 @@ Rails.application.routes.draw do
 
   resources :designs do
     get 'interface' =>"jig#interface"
+    member do 
+      post 'design_update'
+    end
   end
 
   namespace :jig do

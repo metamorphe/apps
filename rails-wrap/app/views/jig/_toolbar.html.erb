@@ -1,5 +1,6 @@
 <script type="text/javascript">
 $(function(){
+	
 	$('#collection').hide();
 	$('#add-library').click(function(){
 		$('#collection').slideToggle(500);
@@ -29,7 +30,8 @@ $(function(){
    	})
 
    $('#save-json').click(function(){
-    JigExporter.export(designer.paper, designer.canvas, JigExporter.JSON);
+   	designer.server_save();
+    // JigExporter.export(designer.paper, designer.canvas, JigExporter.JSON);
    });
   $('#save-png').click(function(){
     JigExporter.export(designer.paper, designer.canvas, JigExporter.PNG);

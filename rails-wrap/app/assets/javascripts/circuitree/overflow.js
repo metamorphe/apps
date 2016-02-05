@@ -169,7 +169,7 @@
 		w.update();
 		designer.activePath = w.id;
 	});
-	CircuitDesigner.defaultTool.click().focus();
+	// CircuitDesigner.defaultTool.click().focus();
 }
 
 

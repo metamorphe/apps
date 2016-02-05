@@ -5,13 +5,16 @@ function CircuitDesigner(container){
 	sr_model = new SheetResistanceModel(10);
 	this.paper = paper;
 	this.container = container;
-	this.circuit_layer = new CircuitLayer(paper);
-	this.art_layer = new ArtworkLayer(paper);
-	this.traces_layer = new TracesLayer(paper);
-
-	$(CircuitDesigner.defaultTool).click();
 	
+
 	this.init();
+	this.layer = new paper.Layer({
+		name: "EL: Ellustrator SVG"
+	});
+	// this.traces_layer = new TracesLayer(paper);
+	this.art_layer = new ArtworkLayer(paper, this.layer);
+	this.circuit_layer = new CircuitLayer(paper, this.layer, "SI");
+
 	this.animations = [];
 	this.update();
 	var self = this;
@@ -40,6 +43,7 @@ CircuitDesigner.prototype = {
 		// Setups tools
 	    this.toolbox = new Toolbox(this.paper, $("#toolbox"));	
 	    // CircuitDesigner.defaultTool.click();
+
 		return this;
 	},
 	getTree: function(){
@@ -169,28 +173,27 @@ CircuitDesigner.prototype = {
 		console.log("filename", fileType, filename);
 		this.paper.project.importSVG(filename, {
 	    	onLoad: function(item) { 
-	    		if(fileType == "artwork" || fileType == "battery" || fileType == "prettycircuit"){
-	    			item.sendToBack();
-	    			scope.art_layer.add(item);
-			    	CircuitDesigner.retainGroup(item, position, callback, scope);
+	    		// if(fileType == "artwork" || fileType == "battery" || fileType == "prettycircuit"){
+	    			// item.sendToBack();
+	    			// scope.art_layer.add(item);
+			    	// CircuitDesigner.retainGroup(item, position, callback, scope);
 			    	// item.sendToBack();
-	    		}
+			    	item.position = position;
+					eSVG = new EllustrateSVG(item, scope);
+	    		// }
+
 	    	}
 		});
 	},
 	loadJSON: function(json, callback){
 		var scope = this;
-
 		var item = this.paper.project.importJSON(json); 
-		// var layer = item[0].children[0];	
-		var layer = item[0];	
-		console.log("Loading json", layer);
-		// if valid JSON
-		if(!_.isUndefined(layer) && !_.isUndefined(layer.children)){  
-	    	CircuitDesigner.decomposeImport(layer, paper.view.center, callback, scope);
-		} else{
-			console.log('No layer detected!');
-		}
+		// console.log(item);
+		// item[0].remove();
+		// if(_.isUndefined(item) || item.length < 2) return;
+		// item[0].remove();
+		// item[1].position = paper.view.center;
+		eSVG = new EllustrateSVG(item[0], scope);
 
    		scope.update();
 	},
@@ -202,44 +205,143 @@ CircuitDesigner.prototype = {
 		console.log("Timestamp", timestamp_key);
 		storage.set(timestamp_key, JigExporter.export(this.paper, this.canvas, JigExporter.JSON, false));
 		this.current_save = s;
+	}, 
+	server_save: function(){
+		// for(var i in paper.project.layers){
+		// 	if(i > 0) paper.project.layers[i].remove();
+		// }
+		// for(var i in paper.project.layers){
+		// 	if(i > 0) paper.project.layers[i].remove();
+		// }
+		// for(var i in paper.project.layers){
+		// 	if(i > 0) paper.project.layers[i].remove();
+		// }
+		paper.view.update();
+		var json  =  paper.project.exportJSON({
+			asString: true,
+			precision: 5
+		});
+		var name = $("#design-name b").html().trim();
+		var data = {
+			json: json, 
+			name: name
+		}
+
+		$.ajax({
+		  url: '/designs/' + design.id + "/design_update",
+		  type: 'POST',
+		  data: data,
+		  success: function(data) {
+		    console.log(data);
+		  }
+		});
 	}
-	
 }
                  
+var test; 
 
-CircuitDesigner.retainGroup = function(item, position, callback, scope){
-	console.log("Retaining group", item.className);
-	item.position = position;
+var eSVG = null;
 
-	CircuitDesigner.defaultTool.click().focus();
+
+function EllustrateSVG(svg, designer){
+	this.svg = svg;
+	this.designer = designer;
+	this.parse();
 }
 
+EllustrateSVG.prototype = {
+	match: function(collection, match){
+		// Prefix extension
+		if("prefix" in match){
+			var prefixes = match["prefix"];
 
-CircuitDesigner.decomposeImport = function(item, position, callback, scope){
-	
-	if(_.isUndefined(position)) item.position = paper.view.center;
-    else item.position = position;
-
-
-	_.each(Utility.unpackChildren(item, []), function(value, key, arr){
-		var path = value;
-		if(path.name == "trace"){ 
-			// path.remove(); return; 
-			designer.traces_layer.add(path);
+			match["name"] = function(item){				
+				var p = EllustrateSVG.getPrefixItem(item); 
+				return prefixes.indexOf(p) != -1;
+			}
+			delete match["prefix"];
 		}
-		else if(path.name == "sticker_led"){ 
-			scope.circuit_layer.add(path, ['n', 's']);
-		}
-		else if(path.name == "battery"){ 
-			scope.circuit_layer.add(path, ['e', 'w']);
-		}
-		else scope.circuit_layer.add(path);
-	});
+		return collection.getItems(match);
+	},
+	select: function(match){
+		return this.match(this.svg, match);
+	},
+	parse: function(){
+		// Remove non-ellustrator elements
+		var scope = this;
+		battery = this.svg;
+		// console.log("Adding ", this.svg);
+		// SPECIFICATION
+		// console.log("1º: Removing dud elements");
+		var NEL = this.select( { prefix: ["NEL"]});
+		_.each(NEL, 
+			function(el, i, arr){ el.remove();}
+		);
+		
+		
+		var ART = this.select(
+			{ 
+			  prefix: ["ART"]
+			});
+		// console.log("2º: Add art layer to base", ART);
+		designer.art_layer.add(ART);
+		_.each(ART, function(el, i, arr){
+			el.canvasItem = true;
+		});
+		
+		
+		var CIRCUIT_LAYER = this.select(
+				{ 
+			  		prefix: ["SI"]
+				}
+			);
+		// CIRCUIT_LAYER[0].remove();
+		console.log("3º: Add circuit layer to base", CIRCUIT_LAYER);
+		var COMPONENTS = this.select(
+				{ 
+			  		prefix: ["CP"]
+				}
+			);
 
-	// $(CircuitDesigner.defaultTool).click().focus();
+		_.each(COMPONENTS, function(el, i, arr){
+			console.log(el.name);
+			el.canvasItem = true;
+		});
+		console.log("4º: Add components", COMPONENTS);
+		
+		designer.circuit_layer.add(COMPONENTS);
+		$("#path-tool").click();
+	}
 }
+var battery;
+EllustrateSVG.match = function(collection, match){
+	if("prefix" in match){
+		var prefixes = match["prefix"];
 
-
+		match["name"] = function(item){				
+			var p = EllustrateSVG.getPrefixItem(item); 
+			return prefixes.indexOf(p) != -1;
+		}
+		delete match["prefix"];
+	}
+	return collection.getItems(match);
+}
+EllustrateSVG.getPrefixItem = function(item){
+	if(_.isUndefined(item)) return "";
+	if(item.split(":").length < 2) return "";
+	return item.split(":")[0].trim();
+}
+// EllustrateSVG.getPrefix = function(item){
+// 	if(_.isUndefined(item)) return "";
+// 	if(_.isUndefined(item.name)) return "";
+// 	if(item.name.split(":").length < 2) return "";
+// 	return item.name.split(":")[0].trim();
+// }
+// EllustrateSVG.getName = function(item){
+// 	var res = item.name.split(":")[1].trim();
+// 	res = res.replace(/_/g, "");
+// 	return 
+// }
 
                                                               
 

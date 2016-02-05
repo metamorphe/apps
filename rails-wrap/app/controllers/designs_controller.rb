@@ -1,5 +1,5 @@
 class DesignsController < ApplicationController
-  before_action :set_design, only: [:interface, :show, :edit, :update, :destroy]
+  before_action :set_design, only: [:interface, :show, :edit, :update, :destroy, :design_update]
 
 
   # GET /designs
@@ -22,6 +22,16 @@ class DesignsController < ApplicationController
   def edit
   end
 
+  def design_update
+    directory = "public/"
+    path = File.join(directory, "temp_json")
+    File.open(path, "wb") do |f| 
+      f.write(params[:json])
+      @design.json = f;
+    end
+    @design.save!
+    render :json => params
+  end
   # POST /designs
   # POST /designs.json
   def create

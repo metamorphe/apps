@@ -207,7 +207,7 @@ Collection.prototype = {
       // });
 
       var hammertime = new Hammer(img[0]);
-      hammertime.on('press', function(ev) {
+      hammertime.on('tap', function(ev) {
           console.log(ev);
           console.log("Adding element", "/primitives/" + el.filename);
           var position = paper.view.center.clone();
@@ -232,7 +232,7 @@ Collection.prototype = {
       scope.switchTo($(this).val());
     });
     container.html('');
-    console.log(this.collections);
+    // console.log(this.collections);
 
     scope.options = _.map(this.collections, function(el, i, arr){
        var dom = $('<option></option>').html(el).attr('id', i).attr('value', el.collection);

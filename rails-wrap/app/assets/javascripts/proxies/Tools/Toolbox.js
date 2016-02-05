@@ -43,10 +43,7 @@ Toolbox.prototype={
 			dom.addClass('btn-warning').removeClass('btn-ellustrate');
 			scope.enable(name);
 		});
-		if(Toolbox.defaultTool == name){
-			dom.click().focus();
-		}
-
+	
 		var origOnKeyDown = tool.onKeyDown;
 		var scope = this;
 		tool.onKeyDownDefault = function(event){

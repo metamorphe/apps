@@ -3,74 +3,30 @@
 // Applies filters to all Artwork elements added
 // Lock/unlock position
 var last_added = null;
+ArtworkLayer.scaleable = true;
+ArtworkLayer.translateable = true;
+ArtworkLayer.rotateable = true;
 
-function ArtworkLayer(paper){
+function ArtworkLayer(paper, parent){
 	this.paper = paper;
 	this.className = "ArtworkLayer";
-	this.collection = [];
-	this.ghost_mode = false;
-	this.lock_mode = false;
-	this.guid = guid();
+	this.layer = new paper.Layer({ 
+		name: "NC: ArtworkLayer"
+	});
+	this.layer.remove();
+	parent.addChild(this.layer);
 }
 
 ArtworkLayer.prototype = {
-	get: function(id){
-		return this.collection[id];
-	},
-	add: function(item){
-		console.log("Adding artwork", item.id, item.name);
-		last_added = item;
-		var ci = new CanvasItem(this.paper, item, this.className + "Element")
-		ci.e_layer = this;
-		this.collection.push(ci);
-		this.update(true);
-		return ci;
+	add: function(layer){
+		var scope = this;
+		_.each(layer, function(el, i, arr){
+			el.remove();
+			el.layerClass = scope.className;
+			scope.layer.addChild(el);
+		});
 	}, 
 	remove: function(id){
-		this.collection = _.reject(this.collection, function(el, i, arr){
-			if(el.guid == id) el.remove();
-			return el.guid == id
-		});
-	},
-	lockify: function(){
-		var scope = this;
-		if(scope.lock_mode){
-			// lock true logic
-			$('#ghost').prop("disabled", true);
-			$('#lock').addClass("btn-warning").removeClass("btn-ellustrator");
-
-		}				
-		else{
-			$('#ghost').prop("disabled", false);
-			$('#lock').removeClass("btn-warning").addClass("btn-ellustrator");
-			// lock false logic
-		}
-	},
-	ghostify: function(bypass){
-
-		if(_.isUndefined(bypass)) bypass = false;
-	
-		if(!bypass)
-		  if(this.lock_mode) return;
-
-		var scope = this;
-		if(scope.ghost_mode){
-			_.each(this.collection, function(el, i, arr){
-				el.setOpacity(0.3);
-			});				
-			$('#ghost').addClass("btn-warning").removeClass("btn-ellustrator");
-		}
-		else{
-			_.each(this.collection, function(el, i, arr){
-				el.setOpacity(1.0);
-			});
-				$('#ghost').removeClass("btn-warning").addClass("btn-ellustrator");
-		}
 		
-	},
-	update: function(bypass){
-		this.ghostify(bypass);
-		this.lockify();
-		paper.view.update();
 	}
 }

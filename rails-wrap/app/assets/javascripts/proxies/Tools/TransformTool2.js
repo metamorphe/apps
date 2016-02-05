@@ -28,39 +28,6 @@ function TransformTool2(paper){
 	this.rotating = false;
 	var scope = this;
 
-	this.mode = TransformTool2.TOUCH;
-	if(this.mode != TransformTool2.TOUCH){
-		this.tool.onMouseDown = function(event){
-			hitResult = scope.paper.project.hitTest(event.point, hitOptions);
-			
-			if(_.isNull(hitResult)) scope.canvas_item_type = "canvas";
-			else{
-				path = hitResult.item;
-				if(path.name == "selection rectangle") scope.canvas_item_type = "transform";
-				else scope.canvas_item_type = "pan";
-			} 
-			console.log("MouseDown", scope.canvas_item_type);
-			scope[scope.canvas_item_type].onMouseDown(event, hitResult, scope);
-			scope.update();
-		}
-		// rerouting
-
-
-		this.tool.onMouseUp = function(event){
-			console.log("MouseUp", scope.canvas_item_type);
-			scope[scope.canvas_item_type].onMouseUp(event, scope);
-			scope.canvas_item_type = null;
-			scope.update();
-		}
-
-		this.tool.onMouseDrag = function(event){
-			console.log("MouseDrag", scope.canvas_item_type);
-			scope[scope.canvas_item_type].onMouseDrag(event, scope);
-			scope.update();
-		}
-
-	}
-
 	var whatDidIHit = function(positionOnCanvas){
 		hitResult = scope.paper.project.hitTest(positionOnCanvas, hitOptions);	
 		if(_.isNull(hitResult)) return "canvas";
@@ -146,13 +113,23 @@ TransformTool2.prototype = {
 	   this.hammertime.on('pinchstart', scope.tool.onPinchStart);
 	   this.hammertime.on('pinchend', scope.tool.onPinchEnd);
 	   this.hammertime.on('pinchmove', scope.tool.onPinchMove);
-	      this.hammertime.on('rotatestart', scope.tool.onRotateStart);
+	   this.hammertime.on('rotatestart', scope.tool.onRotateStart);
 	   this.hammertime.on('rotateend', scope.tool.onRotateEnd);
 	   this.hammertime.on('rotatemove', scope.tool.onRotateMove);
-	  
+	   $('#remove-element').click(function(){
+	   	 scope.sm.remove();
+	   });
 	},
 	disable: function(){
-
+	   console.log("Touch Tools Disabled");
+	   var scope  = this;
+	   this.hammertime.off('tap', scope.tool.onTap);
+	   this.hammertime.off('pinchstart', scope.tool.onPinchStart);
+	   this.hammertime.off('pinchend', scope.tool.onPinchEnd);
+	   this.hammertime.off('pinchmove', scope.tool.onPinchMove);
+	   this.hammertime.off('rotatestart', scope.tool.onRotateStart);
+	   this.hammertime.off('rotateend', scope.tool.onRotateEnd);
+	   this.hammertime.off('rotatemove', scope.tool.onRotateMove);
 	},
 	update: function(){
 		this.paper.view.update();
@@ -336,6 +313,7 @@ SelectionManager.prototype = {
 	rotate: function(angle){
 		// this.selection_rectangle.rotation = angle;
 		_.each(this.selection_group, function(el, i, arr){
+			if(! eval(el.layerClass + ".rotateable")) return;
 			el.rotation = angle;
 		});
 	},
@@ -343,6 +321,8 @@ SelectionManager.prototype = {
 		// this.selection_rectangle.position.x += delta.x;
 		// this.selection_rectangle.position.y += delta.y;
 		_.each(this.selection_group, function(el, i, arr){
+			console.log(el);
+			if(! eval(el.layerClass + ".translateable")) return;
 			el.position.x += delta.x;
 			el.position.y += delta.y;
 		});
@@ -351,6 +331,7 @@ SelectionManager.prototype = {
 		// this.selection_rectangle.scaling.x = sx;
 		// this.selection_rectangle.scaling.y = sy;
 		_.each(this.selection_group, function(el, i, arr){
+			if(! eval(el.layerClass + ".scaleable")) return;
 			el.scaling.x = sx;
 			el.scaling.y = sy;
 		});
@@ -368,6 +349,7 @@ SelectionManager.prototype = {
 		// delete this.collection[cluster.canvasItem.guid];
 		_.each(this.selection_group, function(el, i, arr){
 			el.selected = false;
+			el.remove();
 		});
 		this.selection_group = [];
 	}, 
@@ -380,40 +362,4 @@ SelectionManager.prototype = {
 		// this.collection = {};
 		// this.update();
 	}
-}
-
-function createSelectionRectangle(items){
-	var group = new paper.Group();
-
-	var children = _.map(items, function(el, i, arr){
-		el.canvasItem.path.selected = true;
-		var r = new paper.Path.Rectangle(el.canvasItem.path.bounds);
-		return r;
-	});
-	group.addChildren(children);
-	group.remove();
-
-	var b = group.bounds.clone().expand(10, 10);
-	var sum = new paper.Path.Rectangle(b);
-	sum.style = {
-	    
-	    selected: true, 
-	    strokeWidth: 1,
-	    strokeColor:  "#00A8E1", 
-	};
-	sum.name =  "selection rectangle";
-   	sum.position = b.center.clone();	 
-    sum.pivot = sum.position;
-    sum.insert(2, new paper.Point(b.center.x, b.top));
-    sum.insert(2, new paper.Point(b.center.x, b.top-25));
-    sum.insert(2, new paper.Point(b.center.x, b.top));
-    sum.selected = true;
-    sum.applyMatrix = true;
-    sum.group = group;
-    sum.init_size = new paper.Point(b.left, b.bottom).subtract(b.center).length;
-       
-  	sum.remove();
-
-
-  return {rect:sum, group: items}; 
 }

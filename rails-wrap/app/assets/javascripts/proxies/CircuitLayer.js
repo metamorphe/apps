@@ -1,127 +1,73 @@
+
+
+
 CircuitLayer.POSITIVE = new paper.Color("red");
 CircuitLayer.NEGATIVE = new paper.Color("black");
-function CircuitLayer(paper){
+CircuitLayer.NEUTRAL = new paper.Color("aqua");
+
+CircuitLayer.scaleable = false;
+CircuitLayer.translateable = true;
+CircuitLayer.rotateable = true;
+
+function CircuitLayer(paper, parent, material){
 	this.paper = paper;
 	this.className = "CircuitLayer";
-	this.collection = [];
-	this.lock_mode = false;
-	this.draw_mode = false;
-	this.well_mode = false;
-	this.debug_mode = false;
+
+	this.layer = new paper.Layer({
+		name: material + ":" + "CircuitLayer"
+	});
+	this.layer.remove();
+	parent.addChild(this.layer);
 }
 
 CircuitLayer.prototype = {
-	get: function(id){
-		return this.collection[id];
-	},
-	add: function(item, terminals_config){
-		console.log("Adding circuit el", item.id, item.name, terminals_config);
-		var ci = new CanvasItem(this.paper, item, this.className + "Element", terminals_config)
-		ci.e_layer = this;
-		this.collection.push(ci);
-		this.update(true);
-		return ci;
-	}, 
-	remove: function(id){
-		console.log("Removing", id);
-		this.collection = _.reject(this.collection, function(el, i, arr){
-			if(el.guid == id) el.remove();
-			return el.guid == id
-		});
-	},
-	drawify: function(){
+	add: function(layer, single){
 		var scope = this;
-		if(scope.draw_mode){
-			_.each(scope.collection, function(el, i, arr){
-				el.addTerminals();
+		if(single){
+			layer.remove();
+			layer.layerClass = scope.className;
+			var cp = new paper.Group({
+				name: "CP: Added trace"
 			});
-		}				
+			cp.remove();
+			scope.layer.addChild(cp);
+			cp.addChild(layer);
+			// scope.layer.addChild(layer);
+			// this.circuit_view();
+		}
 		else{
-			_.each(scope.collection, function(el, i, arr){
-				el.removeTerminals();
+			_.each(layer, function(el, i, arr){
+				el.remove();
+				el.layerClass = scope.className;
+				scope.layer.addChild(el);
 			});
+			this.trace_view();
 		}
 	},
-	lockify: function(){
-		var scope = this;
-		if(scope.lock_mode){
-			// lock true logic
-			$('#lock').addClass("btn-warning").removeClass("btn-ellustrator");
+	trace_view: function(){
+		CircuitLayer.select_and_color_and_code(this.layer, ["CNP", "CGP", "CVP"], { strokeColor: "#C0C0C0"});
+		CircuitLayer.select_and_color_and_code(this.layer, ["CNT", "CGT", "CVT"], { fillColor: "#C0C0C0"});
 
-		}				
-		else{
-			$('#lock').removeClass("btn-warning").addClass("btn-ellustrator");
-			// lock false logic
-		}
+		paper.view.update();
 	},
-	update: function(bypass){
-		this.lockify();
-		this.drawify();
+	circuit_view: function(){
+		CircuitLayer.select_and_color_and_code(this.layer, ["CNT"], { fillColor: CircuitLayer.NEUTRAL}, CircuitLayer.NEUTRAL);
+		CircuitLayer.select_and_color_and_code(this.layer, ["CNP"], { strokeColor: CircuitLayer.NEUTRAL}, CircuitLayer.NEUTRAL);
+		CircuitLayer.select_and_color_and_code(this.layer, ["CVT"], { fillColor: CircuitLayer.POSITIVE}, CircuitLayer.POSITIVE);
+		CircuitLayer.select_and_color_and_code(this.layer, ["CVP"], { strokeColor: CircuitLayer.POSITIVE}, CircuitLayer.POSITIVE);
+		CircuitLayer.select_and_color_and_code(this.layer, ["CGT"], { fillColor: CircuitLayer.NEGATIVE}, CircuitLayer.NEGATIVE);
+		CircuitLayer.select_and_color_and_code(this.layer, ["CGP"], { strokeColor: CircuitLayer.NEGATIVE}, CircuitLayer.NEGATIVE);
+
 		paper.view.update();
 	}, 
-	getAllTerminals: function(){
-		return _.flatten(_.map(this.collection, function(el, i, arr){
-			return _.values(el.terminals);
-		}));
-	},
-	getAllLights: function(){
-		return _.flatten(_.filter(this.collection, function(el, i, arr){
-			return el.path.children[0].name == "sticker_led";
-		}));
-	}
-	// select: function(id){
-	// 	if(_.isUndefined(id)) return _.map(this.collection, function(value, key){ return value; });
-	// 	return _.find(this.collection, function(value, key){
-	// 		// console.log(value, key.name);
-	// 		return value.name == id;
-	// 	});
-	// }, 
-	// bounds: function(){
-	// 	var b = _.reduce(this.collection, function(memo, val, key, arr){
-	// 		return memo.unite(val.path.bounds.clone().expand(10));
-	// 	}, new paper.Rectangle(paper.view.center, new paper.Size(0, 0)));	
-	// 	b = b.expand(20);
-	// 	var r = new paper.Path.Rectangle(b);
-	// 	// r.strokeColor = "black";
-		
-	// 	b = r.strokeBounds;
-	// 	r.remove();
-	// 	paper.view.update();
 
-	// 	var ps = paper.view.size;
-	// 	var zoomx = ps.width / b.width;
-	// 	var zoomy = ps.height / b.height;
-	// 	var zoom = zoomx > zoomy ? zoomy : zoomx;
+}
 
 
-	// 	if(dim)
-	// 		dim.set(Ruler.pts2mm(b.height), Ruler.pts2mm(b.width), 8);
-
-	// 	return {bounds: b, zoomFactor: zoom}
-	// },
-	// clear: function(){
-	// 	this.collection = {};
-	// },
-	// add: function(key, val){
-	// 	this.collection[key] = val;
-	// }, 
-	// remove: function(key){
-	// 	console.log("Deleting wire at", key, this.at(key));
-
-	// 	if(key in this.collection){
-	// 		this.at(key).remove();
-	// 		delete this.collection[key];
-	// 	}
-	// },
-	// at: function(key){
-	// 	return this.collection[key];
-	// }, 
-	// totalLength: function(){
-	// 	var sum = 0;
-	// 	_.each(this.collection, function(v){ sum += v.path.length });
-	// 	return sum;
-	// }, 
-	// length: function(){
-	// 	return Object.size(this.collection);
-	// }
+CircuitLayer.select_and_color_and_code = function(collection, prefixes, style, polarity){
+	var elements = EllustrateSVG.match(collection, { prefix: prefixes });
+	_.each(elements, function(el, i, arr){
+		el.style = style;
+		el.polarity = polarity;
+	});
 }

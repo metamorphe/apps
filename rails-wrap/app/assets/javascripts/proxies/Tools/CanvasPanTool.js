@@ -1,10 +1,6 @@
 function CanvasPanTool(paper){
 	this.paper = paper;
-	
-
-
 	this.tool = new paper.Tool();
-
 	var scope = this;
 
 
@@ -18,9 +14,11 @@ function CanvasPanTool(paper){
 
 	this.tool.onMouseDrag = function(event){
 		console.log("Dragging", paper.view.center);
-		paper.project.activeLayer.position.x += event.delta.x;
-		paper.project.activeLayer.position.y += event.delta.y;
-		scope.update();
+		_.each(paper.project.layers, function(el, i, arr){
+			el.position.x += event.delta.x;
+			el.position.y += event.delta.y;
+			scope.update();
+		});
 	}		
 }
 
