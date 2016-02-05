@@ -41,5 +41,23 @@ ArtworkLayer.prototype = {
 		else
 			this.layer.opacity = 1;
 		paper.view.update();
+	}, 
+	print_mode: function(mode){
+		if(mode){
+			this.layer.opacity = 1; 
+			this.layer.style = {
+				fillColor: "black", 
+				shadowBlur: 0
+			}
+		}
+		else{
+			this.layer.style = {
+						fillColor: "white",
+						shadowColor: new paper.Color(0.8),
+    					shadowBlur: 10,
+    					shadowOffset: new paper.Point(0, 0)
+    				};
+    			}
+
 	}
 }

@@ -44,9 +44,15 @@ CircuitLayer.prototype = {
 			this.trace_view();
 		}
 	},
+	print_view: function(){
+		CircuitLayer.select_and_color_and_code(this.layer, ["CNP", "CGP", "CVP"], { strokeColor: "#C0C0C0", dashArray:[10, 1]});
+		CircuitLayer.select_and_color_and_code(this.layer, ["CNT", "CGT", "CVT"], { fillColor: "#C0C0C0", dashArray: [10, 1]});
+
+		paper.view.update();
+	},
 	trace_view: function(){
-		CircuitLayer.select_and_color_and_code(this.layer, ["CNP", "CGP", "CVP"], { strokeColor: "#C0C0C0"});
-		CircuitLayer.select_and_color_and_code(this.layer, ["CNT", "CGT", "CVT"], { fillColor: "#C0C0C0"});
+		CircuitLayer.select_and_color_and_code(this.layer, ["CNP", "CGP", "CVP"], { strokeColor: "#C0C0C0", dashArray:[]});
+		CircuitLayer.select_and_color_and_code(this.layer, ["CNT", "CGT", "CVT"], { fillColor: "#C0C0C0", dashArray:[]});
 
 		paper.view.update();
 	},

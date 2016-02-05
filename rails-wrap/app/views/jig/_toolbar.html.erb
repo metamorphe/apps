@@ -6,28 +6,13 @@ $(function(){
 		$('#collection').slideToggle(500);
 	});
 	$('#send-to-print').click(function(){
-		designer.traces_layer.print_mode = true;
-		designer.circuit_layer.draw_mode = false;
-
-		designer.traces_layer.update();
-		designer.circuit_layer.update();
-
+		designer.art_layer.print_mode(true);
+		designer.circuit_layer.print_view();
     	JigExporter.export(designer.paper, designer.canvas, JigExporter.SVG);
-    	designer.traces_layer.print_mode = false;
-		designer.traces_layer.update();
-		designer.circuit_layer.update();
+    	designer.art_layer.print_mode(false);
+    	designer.circuit_layer.trace_view();
    	});
-   	$('#send-to-print').hover(function(){
-   		designer.traces_layer.print_mode = true;
-   		designer.circuit_layer.draw_mode = false;
-		designer.traces_layer.update();
-		designer.circuit_layer.update();
-   	}, function(){
-   		designer.traces_layer.print_mode = false;
-   		designer.circuit_layer.draw_mode = true;
-		designer.traces_layer.update();
-		designer.circuit_layer.update();
-   	})
+  
 
    $('#save-json').click(function(){
    	designer.server_save();
@@ -148,6 +133,9 @@ function calibrationScripts(){
 	  </div>
 
 <style>
+#send-to-print{
+	z-index: 100000;
+}
 .btn-group{
 	/*padding-right: 10px;*/
 }
