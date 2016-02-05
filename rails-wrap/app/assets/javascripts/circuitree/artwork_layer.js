@@ -23,6 +23,12 @@ ArtworkLayer.prototype = {
 		_.each(layer, function(el, i, arr){
 			el.remove();
 			el.layerClass = scope.className;
+			el.style = {
+						fillColor: "white",
+						shadowColor: new paper.Color(0.8),
+    					shadowBlur: 10,
+    					shadowOffset: new paper.Point(0, 0)
+    				};
 			scope.layer.addChild(el);
 		});
 	}, 

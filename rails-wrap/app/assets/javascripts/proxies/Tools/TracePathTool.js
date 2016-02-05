@@ -140,6 +140,7 @@ TracePathTool.prototype = {
 	    		trace.simplify();
 	    		
 	    		trace.name = "C" + polarity + "P: trace";
+	    		trace.polarity = pLetterToCLPolarity(polarity);
 	    		designer.circuit_layer.add(trace, true);
 	    		trace = null;
 
@@ -221,7 +222,14 @@ TracePathTool.getAllIntersections = function(path, wires){
 	}
 	return _.flatten(intersects);
 } 
-
+function pLetterToCLPolarity(char){
+	if(char == "V")
+		return CircuitLayer.POSITIVE;
+	if(char == "N")
+		return CircuitLayer.NEUTRAL;
+	if(char == "G")
+		return CircuitLayer.NEGATIVE; 
+}
 function detectPolarity(trace){
 	if(trace.style.strokeColor.equals(CircuitLayer.POSITIVE))
 		return "V";
