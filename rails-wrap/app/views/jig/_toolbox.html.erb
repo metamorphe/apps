@@ -94,10 +94,11 @@ var tool_config = [
    <label class="text-shadowed"> CANVAS </label>
        <div class="btn-group" role="group" aria-label="pen-tools">
       <%= button_tag :id => "transform-tool", :class => "btn btn-ellustrator" do %>
-        <span class="icon-primary-cursor"></span>
+        <span class="glyphicon glyphicon-hand-up"></span>
+        <!-- <span class="icon-primary-cursor"></span> -->
       <% end %>
      
-      <%= button_tag :id => "pan-tool", :class => "btn btn-ellustrator" do %>
+      <% button_tag :id => "pan-tool", :class => "btn btn-ellustrator" do %>
         <span class="glyphicon glyphicon-hand-up"></span>
       <% end %>
       <%= button_tag :id => "canvas-pan-tool", :class => "btn btn-ellustrator" do %>
@@ -143,7 +144,7 @@ var tool_config = [
         
     </div>
       <div class="btn-group" role="group" aria-label="pen-tools">
-       <%= button_tag :id => "anchor-tool", :class => "btn btn-ellustrator" do %>
+       <% button_tag :id => "anchor-tool", :class => "btn btn-ellustrator" do %>
         <span class="icon-pen-tool"></span>
         <% end %>
         <%= button_tag :id => "brush-size-increase", :class => "btn btn-ellustrator" do %>
@@ -165,16 +166,16 @@ var tool_config = [
 
 
       <div class="btn-group" role="group" aria-label="pen-tools">
-       <%= button_tag :id => "run-tool", :class => "btn btn-primary" do %>
+       <% button_tag :id => "run-tool", :class => "btn btn-primary" do %>
         <span class="glyphicon glyphicon glyphicon-record"></span>
         <% end %>
-          <%= button_tag :id => "ohm-tool", :class => "btn btn-primary" do %>
+          <% button_tag :id => "ohm-tool", :class => "btn btn-primary" do %>
         Ω
         <% end %>
-         <%= button_tag :id => "fab-tool", :class => "btn btn-primary" do %>
+         <% button_tag :id => "fab-tool", :class => "btn btn-primary" do %>
         <span class="icon-inkwell"></span>
         <% end %>
-        <%= button_tag :id => "debug-tool", :class => "btn btn-primary" do %>
+        <% button_tag :id => "debug-tool", :class => "btn btn-primary" do %>
         <span class="icon-debug"></span>
         <% end %>
       </div>      
@@ -215,7 +216,7 @@ var tool_config = [
   top: 89px;
   left: 0px;
   /*calc(34% + 98px + 10px);*/
-  width: 320px;
+  width: 280px;
   z-index: 100000;
 }
 #circuit-toolbox{
@@ -224,7 +225,7 @@ var tool_config = [
   /*left: 10px;*/
   /*left: 310px;*/
   right: 0px;
-  width: 360px;
+  width: 160px;
   z-index: 1000000;
 }
 .btn-ellustrator{
