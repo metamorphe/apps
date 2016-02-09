@@ -1,6 +1,5 @@
 
 var sr_model;
-
 function CircuitDesigner(container){
 	sr_model = new SheetResistanceModel(10);
 	this.paper = paper;
@@ -194,7 +193,7 @@ EllustrateSVG.prototype = {
 		console.log("4º: Add components", COMPONENTS);
 		
 		designer.circuit_layer.add(COMPONENTS);
-		$("#path-tool").click();
+		// $("#path-tool").click();
 	}
 }
 EllustrateSVG.match = function(collection, match){

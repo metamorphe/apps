@@ -1,3 +1,4 @@
+
 function CanvasItem(paper, path, type){
 	this.className = "CanvasItem";
 	this.paper = paper;
