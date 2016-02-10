@@ -213,6 +213,7 @@ Collection.prototype = {
           var position = paper.view.center.clone();
           position.y -= 100;
           designer.addSVG("/primitives/" + el.filename, position);
+          $('#transform-tool').click();
       });
 
       dom.find('.img-container').append(img);

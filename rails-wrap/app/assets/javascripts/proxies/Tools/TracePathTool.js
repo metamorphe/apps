@@ -52,13 +52,19 @@ TracePathTool.prototype = {
 	},
 	disable: function(){
 		designer.circuit_layer.trace_view();
+		this.selectAll(false);
+	    this.update();
 	},
 	update: function(){
 		this.paper.view.update();
 	}, 
 	clear: function(){
-
+		
 	},
+	selectAll: function(flag){
+    	this.paper.project.activeLayer.selected = flag;
+    	designer.circuit_layer.layer.selected = flag;
+ 	}, 
 	trace: {
 		onMouseDown: function(event, hitResult, scope){
 	  		var path = hitResult.item;
@@ -145,7 +151,9 @@ TracePathTool.prototype = {
 	    		trace.name = "C" + polarity + "P: trace";
 	    		
 	    		trace.polarity = pLetterToCLPolarity(polarity);
+	    		
 	    		designer.circuit_layer.add(trace, true);
+	    		if(valid.intersects) valid.intersects.remove();
 	    		trace = null;
 
 			}

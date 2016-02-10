@@ -130,6 +130,8 @@ TransformTool2.prototype = {
 	   this.hammertime.off('rotatestart', scope.tool.onRotateStart);
 	   this.hammertime.off('rotateend', scope.tool.onRotateEnd);
 	   this.hammertime.off('rotatemove', scope.tool.onRotateMove);
+	   this.selectAll(false);
+	   this.update();
 	},
 	update: function(){
 		this.paper.view.update();
@@ -137,7 +139,9 @@ TransformTool2.prototype = {
 	clear: function(){
 	},
 	selectAll: function(flag){
-	}, 
+    	this.paper.project.activeLayer.selected = flag;
+    	designer.circuit_layer.layer.selected = flag;
+ 	}, 
 	element: {
 		onTap: function(event, hitResult, scope){
 			console.log("pTap");
