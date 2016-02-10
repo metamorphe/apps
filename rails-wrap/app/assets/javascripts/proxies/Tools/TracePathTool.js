@@ -65,6 +65,102 @@ TracePathTool.prototype = {
     	this.paper.project.activeLayer.selected = flag;
     	designer.circuit_layer.layer.selected = flag;
  	}, 
+ 	canvas:{
+ 		onMouseDown: function(event, hitResult, scope){
+	  		console.log("canvas down");
+			trace = new paper.Path({
+				strokeColor: CircuitLayer.NEUTRAL,
+				strokeWidth: TracePathTool.BRUSH_SIZE,
+				name: "trace"
+			});
+
+	    	trace.add(event.point);
+
+	    	var polarity = "N";
+
+	    	var terminals = ["C"+ polarity +"T"];
+			terminals = EllustrateSVG.match(designer.circuit_layer.layer, { prefix: terminals });
+			
+			_.each(terminals, function(el, i, arr){
+				el.scaling = new paper.Point(1.1, 1.1);	
+			});
+			scope.intersects = new paper.Group();
+		}, 
+		onMouseDrag: function(event, scope){
+			console.log("canvas drag");
+			var trace_scope = trace;
+			if(_.isNull(trace)) return;
+			console.log("canvas drag pt added");
+			trace.add(event.point);
+			valid = TracePathTool.isValidPath(trace, scope);
+			console.log(valid);
+			if(! valid.connection){
+				// trace.simplify();
+
+	    		var animations = [];
+				alerter.alert(TracePathTool.SHORT_MESSAGE,
+			    		function(){
+							_.each(valid.error , function(el, i, arr){
+							console.log("Strobing", el.name);
+							el.style = {
+								shadowColor: "blue",
+								shadowBlur: 30,
+								shadowOffset: new paper.Point(0, 0)
+							}
+							animations.push(designer.animation_handler.add(function(event){
+								var t = Math.sin(event.count/5); //[-1, 1]
+								t += 1; //[0, 2];
+								t /= 2; //[0, 1];
+								el.shadowColor.alpha = t;
+							}, 1.5,
+							function(){
+								el.shadowColor.alpha = 0;
+								if(trace_scope) trace_scope.remove();
+								if(valid.intersects) valid.intersects.remove();
+							}));
+		    			});
+							
+						},
+			    		"Remove the shorting path"
+		    		);
+				 trace = null;
+		    }
+
+		}, 
+		onMouseUp: function(event, scope){
+			if(_.isNull(trace)) return;
+			
+		
+
+	  //    	// Visual characteristics on MouseUp			
+			// var terminals = ["CGT", "CVT", "CNT", "CGTB", "CVTB"];
+			// terminals = EllustrateSVG.match(designer.circuit_layer.layer, { prefix: terminals });
+			
+			// _.each(terminals, function(el, i, arr){
+			// 	el.scaling = new paper.Point(1.0, 1.0);	
+			// });
+			
+			var valid = TracePathTool.isValidPath(trace, scope);
+			var polarity = valid.polarity;
+
+			if(valid.connection){
+				if(_.isNull(trace)) return;
+    		
+	    		trace.simplify();
+	    		console.log("SET TO polarity", polarity);
+	    		trace.name = "C" + polarity + "P: trace";
+	    		trace.style.strokeColor = pLetterToCLPolarity(polarity);
+	    		trace.polarity = pLetterToCLPolarity(polarity);
+	    		
+	    		designer.circuit_layer.add(trace, true);
+	    		if(valid.intersects) valid.intersects.remove();
+	    		trace = null;
+
+			}
+
+
+		}
+ 	},
 	trace: {
 		onMouseDown: function(event, hitResult, scope){
 	  		var path = hitResult.item;
@@ -164,9 +260,9 @@ TracePathTool.prototype = {
 
 TracePathTool.isValidPath = function(trace, scope){
 	var polarity = detectPolarity(trace);
-
+	var end_polarity = polarity;
 	// GET ALL CONDUCTIVE offending_elements
-	var conductive = ["CGP", "CVP", "CGB", "CVB"];
+	var conductive = ["CGP", "CVP", "CGB", "CVB", "CNP"];
 	conductive = EllustrateSVG.match(designer.circuit_layer.layer, { prefix: conductive });
 
 	// CIRCUIT VALIDATION
@@ -185,16 +281,50 @@ TracePathTool.isValidPath = function(trace, scope){
 	// SHORT DETECTION
 	var valid_connection = true;
 	var offending_elements = [trace];
+	var v_count = 0;
+	var g_count = 0;
+	var neutral_paths_crossed = [];
 	for(var i in intersects){
 		var el = intersects[i];
-		if(detectPolarity(el._curve2.path) != polarity){
-			valid_connection = false;
-			offending_elements.push(el.path);
-			break;
+		if(polarity == "N" || detectPolarity(el._curve2.path) == "N"){
+			console.log("CROSSED OVER A ", detectPolarity(el._curve2.path))
+			if(detectPolarity(el._curve2.path) == "G")
+				g_count ++;
+			if(detectPolarity(el._curve2.path) == "V")
+				v_count ++;
+			if(detectPolarity(el._curve2.path) == "N"){
+				neutral_paths_crossed.push(el._curve2.path);
+			}
+			if(g_count > 0 && v_count > 0){
+				valid_connection = false;
+				offending_elements.push(el.path);
+				break;
+			}
+			if(g_count > 0) end_polarity = "G";
+			if(v_count > 0) end_polarity = "V";
+		}else{
+			if(detectPolarity(el._curve2.path) != "N" && detectPolarity(el._curve2.path) != polarity){
+				valid_connection = false;
+				offending_elements.push(el.path);
+				break;
+			}
 		}
 	}
+	if(valid_connection){
+		var pol = v_count > 0 ? "V" : "G"
+		console.log("VALID TURNING NEUTRALS TO ", neutral_paths_crossed.length,  pol);
+
+		_.each(neutral_paths_crossed, function(el, i, arr){
+			console.log("B", el.name, el.polarity)
+			el.name = "C" + pol + "P: trace";
+			el.style.strokeColor = pLetterToCLPolarity(pol);
+	    	el.polarity = pLetterToCLPolarity(pol);
+	    	// el.remove();
+	    	console.log("A", el.name, el.polarity)
+		});
+	}
 	if(!valid_connection) scope.intersects.remove();
-	return {connection: valid_connection, intersects: scope.intersects , error: offending_elements};
+	return {connection: valid_connection, intersects: scope.intersects , polarity: end_polarity, error: offending_elements};
 }
 TracePathTool.getAllIntersections = function(path, wires){
 	var intersects = [];

@@ -5,6 +5,7 @@ $(function(){
 	$('#add-library').click(function(){
 		$('#collection').slideToggle(500);
 	});
+
 	$('#send-to-print').click(function(){
 		designer.art_layer.print_mode(true);
 		designer.circuit_layer.print_view();
@@ -13,7 +14,7 @@ $(function(){
     	designer.circuit_layer.trace_view();
    	});
   
-
+	$("#design-name b").html(design.name);
    $('#save-json').click(function(){
    	designer.server_save();
     // JigExporter.export(designer.paper, designer.canvas, JigExporter.JSON);
@@ -54,7 +55,7 @@ function calibrationScripts(){
 	      	</b>
 	      </a>
 	      <div id="design-name" class="navbar-brand" href="">
-	      	<b contentEditable="true"> My Ellustrate Design </b>
+	      	<b contentEditable="true"> </b>
 	      </span>
 	      </div>
 	    </div>
