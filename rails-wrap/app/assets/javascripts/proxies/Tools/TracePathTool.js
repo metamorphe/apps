@@ -59,7 +59,7 @@ TracePathTool.prototype = {
 		this.paper.view.update();
 	}, 
 	clear: function(){
-		
+
 	},
 	selectAll: function(flag){
     	this.paper.project.activeLayer.selected = flag;
@@ -166,7 +166,7 @@ TracePathTool.isValidPath = function(trace, scope){
 	var polarity = detectPolarity(trace);
 
 	// GET ALL CONDUCTIVE offending_elements
-	var conductive = ["CGP", "CVP", "CNP", "CGB", "CVB", "CNB"];
+	var conductive = ["CGP", "CVP", "CGB", "CVB"];
 	conductive = EllustrateSVG.match(designer.circuit_layer.layer, { prefix: conductive });
 
 	// CIRCUIT VALIDATION
