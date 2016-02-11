@@ -316,7 +316,7 @@ TracePathTool.isValidPath = function(trace, scope){
 		else if(g_count > 0) pol = "G";
 		else pol = "N";
 
-		console.log("VALID TURNING NEUTRALS TO ", neutral_paths_crossed.length,  pol);
+		// console.log("VALID TURNING NEUTRALS TO ", neutral_paths_crossed.length,  pol);
 
 		_.each(neutral_paths_crossed, function(el, i, arr){
 			console.log("B", el.name, el.polarity)

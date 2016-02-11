@@ -3,11 +3,12 @@ var hitOptions = {
 	segments: true,
 	stroke: true,
 	fill: true,
-	tolerance: 10
+	tolerance: 15
 };
 TransformTool2.ROTATING = 1;
 TransformTool2.SCALING = 2;
 TransformTool2.TOUCH = 0;
+var HIT_TEST_BOUNDING_RADIUS = 15;
 
 function tS(v){
 	if(v == TransformTool2.ROTATING)
@@ -46,7 +47,7 @@ function TransformTool2(paper){
 		if(["rotatestart", "pinchstart", "tap"].indexOf(event.type) != -1){
 			var hitType = whatDidIHit(positionOnCanvas);
 			scope.canvas_item_type = hitType;
-			console.log("Hit test", hitType);		
+			console.log("Hit test", hitType, eventFN);		
 			if(allowableSubEvents.indexOf(scope.canvas_item_type) != -1){
 				scope[scope.canvas_item_type][eventFN](event, hitResult, scope);
 			}
@@ -252,8 +253,37 @@ TransformTool2.prototype = {
 			scope.rotating = false;
 		},
 		onTap: function(event, hitResult, scope){
+			console.log("hello!", event, event.point);
 			scope.canvas_item_type = null;
-			scope.sm.clear();
+			var pos = scope.paper.view.viewToProject(new paper.Point(event.center.x, event.center.y));
+			// check for bogus taps 
+			var c  = paper.Path.Circle({
+								radius: HIT_TEST_BOUNDING_RADIUS, 
+								fillColor: "red", 
+								position: pos
+							});
+
+			var paths = EllustrateSVG.match(paper.project, {className: "Path"})
+			var intersections = []; 
+			for(var i in paths){
+				var a = c.getIntersections(paths[i]);
+				if(a.length > 0)
+					intersections.push(a);
+			}
+			intersections = _.flatten(intersections);
+
+			if(intersections.length > 0){
+				_.each(intersections, function(el, i, arr){
+					var cluster = el._curve2.path;
+					while(_.isUndefined(cluster.canvasItem))
+						cluster = cluster.parent;
+					scope.sm.add(cluster, event.srcEvent.shiftKey);
+				});
+			}
+			else{
+				scope.sm.clear();
+			}
+			c.remove();
 		},
 		onMouseDown: function(event, hitResult, scope){
 			scope.sm.clear();
