@@ -17,9 +17,10 @@ SystemMessageManager.prototype = {
 		this.dom.html(this.journal.slice(0).reverse().join("<br/>"));
 	},
 	show: function(msg){
-		this.journal.push(msg);
-		this.index ++;
-		this.dom.html(this.journal[this.index-1]);
+		// this.journal.push(msg);
+		this.journal[this.journal.length - 1] = msg;
+		// this.index ++;
+		this.dom.html(this.journal[this.journal.length - 1]);
 	}, 
 	prev: function(){
 		if(this.index != 0) this.index --;
@@ -46,7 +47,7 @@ SystemMessageManager.prototype = {
 		z-index: 10000;
 		font-size: 8pt;
 		height: 200px;
-		opacity: 0.2;
+		opacity: 0.6;
 		overflow: scroll;
 	    vertical-align: bottom;
 	    font-family: Menlo;

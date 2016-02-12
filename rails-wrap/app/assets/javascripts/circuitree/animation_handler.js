@@ -1,3 +1,4 @@
+
 function AnimationHandler(paper){
 	this.animations = [];
 	this.t = 0;

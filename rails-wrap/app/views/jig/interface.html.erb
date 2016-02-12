@@ -77,10 +77,19 @@
 
 
     $('#ghost').click(function(){
+      if($(this).hasClass("btn-warning"))
+        sys.log("Deghosting the artwork!");
+      else
+        sys.log("Ghosting the artwork!");
+
       $(this).toggleClass("btn-warning");
       designer.art_layer.ghostify();
     });
     $('#lock').click(function(){
+       if($(this).hasClass("btn-warning"))
+        sys.log("Unlocking the artwork. It can now be moved.");
+      else
+        sys.log("Locking the artwork.");
       $(this).toggleClass("btn-warning");
       ArtworkLayer.scaleable = !ArtworkLayer.scaleable;
       ArtworkLayer.translateable = !ArtworkLayer.translateable;
