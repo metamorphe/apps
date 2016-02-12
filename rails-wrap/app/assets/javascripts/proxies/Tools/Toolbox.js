@@ -68,13 +68,15 @@ Toolbox.prototype={
 
 	},
 	clearTool: function(){
-		if(!_.isNull(this.paper.tool)){
-			this.paper.tool.dom.removeClass('btn-warning').addClass('btn-ellustrate');
-		if(!_.isUndefined(this.paper.tool.toolholder.disable))
-			this.paper.tool.toolholder.disable();
-			this.paper.tool.toolholder.clear();
+		var tool = this.paper.tool;
+		if(!_.isNull(tool)){
+			tool.dom.removeClass('btn-warning').addClass('btn-ellustrate');
+		if(!_.isUndefined(tool.toolholder.disable))
+			tool.toolholder.disable();
+			tool.toolholder.clear();
 		}
 		this.paper.tool = null;
 		this.paper.view.update();
+		return tool;
 	}
 }

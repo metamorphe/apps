@@ -65,6 +65,7 @@ function TransformTool2(paper){
 			if(allowableSubEvents.indexOf(scope.canvas_item_type) != -1){
 				scope[scope.canvas_item_type][eventFN](event, scope);
 			}
+			hm.save();
 			scope.update();
 			// console.log("Setting to null")
 			// scope.canvas_item_type = null;

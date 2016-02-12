@@ -45,6 +45,7 @@ function PanTool(paper){
 		scope[scope.canvas_item_type].onMouseUp(event, scope);
 		scope.canvas_item_type = null;
 		scope.update();
+		hm.save();
 	}
 
 	this.tool.onMouseDrag = function(event){

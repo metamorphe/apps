@@ -34,6 +34,13 @@
     });
 
     alerter = new Alerter($('#alerter'));
+    // AUTOSAVE
+    // setInterval(function(){ 
+    //   hm.save();
+    //   sys.log("Design auto-saved!");
+    // }, 10000);
+    // END AUTOSAVE
+
     // collections.switchTo("Artwork")
     // dropLogic();
     // designer.addSVG("/primitives/PrettyCircuit_Bird.svg", paper.view.center);
@@ -96,22 +103,24 @@
       ArtworkLayer.rotateable = !ArtworkLayer.rotateable;
     });
      $('#save-progress').click(function(){
-      hm.server_save();
+      hm.save();
      });
      $('#undo').click(function(){
-      designer.findRoot();
+      hm.undo();
+      // designer.findRoot();
      });
      $('#redo').click(function(){
-      designer.nextNode();
+      hm.redo();
+      // designer.nextNode();
      });
      $('#revert').click(function(){
-      designer.revert();
+      hm.revert();
      });
      $('#fast-forward').click(function(){
-      designer.fast_forward();
+      hm.fast_forward();
      });
      $('#clear-history').click(function(){
-      designer.clear_history();
+      hm.clear_history();
      });      
     
   }

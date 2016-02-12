@@ -17,6 +17,7 @@ $(function(){
 	$("#design-name b").html(design.name);
    $('#save-json').click(function(){
    	hm.server_save();
+   	//hm.save();
     // JigExporter.export(designer.paper, designer.canvas, JigExporter.JSON);
    });
   $('#save-png').click(function(){
@@ -73,18 +74,20 @@ function calibrationScripts(){
 		        	<% end %>
 		        </li>
 		        <li>
-		        	<% link_to "javascript:void(0)", :id=>"undo", :class=>"" do %>
+		        	<%= link_to "javascript:void(0)", :id=>"undo", :class=>"" do %>
 		          		<span class="glyphicon glyphicon-step-backward"></span>
 		        	<% end %>
 		        </li>
+		      
+		        <li>
+		        	<%= link_to "javascript:void(0)", :id=>"redo" do %>
+		          		<span class="glyphicon glyphicon-step-forward"></span>
+		        	<% end %>
+		        </li>
+
 		        <li>
 		        	<%= link_to "javascript:void(0)", :id=>"save-json", :class=>"" do %>
 		          		<span class="glyphicon glyphicon-floppy-disk"></span>
-		        	<% end %>
-		        </li>
-		        <li>
-		        	<% link_to "javascript:void(0)", :id=>"redo" do %>
-		          		<span class="glyphicon glyphicon-step-forward"></span>
 		        	<% end %>
 		        </li>
 		        <!-- <li>

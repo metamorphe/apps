@@ -20,7 +20,7 @@ function CanvasPanTool(paper){
 		});
 	}
 	this.tool.onPinchMove = function(event){
-		sys.show("Pinch detected", event.scale);
+		sys.show("Zooming to:" + event.scale);
 		paper.view.zoom = event.scale;
 		paper.view.update();
 	}		

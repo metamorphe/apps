@@ -41,6 +41,7 @@ function TracePathTool(paper){
 		if(_.isUndefined(scope[scope.canvas_item_type])) return;
 		scope[scope.canvas_item_type].onMouseUp(event, scope);
 		scope.canvas_item_type = null;
+		hm.save();
 	}
 
 }

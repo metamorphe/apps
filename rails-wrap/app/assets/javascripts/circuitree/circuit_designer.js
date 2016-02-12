@@ -1,5 +1,6 @@
 
 var sr_model;
+CircuitDesigner.BLANK_CANVAS = 1;
 function CircuitDesigner(container){
 	sr_model = new SheetResistanceModel(10);
 	this.paper = paper;
@@ -70,7 +71,8 @@ CircuitDesigner.prototype = {
 	},
 
 	clear: function(){
-		this.paper.project.clear();
+		this.circuit_layer.layer.clear();
+		this.art_layer.layer.clear();
 		this.update();
 	},
 	addSVG: function(filename, position, callback){
@@ -87,8 +89,11 @@ CircuitDesigner.prototype = {
 	    	}
 		});
 	},
-	loadJSON: function(json, callback){
+	loadJSON: function(json, clearCanvas){
 		var scope = this;
+		if(clearCanvas == CircuitDesigner.BLANK_CANVAS)
+			this.clear();
+		// sys.log(json);
 		var item = this.paper.project.importJSON(json); 
 		eSVG = new EllustrateSVG(item[0], scope);
    		scope.update();
