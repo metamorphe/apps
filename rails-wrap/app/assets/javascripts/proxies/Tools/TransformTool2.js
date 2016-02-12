@@ -106,7 +106,7 @@ function TransformTool2(paper){
 TransformTool2.prototype = {
 	enable: function(){
 	   var scope = this;
-	   console.log("Touch Tools Activated");
+	   sys.log("Activated the Touch Manipulation Tool.");
 	   this.hammertime = Hammer($('canvas')[0]);
 	   this.hammertime.get('rotate').set({ enable: true });
 	   this.hammertime.get('pinch').set({ enable: true });

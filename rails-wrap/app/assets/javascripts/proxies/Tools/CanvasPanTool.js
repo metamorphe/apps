@@ -13,7 +13,6 @@ function CanvasPanTool(paper){
 	}
 
 	this.tool.onMouseDrag = function(event){
-		console.log("Dragging", paper.view.center);
 		_.each(paper.project.layers, function(el, i, arr){
 			el.position.x += event.delta.x;
 			el.position.y += event.delta.y;
@@ -25,7 +24,7 @@ function CanvasPanTool(paper){
 
 CanvasPanTool.prototype = {
 	enable: function(){
-		console.log("Canvas Pan Activated");
+		sys.log("Activated the Canvas Pan Tool.");
 	},
 	update: function(){
 		this.paper.view.update();

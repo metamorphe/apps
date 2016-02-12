@@ -47,7 +47,7 @@ function TracePathTool(paper){
 
 TracePathTool.prototype = {
 	enable: function(){
-		console.log("Trace Tool Activated");
+		sys.log("Activated the Circuit Drawing Tool.");
 		designer.circuit_layer.circuit_view();
 	},
 	disable: function(){

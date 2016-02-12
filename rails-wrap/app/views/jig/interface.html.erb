@@ -21,6 +21,7 @@
     dim.set(0, 0, 0);
 
     storage = new WebStorage();
+    hm = new HistoryManager(storage);
     designer = new CircuitDesigner($("#sandbox"));
     
     
@@ -86,7 +87,7 @@
       ArtworkLayer.rotateable = !ArtworkLayer.rotateable;
     });
      $('#save-progress').click(function(){
-      designer.server_save();
+      hm.server_save();
      });
      $('#undo').click(function(){
       designer.findRoot();

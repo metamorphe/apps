@@ -93,34 +93,10 @@ CircuitDesigner.prototype = {
 		eSVG = new EllustrateSVG(item[0], scope);
    		scope.update();
 	},
-	
-	save: function(){
-		this.toolbox.clearTool();
-		var s = Math.floor(Date.now() / 1000);
-		var timestamp_key = "saveevent_" + s;
-		console.log("Timestamp", timestamp_key);
-		storage.set(timestamp_key, JigExporter.export(this.paper, this.canvas, JigExporter.JSON, false));
-		this.current_save = s;
-	}, 
-	server_save: function(){
-		paper.view.update();
-		var json  =  paper.project.exportJSON({
+	json: function(){
+		return paper.project.exportJSON({
 			asString: true,
 			precision: 5
-		});
-		var name = $("#design-name b").html().trim();
-		var data = {
-			json: json, 
-			name: name
-		}
-
-		$.ajax({
-		  url: '/designs/' + design.id + "/design_update",
-		  type: 'POST',
-		  data: data,
-		  success: function(data) {
-		    console.log(data);
-		  }
 		});
 	}
 }

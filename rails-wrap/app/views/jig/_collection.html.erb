@@ -148,25 +148,13 @@
 
 var files = <%= @files.to_json.html_safe %>;
 var collections; 
-var myDropzone;
 
 $(function(){
   $('#toggle-switch').click(function(){
      $(this).parents('#collection').slideUp();
   });
   collections = new Collection(files);
-    Dropzone.autoDiscover = false;
-  myDropzone = new Dropzone("#svgUpload", { url: "/jig/upload"});
-  // dz = new Dropzone("#svgUpload", { url: "/jig/upload"});
-  myDropzone.on("complete", function(file) {
-    console.log("uploaded")
-    console.log(file);
-
-    $.getJSON("/jig/primitives", function(data){files = data;
-      collections = new Collection(files);
-      collections.switchTo("Uploads");
-    });
-  });
+  
   collections.switchTo("Artwork");
 });
 var testC; 
@@ -291,15 +279,7 @@ function dropLogic(){
     
   </div>
   <div id="collection-panel">
-    <div id='dropzone' class="col-xs-4">
-      <br>
-      <%= form_tag({action: :upload}, multipart: true, enctype: "multipart/form-data", :id=> "svgUpload", :class=> "dropzone") do %>
-        <div class="fallback">
-          <input name="file" type="file" multiple />
-        </div>
-      <% end %>
-      <br>
-    </div>
+    <% render :partial => "dropzone" %>
     <div class="collection-items" class="col-xs-8">
     </div>
   </div>

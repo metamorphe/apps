@@ -5,21 +5,27 @@ $(function(){
 });
 function SystemMessageManager(dom){
 	this.dom = dom;
-	this.log = [];
+	this.journal = [];
 	this.index = 0;
 	this.show("System has loaded.");
 }
 SystemMessageManager.prototype = {
-	show: function(msg){
-		this.log.push(msg);
+	log: function(msg){
+		this.journal.push(msg);
 		this.index ++;
-		this.dom.html(this.log[this.index-1]);
+
+		this.dom.html(this.journal.slice(0).reverse().join("<br/>"));
+	},
+	show: function(msg){
+		this.journal.push(msg);
+		this.index ++;
+		this.dom.html(this.journal[this.index-1]);
 	}, 
 	prev: function(){
 		if(this.index != 0) this.index --;
 	},
 	next: function(){
-		if(this.index != this.log.length -1)
+		if(this.index != this.journal.length -1)
 		this.index ++;
 	},
 	alert: function(msg){
@@ -33,13 +39,19 @@ SystemMessageManager.prototype = {
 </script>
 <style type="text/css">
 	#system-messages{
+		display: table-cell;
 		position: absolute;
-		bottom: 48px;
+		top: 200px;
 		left: 0;
 		z-index: 10000;
-		font-size: 20pt;
+		font-size: 8pt;
+		height: 200px;
+		opacity: 0.2;
+		overflow: scroll;
+	    vertical-align: bottom;
+	    font-family: Menlo;
 	}
 </style>
-<div id="system-messages" class="col-xs-3">
+<div id="system-messages" class="col-xs-6">
 	<p class="lead"> SYSTEM MESSAGES </p>
 </div>
