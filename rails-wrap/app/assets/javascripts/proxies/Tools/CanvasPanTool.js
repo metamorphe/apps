@@ -30,20 +30,20 @@ CanvasPanTool.prototype = {
 	enable: function(){
 		sys.log("Activated the Canvas Pan Tool.");
 		var scope = this;
-	   	this.hammertime = Hammer($('canvas')[0]);
-	   	this.hammertime.get('pinch').set({ enable: true });
-	    this.hammertime.on('tap', scope.tool.onTap);
-	    this.hammertime.on('pinchstart', scope.tool.onPinchStart);
-	    this.hammertime.on('pinchend', scope.tool.onPinchEnd);
-	    this.hammertime.on('pinchmove', scope.tool.onPinchMove);
+	   	// this.hammertime = Hammer($('canvas')[0]);
+	   	// this.hammertime.get('pinch').set({ enable: true });
+	    // this.hammertime.on('tap', scope.tool.onTap);
+	    // this.hammertime.on('pinchstart', scope.tool.onPinchStart);
+	    // this.hammertime.on('pinchend', scope.tool.onPinchEnd);
+	    // this.hammertime.on('pinchmove', scope.tool.onPinchMove);
 	},
 	disable: function(){
 	   console.log("Canvas Pan Disabled");
 	   var scope  = this;
-	   this.hammertime.off('tap', scope.tool.onTap);
-	   this.hammertime.off('pinchstart', scope.tool.onPinchStart);
-	   this.hammertime.off('pinchend', scope.tool.onPinchEnd);
-	   this.hammertime.off('pinchmove', scope.tool.onPinchMove);
+	   // this.hammertime.off('tap', scope.tool.onTap);
+	   // this.hammertime.off('pinchstart', scope.tool.onPinchStart);
+	   // this.hammertime.off('pinchend', scope.tool.onPinchEnd);
+	   // this.hammertime.off('pinchmove', scope.tool.onPinchMove);
 	},
 	update: function(){
 		this.paper.view.update();
