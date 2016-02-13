@@ -51,6 +51,10 @@ TracePathTool.prototype = {
 		sys.log("Activated the Circuit Drawing Tool.");
 		designer.circuit_layer.circuit_view();
 	},
+	reenable: function(){
+		// sys.log("Activated the Circuit Drawing Tool.");
+		designer.circuit_layer.circuit_view();
+	},
 	disable: function(){
 		designer.circuit_layer.trace_view();
 		this.selectAll(false);

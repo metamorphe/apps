@@ -50,7 +50,8 @@ HistoryManager.prototype = {
 		// If you are not at head of the list, then remove. 
 
 		if(!_.isNull(tool)){
-			tool.dom.click();
+			tool.dom.addClass('btn-warning').removeClass('btn-ellustrate');
+			designer.toolbox.reenable(tool.name);
 		}
 
 		// sys.log("Saved design!");

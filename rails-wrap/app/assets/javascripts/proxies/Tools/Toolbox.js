@@ -27,6 +27,12 @@ Toolbox.prototype={
 		if(!_.isUndefined(this.tools[key].toolholder.enable))
 			this.tools[key].toolholder.enable();
 	},
+	reenable: function(key){
+		this.clearTool();
+		this.paper.tool = this.tools[key].toolholder.tool;
+		if(!_.isUndefined(this.tools[key].toolholder.reenable))
+			this.tools[key].toolholder.reenable();
+	},
 	disableAll: function(){
 		var scope = this;
 		this.clearTool();
