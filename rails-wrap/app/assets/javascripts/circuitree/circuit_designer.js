@@ -18,6 +18,23 @@ function CircuitDesigner(container){
 	this.animation_handler = new AnimationHandler(paper);
 }
 var visiting = [];
+// mm base
+var PaperTypes = {
+	A4: { 
+		  width: 210, 
+		  height: 297
+		}
+}
+function PaperSetup(){
+
+}
+PaperSetup.orientation = function(paper_type, t){
+	if(t == "hoz"){
+		return {width: paper_type.height, height: paper_type.width}
+	}
+	else return paper_type;
+}
+
 CircuitDesigner.prototype = {
 	init: function(){
 		// setups paperjs 
@@ -35,6 +52,20 @@ CircuitDesigner.prototype = {
 		this.width = this.paper.view.size.width;
 		this.paper.view.zoom = 1.5;	
 		var scope = this; 
+
+		// Base canvas
+		var paper_size = PaperSetup.orientation(PaperTypes.A4, 'hoz');
+
+		var artboard = new paper.Path.Rectangle({
+			width: Ruler.mm2pts(paper_size.width),
+			height: Ruler.mm2pts(paper_size.height),
+			position: paper.view.center,
+			fillColor: "white", 
+			shadowColor: new paper.Color(0.8),
+    		shadowBlur: 10,
+    		shadowOffset: new paper.Point(0, 0), 
+    		name: "NC: artboard"
+		});
 
 		// Setups tools
 	    this.toolbox = new Toolbox(this.paper, $("#toolbox"));	
