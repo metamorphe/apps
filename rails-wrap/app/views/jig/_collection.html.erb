@@ -152,6 +152,11 @@ var collections;
 $(function(){
   $('#toggle-switch').click(function(){
      $(this).parents('#collection').slideUp();
+     $("#big-undo").animate({
+        bottom: "-=200"
+      }, 500, function() {
+        // Animation complete.
+      });
   });
   collections = new Collection(files);
   
