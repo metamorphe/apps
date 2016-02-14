@@ -19,7 +19,7 @@ CircuitLayer.legend = function(parent, pt){
 		fillColor: CircuitLayer.POSITIVE, 
 		width: 15, 
 		height: 15, 
-		strokeColor: "black", 
+		// strokeColor: "black", 
 		strokeWidth: 0.5,
 		position: new paper.Point(0, 0)
 	});
@@ -39,7 +39,7 @@ CircuitLayer.legend = function(parent, pt){
 		fillColor: CircuitLayer.NEGATIVE, 
 		width: 15, 
 		height: 15, 
-		strokeColor: "black", 
+		// strokeColor: "black", 
 		strokeWidth: 0.5,
 		position: new paper.Point(0, 20)
 	});
@@ -59,7 +59,7 @@ CircuitLayer.legend = function(parent, pt){
 		fillColor: CircuitLayer.NEUTRAL, 
 		width: 15, 
 		height: 15, 
-		strokeColor: "black", 
+		// strokeColor: "black", 
 		strokeWidth: 0.5,
 		position: new paper.Point(0, 40)
 	});
@@ -74,6 +74,27 @@ CircuitLayer.legend = function(parent, pt){
 	});
 	ntext.point.x += ntext.bounds.width/4;
 	ntext.point.y += ntext.bounds.height/3;
+
+	var g =  new paper.Path.Rectangle({
+		parent: legend, 
+		fillColor: "#00A8E1", 
+		width: 15, 
+		height: 15, 
+		// strokeColor: "black", 
+		strokeWidth: 0.5,
+		position: new paper.Point(0, 60)
+	});
+	var gtext = new paper.PointText({
+			parent: legend, 
+			point: new paper.Point(0, 60),
+			content: "GUIDES",
+			fillColor: 'black', 
+			fontFamily: 'Museo Sans', 
+			// fontWeight: 'bold', 
+			fontSize: 12
+	});
+	gtext.point.x += gtext.bounds.width/4;
+	gtext.point.y += gtext.bounds.height/3;
 
 
 	legend.position = pt;
