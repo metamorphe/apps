@@ -2,8 +2,25 @@
 $(function(){
 	
 	$('#collection').hide();
+	var lib_on = false;
 	$('#add-library').click(function(){
 		$('#collection').slideToggle(500);
+		lib_on = !lib_on;
+
+		if(lib_on){
+		 $("#big-undo").animate({
+		    bottom: "+=200"
+		  }, 500, function() {
+		    // Animation complete.
+		  });
+		}
+		else{
+		 $("#big-undo").animate({
+		    bottom: "-=200"
+		  }, 500, function() {
+		    // Animation complete.
+		  });
+		}
 	});
 
 	$('#send-to-print').click(function(){
