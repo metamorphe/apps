@@ -31,12 +31,14 @@ function TransformTool2(paper){
 
 	var whatDidIHit = function(positionOnCanvas){
 		hitResult = scope.paper.project.hitTest(positionOnCanvas, hitOptions);	
-		if(_.isNull(hitResult)) return "canvas";
-		else{ return "element"; }
+		if(_.isNull(hitResult)) return {type: "canvas", result: hitResult}
+		else if(hitResult.item.name == "NC: artboard") return {type: "canvas", result: hitResult}
+		else{ return {type: "element", result: hitResult} }
 	}
 	var route = function(event, allowableSubEvents, eventFN){
 		// Recalibrate event point geometry
-		// console.log("PINCHING", scope.pinching);
+		console.log("ROUTING", event);
+
 		if(_.isUndefined(event.center)){
 			var positionOnCanvas = event.point;
 		}else{
@@ -44,10 +46,12 @@ function TransformTool2(paper){
 			var positionOnCanvas = scope.paper.view.viewToProject(new paper.Point(event.center.x, event.center.y));
 		}
 		// START
-		if(["rotatestart", "pinchstart", "tap"].indexOf(event.type) != -1){
-			var hitType = whatDidIHit(positionOnCanvas);
+		if(["rotatestart", "tap", "pinchstart"].indexOf(event.type) != -1){
+			var hit = whatDidIHit(positionOnCanvas);
+			var hitType = hit.type;
+			var hitResult = hit.result;
 			scope.canvas_item_type = hitType;
-			console.log("Hit test", hitType, eventFN);		
+			console.log("Hit test", scope.canvas_item_type, eventFN);		
 			if(allowableSubEvents.indexOf(scope.canvas_item_type) != -1){
 				scope[scope.canvas_item_type][eventFN](event, hitResult, scope);
 			}
@@ -99,6 +103,9 @@ function TransformTool2(paper){
 	this.tool.onMouseDrag = function(event){
 		route(event, ["element"], "onMouseDrag");
 	}
+	this.tool.onMouseDown = function(event){
+		// route(event, ["element", "canvas"], "onMouseDown");
+	}
 	
 
 }
@@ -107,7 +114,7 @@ function TransformTool2(paper){
 TransformTool2.prototype = {
 	enable: function(){
 	   var scope = this;
-	   sys.log("Activated the Touch Manipulation Tool.");
+	   sys.log("Activated the Touch Manipulation Tool.<br> You can move and transform elements by dragging or pinching.");
 	   this.hammertime = Hammer($('canvas')[0]);
 	   this.hammertime.get('rotate').set({ enable: true });
 	   this.hammertime.get('pinch').set({ enable: true });
@@ -152,6 +159,13 @@ TransformTool2.prototype = {
 				cluster = cluster.parent;
 			scope.sm.add(cluster, event.srcEvent.shiftKey);
 		},
+		onMouseDown: function(event, hitResult, scope){
+			console.log("mDown");
+			var cluster = hitResult.item;
+			while(_.isUndefined(cluster.canvasItem))
+				cluster = cluster.parent;
+			scope.sm.add(cluster, event.shiftKey);
+		},
 		onPinchStart: function(event, scope){
 			console.log("pStart");
 			scope.pinching = true;
@@ -182,6 +196,7 @@ TransformTool2.prototype = {
 			if(scope.pinching || scope.rotating) return;
 
 			console.log("mousedrag", event.delta);
+
 			scope.sm.translate(event.delta);
 		},
 	},
@@ -287,6 +302,7 @@ TransformTool2.prototype = {
 			c.remove();
 		},
 		onMouseDown: function(event, hitResult, scope){
+			console.log("c_mDown");
 			scope.sm.clear();
 		},
 		onMouseDrag: function(event, scope){

@@ -27,7 +27,8 @@ CircuitLayer.prototype = {
 			layer.remove();
 			layer.layerClass = scope.className;
 			var cp = new paper.Group({
-				name: "CP: Added trace"
+				name: "CP: Added trace", 
+				layerClass: scope.className
 			});
 			cp.remove();
 			cp.canvasItem = true;
