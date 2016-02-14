@@ -50,17 +50,7 @@
   getActiveTool = function(){ return paper.tool.toolholder; }
   
   function attachHandlers(){
-    $("#zoom-in").click(function(){zoom.in();});
-    $("#zoom-out").click(function(){zoom.out();});
-    $("#scale").click(function(){
-      if($(this).hasClass('active')){
-        $(this).removeClass('active');
-        zoom.hide_scale();
-      } else{
-        $(this).addClass('active');
-        zoom.show_scale();
-      }
-    });
+  
     
 
     // BRUSH CONTROLS

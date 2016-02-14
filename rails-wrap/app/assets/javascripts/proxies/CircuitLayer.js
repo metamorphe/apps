@@ -3,7 +3,7 @@
 
 CircuitLayer.POSITIVE = new paper.Color("red");
 CircuitLayer.NEGATIVE = new paper.Color("black");
-CircuitLayer.NEUTRAL = new paper.Color("#00A8E1");
+CircuitLayer.NEUTRAL = new paper.Color("#CCC");
 // CircuitLayer.NEUTRAL.saturation -= 0.5;
 CircuitLayer.scaleable = false;
 CircuitLayer.translateable = true;

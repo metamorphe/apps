@@ -1,5 +1,6 @@
 
 var sr_model;
+var artboard;
 CircuitDesigner.BLANK_CANVAS = 1;
 function CircuitDesigner(container){
 	sr_model = new SheetResistanceModel(10);
@@ -56,7 +57,7 @@ CircuitDesigner.prototype = {
 		// Base canvas
 		var paper_size = PaperSetup.orientation(PaperTypes.A4, 'hoz');
 
-		var artboard = new paper.Path.Rectangle({
+		artboard = new paper.Path.Rectangle({
 			width: Ruler.mm2pts(paper_size.width),
 			height: Ruler.mm2pts(paper_size.height),
 			position: paper.view.center,
