@@ -120,6 +120,7 @@ Zoom.prototype = {
 		});
 
 		paper.view.zoom /= Math.max(zoomFactorW, zoomFactorH);
+		designer.circuit_layer.resetLegend();
 		paper.view.update();
 	},
 	in: function(){

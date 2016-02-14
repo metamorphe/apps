@@ -68,6 +68,7 @@ CircuitDesigner.prototype = {
     		name: "NC: artboard"
 		});
 
+		
 		// Setups tools
 	    this.toolbox = new Toolbox(this.paper, $("#toolbox"));	
 		return this;
