@@ -24,9 +24,9 @@ ArtworkLayer.prototype = {
 			el.remove();
 			el.layerClass = scope.className;
 			el.style = {
-						fillColor: "white",
+						fillColor: "#00A8E1",
 						shadowColor: new paper.Color(0.8),
-    					shadowBlur: 10,
+    					shadowBlur: 0,
     					shadowOffset: new paper.Point(0, 0)
     				};
 			scope.layer.addChild(el);
