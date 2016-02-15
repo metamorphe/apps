@@ -149,15 +149,9 @@ TracePathTool.prototype = {
 			var polarity = valid.polarity;
 
 			if(valid.connection){
-				if(_.isNull(trace)) return;
-    		
-	    		trace.simplify();
-	    		console.log("SET TO polarity", polarity);
-	    		trace.name = "C" + polarity + "P: trace";
-	    		trace.style.strokeColor = pLetterToCLPolarity(polarity);
-	    		trace.polarity = pLetterToCLPolarity(polarity);
-	    		
-	    		designer.circuit_layer.add(trace, true);
+
+				trace.smooth();
+				TracePathTool.traceUpdate(trace, polarity);
 	    		if(valid.intersects) valid.intersects.remove();
 	    		trace = null;
 
@@ -245,6 +239,7 @@ TracePathTool.prototype = {
 			valid = TracePathTool.isValidPath(trace, scope);
 
 			if(valid.connection){
+				trace.smooth();
 				TracePathTool.traceUpdate(trace, polarity);
 	    		if(valid.intersects) valid.intersects.remove();
 	    		trace = null;
@@ -255,7 +250,6 @@ TracePathTool.prototype = {
 }
 TracePathTool.traceUpdate = function(path_trace, polarity){
 	if(_.isNull(path_trace)) return;
-	path_trace.smooth();
 	path_trace.name = "C" + polarity + "P: trace";
 	path_trace.polarity = pLetterToCLPolarity(polarity);
 	path_trace.style.strokeColor = pLetterToCLPolarity(polarity);
