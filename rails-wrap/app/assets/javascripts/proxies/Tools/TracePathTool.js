@@ -98,7 +98,7 @@ TracePathTool.prototype = {
 			// console.log("canvas drag pt added");
 			trace.add(event.point);
 			valid = TracePathTool.isValidPath(trace, scope);
-			console.log(valid);
+			// console.log(valid);
 			if(! valid.connection){
 				// trace.simplify();
 
@@ -251,7 +251,7 @@ TracePathTool.prototype = {
 
 TracePathTool.isValidPath = function(trace, scope){
 	var polarity = detectPolarity(trace);
-	var end_polarity = polarity;
+
 	// GET ALL CONDUCTIVE offending_elements (paths, blobs, )
 	var conductive = ["CGP", "CNP", "CVP", "CGB", "CVB", "CNB", "CVTB", "CGTB"];
 	conductive = EllustrateSVG.match(designer.circuit_layer.layer, { prefix: conductive });
@@ -259,6 +259,7 @@ TracePathTool.isValidPath = function(trace, scope){
 	// CIRCUIT VALIDATION
 	var intersects = TracePathTool.getAllIntersections(trace, conductive);
 
+	// WHERE DO THINGS INTERSECT
 	_.each(intersects, function(el, i, arr){
 		var c = new paper.Path.Circle({
 			position: el.point,
@@ -269,14 +270,52 @@ TracePathTool.isValidPath = function(trace, scope){
 		scope.intersects.addChild(c);
 	});
 
-	// console.log(intersects.length, "Connections detected");
-
 	// SHORT DETECTION
+	var shorts = TracePathTool.shortDetection(trace, intersects, polarity);
+	var valid_connection = shorts.valid;
+	var offending_elements = shorts.offending_elements;
+	var end_polarity = shorts.end_polarity;
+	// valid: valid_connection, offending_elements: offending_elements, end_polarity: end_polarity
+	// UPDATING NEUTRAL PATHS!
+	
+	if(valid_connection){
+		var unique = TracePathTool.getAllConnections(trace, polarity);
+		
+		// DETECT SHORTS IN PROPAGATED PATHS
+		_.each(unique, function(el, i, arr){
+			var intersects = TracePathTool.getAllIntersections(el, conductive);
+			var shorts = TracePathTool.shortDetection(el, intersects, end_polarity);
+			if(!shorts.valid){
+				offending_elements.push(shorts.offending_elements);
+				offending_elements = _.flatten(offending_elements);
+			}
+			valid_connection = shorts.valid && valid_connection;
+		});
+		unique.push(trace);
+	}
+
+
+	if(valid_connection){
+		_.each(unique, function(el, i, arr){
+			TracePathTool.traceUpdate(el, end_polarity);
+		});
+	}
+	else{
+		scope.intersects.remove();
+	}
+
+	return {connection: valid_connection, intersects: scope.intersects , polarity: end_polarity, error: offending_elements};
+}
+TracePathTool.shortDetection = function(trace, intersects, polarity){
 	var valid_connection = true;
+	var end_polarity = polarity;
+
 	var offending_elements = [trace];
+
 	var v_count = 0;
 	var g_count = 0;
 	var neutral_paths_crossed = [];
+
 	for(var i in intersects){
 		var el = intersects[i];
 
@@ -306,77 +345,56 @@ TracePathTool.isValidPath = function(trace, scope){
 			}
 		}
 	}
+	return {valid: valid_connection, offending_elements: offending_elements, end_polarity: end_polarity }
+}
+TracePathTool.getAllConnections = function(trace, polarity){
+	if(polarity == "N") unique = [trace];
+	else{
+		var candidates = [trace];
+		var unique = [];
+		var next_candidates = [];
 
-	// UPDATING NEUTRAL PATHS!
-	if(valid_connection){
-		// if(polarity == "N") neutral_paths_crossed.push(trace);
-		// NEED TO ALSO COLLECT ALL PROPAGATING PATHS...
-		// earmark paths as in the collection
+		var neutrals = ["CNP", "CNB"];
+		neutrals = EllustrateSVG.match(designer.circuit_layer.layer, { prefix: neutrals });
 
-		// _.each(neutral_paths_crossed, function(el, i, arr){
-		// 	el.grabbed = true;
-		// });
-		
-		// collect all unique intersections
-		if(polarity == "N") unique = [trace];
-		else{
-			var candidates = [trace];
-			var unique = [];
-			var next_candidates = [];
+		trace.grabbed = true;
 
-			var neutrals = ["CNP", "CNB"];
-			neutrals = EllustrateSVG.match(designer.circuit_layer.layer, { prefix: neutrals });
-			// neutrals = _.reject(neutrals, )
-
-			trace.grabbed = true;
-
-			while(candidates.length > 0){
-				console.log("#####");
-				console.log("CANDIDATES", candidates.length);
+		while(candidates.length > 0){
+			// console.log("#####");
+			// console.log("CANDIDATES", candidates.length);
+			
+			_.each(candidates, function(el, i, arr){
+				// console.log("Processing candidate", i, el.name, neutrals.length);
+				var children = TracePathTool.getAllIntersections(el, neutrals);
+				// console.log(el.name, "# of children", children.length)
 				
-				_.each(candidates, function(el, i, arr){
-					console.log("Processing candidate", i, el.name, neutrals.length);
-					var children = TracePathTool.getAllIntersections(el, neutrals);
-					console.log(el.name, "# of children", children.length)
-					
-					_.each(children, function(el2, i2, arr2){
-						var int_path = el2._curve2.path;
-						int_path.selected = true;
-						if(! int_path.grabbed){
-							int_path.grabbed = true;
-							int_path.selected = true;
-							next_candidates.push(int_path);
-							unique.push(int_path);
-						}
-					});
-					
-					
+				_.each(children, function(el2, i2, arr2){
+					var int_path = el2._curve2.path;
+					int_path.selected = true;
+					if(! int_path.grabbed){
+						int_path.grabbed = true;
+						// int_path.selected = true;
+						next_candidates.push(int_path);
+						unique.push(int_path);
+					}
 				});
-				console.log("NEXT", next_candidates.length)
-				console.log("UNIQUE", unique.length)
-				candidates = next_candidates;
-				next_candidates = [];
-				console.log("%%%%%");
-
-			}
-			unique.push(trace);
-			_.each(unique, function(el, i, arr){
-				el.grabbed = false;
+				
+				
 			});
-		}
+			// console.log("NEXT", next_candidates.length)
+			// console.log("UNIQUE", unique.length)
+			candidates = next_candidates;
+			next_candidates = [];
+			// console.log("%%%%%");
 
-		// _.each(neutral_paths_crossed, function(el, i, arr){
+		}
+		trace.grabbed = false;
 		_.each(unique, function(el, i, arr){
-			TracePathTool.traceUpdate(el, end_polarity);
+			el.grabbed = false;
 		});
 	}
-	else{
-		scope.intersects.remove();
-	}
-
-	return {connection: valid_connection, intersects: scope.intersects , polarity: end_polarity, error: offending_elements};
+	return unique;
 }
-
 function highlight(paths, color){
 	_.each(paths, function(el, i, arr){
 		el.style.strokeColor = color;
