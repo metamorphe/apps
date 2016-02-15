@@ -344,7 +344,8 @@ TracePathTool.traceUpdate = function(path_trace, polarity){
 	if(_.isNull(path_trace)) return;
 	path_trace.name = "C" + polarity + "P: trace";
 	path_trace.polarity = pLetterToCLPolarity(polarity);
-	path_trace.style.strokeColor = pLetterToCLPolarity(polarity);
+	if(TracePathTool.isPath(path_trace)) path_trace.style.strokeColor = pLetterToCLPolarity(polarity);
+	else path_trace.style.fillColor = pLetterToCLPolarity(polarity);
 	designer.circuit_layer.add(path_trace, true);
 }
 TracePathTool.isPath = function(trace){
@@ -356,11 +357,7 @@ function detectPolarity(trace){
 	if(TracePathTool.isPath(trace)) compare = trace.style.fillColor;
 	else compare = trace.style.strokeColor;
 		
-
-	if(compare.equals(CircuitLayer.POSITIVE))
-		return "V";
-	if(compare.equals(CircuitLayer.NEUTRAL))
-		return "N";
-	if(compare.equals(CircuitLayer.NEGATIVE))
-		return "G";
+	if(compare.equals(CircuitLayer.POSITIVE)) return "V";
+	if(compare.equals(CircuitLayer.NEUTRAL )) return "N";
+	if(compare.equals(CircuitLayer.NEGATIVE)) return "G";
 }
