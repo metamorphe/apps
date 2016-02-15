@@ -76,7 +76,7 @@ TracePathTool.prototype = {
 			trace = new paper.Path({
 				strokeColor: CircuitLayer.NEUTRAL,
 				strokeWidth: TracePathTool.BRUSH_SIZE,
-				name: "trace"
+				name: "CXP: trace"
 			});
 
 	    	trace.add(event.point);
@@ -92,10 +92,10 @@ TracePathTool.prototype = {
 			scope.intersects = new paper.Group();
 		}, 
 		onMouseDrag: function(event, scope){
-			console.log("canvas drag");
+			// console.log("canvas drag");
 			var trace_scope = trace;
 			if(_.isNull(trace)) return;
-			console.log("canvas drag pt added");
+			// console.log("canvas drag pt added");
 			trace.add(event.point);
 			valid = TracePathTool.isValidPath(trace, scope);
 			console.log(valid);
@@ -168,7 +168,7 @@ TracePathTool.prototype = {
 			trace = new paper.Path({
 				strokeColor: path.polarity,
 				strokeWidth: TracePathTool.BRUSH_SIZE,
-				name: "trace"
+				name: "CXP: trace"
 			});
 
 	    	trace.add(event.point);
@@ -269,7 +269,7 @@ TracePathTool.isValidPath = function(trace, scope){
 		scope.intersects.addChild(c);
 	});
 
-	console.log(intersects.length, "Connections detected");
+	// console.log(intersects.length, "Connections detected");
 
 	// SHORT DETECTION
 	var valid_connection = true;
@@ -309,18 +309,80 @@ TracePathTool.isValidPath = function(trace, scope){
 
 	// UPDATING NEUTRAL PATHS!
 	if(valid_connection){
-		if(polarity == "N") neutral_paths_crossed.push(trace);
-		_.each(neutral_paths_crossed, function(el, i, arr){
+		// if(polarity == "N") neutral_paths_crossed.push(trace);
+		// NEED TO ALSO COLLECT ALL PROPAGATING PATHS...
+		// earmark paths as in the collection
+
+		// _.each(neutral_paths_crossed, function(el, i, arr){
+		// 	el.grabbed = true;
+		// });
+		
+		// collect all unique intersections
+		if(polarity == "N") unique = [trace];
+		else{
+			var candidates = [trace];
+			var unique = [];
+			var next_candidates = [];
+
+			var neutrals = ["CNP", "CNB"];
+			neutrals = EllustrateSVG.match(designer.circuit_layer.layer, { prefix: neutrals });
+			// neutrals = _.reject(neutrals, )
+
+			trace.grabbed = true;
+
+			while(candidates.length > 0){
+				console.log("#####");
+				console.log("CANDIDATES", candidates.length);
+				
+				_.each(candidates, function(el, i, arr){
+					console.log("Processing candidate", i, el.name, neutrals.length);
+					var children = TracePathTool.getAllIntersections(el, neutrals);
+					console.log(el.name, "# of children", children.length)
+					
+					_.each(children, function(el2, i2, arr2){
+						var int_path = el2._curve2.path;
+						int_path.selected = true;
+						if(! int_path.grabbed){
+							int_path.grabbed = true;
+							int_path.selected = true;
+							next_candidates.push(int_path);
+							unique.push(int_path);
+						}
+					});
+					
+					
+				});
+				console.log("NEXT", next_candidates.length)
+				console.log("UNIQUE", unique.length)
+				candidates = next_candidates;
+				next_candidates = [];
+				console.log("%%%%%");
+
+			}
+			unique.push(trace);
+			_.each(unique, function(el, i, arr){
+				el.grabbed = false;
+			});
+		}
+
+		// _.each(neutral_paths_crossed, function(el, i, arr){
+		_.each(unique, function(el, i, arr){
 			TracePathTool.traceUpdate(el, end_polarity);
 		});
 	}
 	else{
 		scope.intersects.remove();
 	}
+
 	return {connection: valid_connection, intersects: scope.intersects , polarity: end_polarity, error: offending_elements};
 }
 
-
+function highlight(paths, color){
+	_.each(paths, function(el, i, arr){
+		el.style.strokeColor = color;
+	});
+	paper.view.update();
+}
 
 TracePathTool.getAllIntersections = function(path, wires){
 	var intersects = [];
@@ -350,12 +412,13 @@ TracePathTool.traceUpdate = function(path_trace, polarity){
 }
 TracePathTool.isPath = function(trace){
 	var prefix = EllustrateSVG.getPrefix(trace);
-	return ["T", "B"].indexOf(prefix.slice(-1)) != -1;
+	// console.log(["T", "B"].indexOf(prefix.slice(-1)) != -1);
+	return ["T", "B"].indexOf(prefix.slice(-1)) == -1;
 }
 function detectPolarity(trace){	
 	var compare;
-	if(TracePathTool.isPath(trace)) compare = trace.style.fillColor;
-	else compare = trace.style.strokeColor;
+	if(TracePathTool.isPath(trace)) compare = trace.style.strokeColor;
+	else compare = trace.style.fillColor;
 		
 	if(compare.equals(CircuitLayer.POSITIVE)) return "V";
 	if(compare.equals(CircuitLayer.NEUTRAL )) return "N";
