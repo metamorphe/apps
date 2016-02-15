@@ -245,22 +245,21 @@ TracePathTool.prototype = {
 			valid = TracePathTool.isValidPath(trace, scope);
 
 			if(valid.connection){
-				if(_.isNull(trace)) return;
-    		
-	    		trace.simplify();
-	    		
-	    		trace.name = "C" + polarity + "P: trace";
-	    		
-	    		trace.polarity = pLetterToCLPolarity(polarity);
-	    		
-	    		designer.circuit_layer.add(trace, true);
+				TracePathTool.traceUpdate(trace, polarity);
 	    		if(valid.intersects) valid.intersects.remove();
 	    		trace = null;
-
 			}
 		}
 	},
 
+}
+TracePathTool.traceUpdate = function(path_trace, polarity){
+	if(_.isNull(path_trace)) return;
+	path_trace.smooth();
+	path_trace.name = "C" + polarity + "P: trace";
+	path_trace.polarity = pLetterToCLPolarity(polarity);
+	path_trace.style.strokeColor = pLetterToCLPolarity(polarity);
+	designer.circuit_layer.add(path_trace, true);
 }
 
 TracePathTool.isValidPath = function(trace, scope){
@@ -291,50 +290,49 @@ TracePathTool.isValidPath = function(trace, scope){
 	var neutral_paths_crossed = [];
 	for(var i in intersects){
 		var el = intersects[i];
-		if(polarity == "N" || detectPolarity(el._curve2.path) == "N"){
-			console.log("CROSSED OVER A ", detectPolarity(el._curve2.path))
-			if(detectPolarity(el._curve2.path) == "G")
-				g_count ++;
-			if(detectPolarity(el._curve2.path) == "V")
-				v_count ++;
-			if(detectPolarity(el._curve2.path) == "N"){
-				neutral_paths_crossed.push(el._curve2.path);
-			}
+
+		// For each IntersectedPath 
+		var int_path = el._curve2.path;
+		var pol_int_path = detectPolarity(int_path);
+
+		if(polarity == "N" || pol_int_path == "N"){
+			if(pol_int_path == "G") g_count ++;
+			else if(pol_int_path == "V") v_count ++;
+			else if(pol_int_path == "N"){ neutral_paths_crossed.push(int_path);}
+			
 			if(g_count > 0 && v_count > 0){
 				valid_connection = false;
 				offending_elements.push(el.path);
+				sys.show("Crossing over a positive and negative path!");
 				break;
 			}
+
 			if(g_count > 0) end_polarity = "G";
 			if(v_count > 0) end_polarity = "V";
-		}else{
-			if(detectPolarity(el._curve2.path) != "N" && detectPolarity(el._curve2.path) != polarity){
+		} else{
+			if(pol_int_path != "N" && pol_int_path != polarity){
 				valid_connection = false;
 				offending_elements.push(el.path);
 				break;
 			}
 		}
 	}
+
+	// UPDATING NEUTRAL PATHS!
 	if(valid_connection){
-		var pol = "N"
-		if(v_count > 0) pol = "V";
-		else if(g_count > 0) pol = "G";
-		else pol = "N";
-
-		// console.log("VALID TURNING NEUTRALS TO ", neutral_paths_crossed.length,  pol);
-
+		if(polarity == "N") neutral_paths_crossed.push(trace);
 		_.each(neutral_paths_crossed, function(el, i, arr){
-			console.log("B", el.name, el.polarity)
-			el.name = "C" + pol + "P: trace";
-			el.style.strokeColor = pLetterToCLPolarity(pol);
-	    	el.polarity = pLetterToCLPolarity(pol);
-	    	// el.remove();
-	    	console.log("A", el.name, el.polarity)
+			TracePathTool.traceUpdate(el, end_polarity);
 		});
 	}
-	if(!valid_connection) scope.intersects.remove();
+	else{
+		scope.intersects.remove();
+	}
 	return {connection: valid_connection, intersects: scope.intersects , polarity: end_polarity, error: offending_elements};
 }
+
+
+
 TracePathTool.getAllIntersections = function(path, wires){
 	var intersects = [];
 	for(var i in wires){
