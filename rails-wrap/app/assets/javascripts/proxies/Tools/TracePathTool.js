@@ -137,13 +137,13 @@ TracePathTool.prototype = {
 			
 		
 
-	  //    	// Visual characteristics on MouseUp			
-			// var terminals = ["CGT", "CVT", "CNT", "CGTB", "CVTB"];
-			// terminals = EllustrateSVG.match(designer.circuit_layer.layer, { prefix: terminals });
+	     	// Visual characteristics on MouseUp			
+			var terminals = ["CGT", "CVT", "CNT", "CGTB", "CVTB"];
+			terminals = EllustrateSVG.match(designer.circuit_layer.layer, { prefix: terminals });
 			
-			// _.each(terminals, function(el, i, arr){
-			// 	el.scaling = new paper.Point(1.0, 1.0);	
-			// });
+			_.each(terminals, function(el, i, arr){
+				el.scaling = new paper.Point(1.0, 1.0);	
+			});
 			
 			var valid = TracePathTool.isValidPath(trace, scope);
 			var polarity = valid.polarity;
@@ -248,23 +248,16 @@ TracePathTool.prototype = {
 	},
 
 }
-TracePathTool.traceUpdate = function(path_trace, polarity){
-	if(_.isNull(path_trace)) return;
-	path_trace.name = "C" + polarity + "P: trace";
-	path_trace.polarity = pLetterToCLPolarity(polarity);
-	path_trace.style.strokeColor = pLetterToCLPolarity(polarity);
-	designer.circuit_layer.add(path_trace, true);
-}
 
 TracePathTool.isValidPath = function(trace, scope){
 	var polarity = detectPolarity(trace);
 	var end_polarity = polarity;
-	// GET ALL CONDUCTIVE offending_elements
-	var conductive = ["CGP", "CVP", "CGB", "CVB", "CNP"];
+	// GET ALL CONDUCTIVE offending_elements (paths, blobs, )
+	var conductive = ["CGP", "CNP", "CVP", "CGB", "CVB", "CNB", "CVTB", "CGTB"];
 	conductive = EllustrateSVG.match(designer.circuit_layer.layer, { prefix: conductive });
 
 	// CIRCUIT VALIDATION
-	var intersects = TracePathTool.getAllIntersections(trace, conductive)
+	var intersects = TracePathTool.getAllIntersections(trace, conductive);
 
 	_.each(intersects, function(el, i, arr){
 		var c = new paper.Path.Circle({
@@ -275,6 +268,8 @@ TracePathTool.isValidPath = function(trace, scope){
 		c.remove();
 		scope.intersects.addChild(c);
 	});
+
+	console.log(intersects.length, "Connections detected");
 
 	// SHORT DETECTION
 	var valid_connection = true;
@@ -344,11 +339,28 @@ function pLetterToCLPolarity(char){
 	if(char == "G")
 		return CircuitLayer.NEGATIVE; 
 }
-function detectPolarity(trace){
-	if(trace.style.strokeColor.equals(CircuitLayer.POSITIVE))
+
+TracePathTool.traceUpdate = function(path_trace, polarity){
+	if(_.isNull(path_trace)) return;
+	path_trace.name = "C" + polarity + "P: trace";
+	path_trace.polarity = pLetterToCLPolarity(polarity);
+	path_trace.style.strokeColor = pLetterToCLPolarity(polarity);
+	designer.circuit_layer.add(path_trace, true);
+}
+TracePathTool.isPath = function(trace){
+	var prefix = EllustrateSVG.getPrefix(trace);
+	return ["T", "B"].indexOf(prefix.slice(-1)) != -1;
+}
+function detectPolarity(trace){	
+	var compare;
+	if(TracePathTool.isPath(trace)) compare = trace.style.fillColor;
+	else compare = trace.style.strokeColor;
+		
+
+	if(compare.equals(CircuitLayer.POSITIVE))
 		return "V";
-	if(trace.style.strokeColor.equals(CircuitLayer.NEUTRAL))
+	if(compare.equals(CircuitLayer.NEUTRAL))
 		return "N";
-	if(trace.style.strokeColor.equals(CircuitLayer.NEGATIVE))
+	if(compare.equals(CircuitLayer.NEGATIVE))
 		return "G";
 }

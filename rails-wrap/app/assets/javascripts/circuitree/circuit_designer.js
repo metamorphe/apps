@@ -222,8 +222,16 @@ EllustrateSVG.match = function(collection, match){
 	}
 	return collection.getItems(match);
 }
+
 EllustrateSVG.getPrefixItem = function(item){
 	if(_.isUndefined(item)) return "";
 	if(item.split(":").length < 2) return "";
 	return item.split(":")[0].trim();
+}
+
+EllustrateSVG.getPrefix = function(item){
+	if(_.isUndefined(item)) return "";
+	if(_.isUndefined(item.name)) return "";
+	if(item.name.split(":").length < 2) return "";
+	return item.name.split(":")[0].trim();
 }
