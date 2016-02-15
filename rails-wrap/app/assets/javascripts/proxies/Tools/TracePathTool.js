@@ -150,7 +150,7 @@ TracePathTool.prototype = {
 
 			if(valid.connection){
 
-				trace.smooth();
+				trace.simplify();
 				TracePathTool.traceUpdate(trace, polarity);
 	    		if(valid.intersects) valid.intersects.remove();
 	    		trace = null;
@@ -239,7 +239,7 @@ TracePathTool.prototype = {
 			valid = TracePathTool.isValidPath(trace, scope);
 
 			if(valid.connection){
-				trace.smooth();
+				trace.simplify();
 				TracePathTool.traceUpdate(trace, polarity);
 	    		if(valid.intersects) valid.intersects.remove();
 	    		trace = null;
