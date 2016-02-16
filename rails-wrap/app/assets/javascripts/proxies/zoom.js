@@ -179,6 +179,11 @@ Zoom.prototype = {
 		});
 
 		paper.view.zoom /= Math.max(zoomFactorW, zoomFactorH);
+		// _.each(paper.project.layers, function(el, i, arr){
+		// 	var pos = paper.view.center.clone();
+		// 	pos.y -= 50;
+		// 	el.position = pos;
+		// });
 		designer.circuit_layer.resetLegend();
 		paper.view.update();
 	},
