@@ -2,6 +2,8 @@
 var sr_model;
 var artboard;
 CircuitDesigner.BLANK_CANVAS = 1;
+CircuitDesigner.UNIT_ADD = 2;
+CircuitDesigner.ARTBOARD_ADD = 3;
 function CircuitDesigner(container){
 	sr_model = new SheetResistanceModel(10);
 	this.paper = paper;
@@ -113,7 +115,7 @@ CircuitDesigner.prototype = {
 		this.paper.project.importSVG(filename, {
 	    	onLoad: function(item) { 
 		    	item.position = position;
-				eSVG = new EllustrateSVG(item, scope);
+				eSVG = new EllustrateSVG(item, scope, CircuitDesigner.UNIT_ADD);
 	    	}
 		});
 	},
@@ -128,7 +130,7 @@ CircuitDesigner.prototype = {
 		// console.log(item[]);
 		item[0].remove();
 
-		eSVG = new EllustrateSVG(item[0], scope);
+		eSVG = new EllustrateSVG(item[0], scope, CircuitDesigner.ARTBOARD_ADD);
 
    		scope.update();
 	},
@@ -160,10 +162,10 @@ CircuitDesigner.prototype = {
 var test; 
 
 var eSVG = null;
-function EllustrateSVG(svg, designer){
+function EllustrateSVG(svg, designer, flag){
 	this.svg = svg;
 	this.designer = designer;
-	this.parse();
+	this.parse(flag);
 }
 
 EllustrateSVG.prototype = {
@@ -183,7 +185,7 @@ EllustrateSVG.prototype = {
 	select: function(match){
 		return this.match(this.svg, match);
 	},
-	parse: function(){
+	parse: function(flag){
 		// Remove non-ellustrator elements
 		var scope = this;
 		// console.log("Adding ", this.svg);
@@ -197,33 +199,33 @@ EllustrateSVG.prototype = {
 		// // Base canvas, if not added
 		var paper_size = PaperSetup.orientation(PaperTypes.A4, 'hoz');
 
-		
-		var ARTBOARD = this.select(
-			{ 
-			  prefix: ["NCB"]
-			});
+		if(flag == CircuitDesigner.ARTBOARD_ADD){
+			var ARTBOARD = this.select(
+				{ 
+				  prefix: ["NCB"]
+				});
 
 
-		if(ARTBOARD.length == 0){
-			console.log("Adding artboard", ARTBOARD);
-			artboard = new paper.Path.Rectangle({
-				parent: designer.art_layer.layer,
-				width: Ruler.mm2pts(paper_size.width),
-				height: Ruler.mm2pts(paper_size.height),
-				position: paper.view.center,
-				fillColor: "white", 
-				shadowColor: new paper.Color(0.8),
-	    		shadowBlur: 10,
-	    		shadowOffset: new paper.Point(0, 0), 
-	    		name: "NCB: artboard"
-			});
-		}else{
-			console.log("Using artboard", ARTBOARD);
-			artboard = ARTBOARD[0];
-			designer.art_layer.layer.addChild(ARTBOARD[0]);
-		
+			if(ARTBOARD.length == 0){
+				console.log("Adding artboard", ARTBOARD);
+				artboard = new paper.Path.Rectangle({
+					parent: designer.art_layer.layer,
+					width: Ruler.mm2pts(paper_size.width),
+					height: Ruler.mm2pts(paper_size.height),
+					position: paper.view.center,
+					fillColor: "white", 
+					shadowColor: new paper.Color(0.8),
+		    		shadowBlur: 10,
+		    		shadowOffset: new paper.Point(0, 0), 
+		    		name: "NCB: artboard"
+				});
+			}else{
+				console.log("Using artboard", ARTBOARD);
+				artboard = ARTBOARD[0];
+				designer.art_layer.layer.addChild(ARTBOARD[0]);
+			
+			}
 		}
-
 
 
 		// console.log(ARTBOARD[0].bounds);
