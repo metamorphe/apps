@@ -5,11 +5,13 @@ $(function(){
     $("#zoom-out").click(function(){zoom.out();});
     $("#homing").click(function(){zoom.home();});
     $("#scale").click(function(){
-      if($(this).hasClass('active')){
-        $(this).removeClass('active');
+
+      if($(this).hasClass('btn-warning')){
+        $(this).removeClass("btn-warning").addClass("btn-ellustrator");
+
         zoom.hide_scale();
       } else{
-        $(this).addClass('active');
+		$(this).addClass("btn-warning").removeClass("btn-ellustrator");
         zoom.show_scale();
       }
     });
