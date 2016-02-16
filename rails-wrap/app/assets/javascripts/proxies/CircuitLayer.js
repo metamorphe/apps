@@ -28,7 +28,7 @@ CircuitLayer.legend = function(parent, pt){
 			point: new paper.Point(0, 00),
 			content: "POSITIVE",
 			fillColor: 'black', 
-			fontFamily: 'Museo Sans', 
+			fontFamily: 'Arial', 
 			// fontWeight: 'bold', 
 			fontSize: 12
 	});
