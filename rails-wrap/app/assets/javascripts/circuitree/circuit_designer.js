@@ -151,12 +151,12 @@ CircuitDesigner.prototype = {
 		this.circuit_layer.legend.remove();		
 	}, 
 	unclearForSave: function(){
-		if(!_.isNull(this.state.tool)){
-			this.state.tool.dom.addClass('btn-warning').removeClass('btn-ellustrate');
-			this.toolbox.reenable(this.state.tool.name);
-		}
-		this.circuit_layer.addLegend();
-		paper.project.activeLayer.addChild(artboard);
+		// if(!_.isNull(this.state.tool)){
+		// 	this.state.tool.dom.addClass('btn-warning').removeClass('btn-ellustrate');
+		// 	this.toolbox.reenable(this.state.tool.name);
+		// }
+		// this.circuit_layer.addLegend();
+		// paper.project.activeLayer.addChild(artboard);
 	}
 }
                  
