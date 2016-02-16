@@ -145,7 +145,7 @@ CircuitDesigner.prototype = {
 		this.circuit_layer.legend.remove();		
 	}, 
 	unclearForSave: function(){
-		console.log("Tool reenable", this.state.tool.name);
+		// console.log("Tool reenable", this.state.tool.name);
 		if(!_.isNull(this.state.tool)){
 			this.state.tool.dom.addClass('btn-warning').removeClass('btn-ellustrate');
 			this.toolbox.reenable(this.state.tool.name);
