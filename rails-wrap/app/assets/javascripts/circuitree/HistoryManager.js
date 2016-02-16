@@ -21,6 +21,19 @@ function HistoryManager(storage){
 
 
 HistoryManager.prototype = {
+	clear_all: function(){
+		this.clear_history();
+		this.current_save = this.getHead();
+		console.log("clear all", this.current_save)
+		var scope = this;
+		resp = $.getJSON("/blank.json", function(resp){
+       		designer.loadJSON(resp, CircuitDesigner.BLANK_CANVAS);
+    		scope.server_save();
+			scope.save();
+			scope.current_save = scope.getHead();
+			zoom.home();
+    	});
+	},
 	loadEvent: function(t){
 		designer.loadJSON(eval(storage.get('saveevent_' + t)), CircuitDesigner.BLANK_CANVAS);
 	},
@@ -57,7 +70,7 @@ HistoryManager.prototype = {
 			json: json, 
 			name: name
 		}
-
+		console.log(json);
 		$.ajax({
 		  url: '/designs/' + design.id + "/design_update",
 		  type: 'POST',
