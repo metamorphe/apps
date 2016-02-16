@@ -24,6 +24,63 @@ function Zoom(starting_level, paper){
 	
 	
 }
+Zoom.CMRuler = function(pt){
+	var w = paper.view.size.width * 0.8;
+	var ruler = new paper.Group();
+	var from = new paper.Point(0 - 0.5, 0);
+	var to = new paper.Point(w + 0.5, 0);
+	var base_line = new paper.Path.Line({
+						parent: ruler, 
+						from: from, 
+						to: to, 
+						strokeWidth: 4, 
+						strokeColor: "black"
+					});
+	var tickNo = 0;
+	for(var i = 0.5; i < w; i+= Ruler.mm2pts(10)){
+
+		var from = new paper.Point(i, 0);
+		var to = new paper.Point(i, tickNo % 10 == 0 ? -15: -10);
+		var tick = new paper.Path.Line({
+						parent: ruler, 
+						from: from, 
+						to: to, 
+						strokeWidth: 1, 
+						strokeColor: "black"
+					});
+
+		if(tickNo % 10 == 0){
+			var pos = new paper.Point(i, -20);
+			var text = new paper.PointText({
+				parent: ruler, 
+				point: pos,
+				content: tickNo,
+				fillColor: 'black', 
+				fontFamily: 'Arial', 
+				// fontWeight: 'bold', 
+				fontSize: 12
+			});
+			var text_adj = text.bounds.width / 2;
+			text.point.x -= text_adj;
+		}
+		tickNo ++;
+	}
+	var pos = new paper.Point(-30, 0);
+		var text = new paper.PointText({
+			parent: ruler, 
+			point: pos,
+			content: "cm",
+			fillColor: 'black', 
+			fontFamily: 'Arial', 
+			fontWeight: 'bold', 
+			fontSize: 12
+		});
+	var ruler_adj = ruler.bounds.height * 3;
+	pt.y += ruler_adj;
+	ruler.position = pt;
+	
+	return ruler;
+}
 Zoom.MMRuler = function(pt){
 	var w = paper.view.size.width * 0.8;
 	var ruler = new paper.Group();
@@ -137,7 +194,7 @@ Zoom.prototype = {
 		// console.log("showing scale");
 		// var b = designer.nodes.bounds().bounds;
 		var pt = artboard.bounds.center.clone();
-		this.scale = Zoom.MMRuler(pt);
+		this.scale = Zoom.CMRuler(pt);
 
 		
 		// this.text.position = this.text.bounds.center;
