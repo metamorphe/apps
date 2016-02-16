@@ -5,11 +5,13 @@ $(function(){
     $("#zoom-out").click(function(){zoom.out();});
     $("#homing").click(function(){zoom.home();});
     $("#scale").click(function(){
-      if($(this).hasClass('active')){
-        $(this).removeClass('active');
+
+      if($(this).hasClass('btn-warning')){
+        $(this).removeClass("btn-warning").addClass("btn-ellustrator");
+
         zoom.hide_scale();
       } else{
-        $(this).addClass('active');
+		$(this).addClass("btn-warning").removeClass("btn-ellustrator");
         zoom.show_scale();
       }
     });
@@ -168,11 +170,11 @@ Zoom.prototype = {
 	home: function(){
 		sys.show("Homing the artboard.");
 		var zoomFactorW = artboard.bounds.width / paper.view.size.width;
-		var zoomFactorH = artboard.bounds.height / (paper.view.size.height - 100);
+		var zoomFactorH = artboard.bounds.height / (paper.view.size.height -100);
 
 		_.each(paper.project.layers, function(el, i, arr){
 			var pos = paper.view.center.clone();
-			pos.y -= 100;
+			pos.y -= 50;
 			el.position = pos;
 		});
 
