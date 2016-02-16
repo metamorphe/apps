@@ -168,11 +168,11 @@ Zoom.prototype = {
 	home: function(){
 		sys.show("Homing the artboard.");
 		var zoomFactorW = artboard.bounds.width / paper.view.size.width;
-		var zoomFactorH = artboard.bounds.height / (paper.view.size.height - 100);
+		var zoomFactorH = artboard.bounds.height / (paper.view.size.height -100);
 
 		_.each(paper.project.layers, function(el, i, arr){
 			var pos = paper.view.center.clone();
-			pos.y -= 100;
+			pos.y -= 50;
 			el.position = pos;
 		});
 

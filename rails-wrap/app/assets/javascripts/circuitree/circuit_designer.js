@@ -202,23 +202,41 @@ EllustrateSVG.prototype = {
 
 			if(ARTBOARD.length == 0){
 				console.log("Adding artboard", ARTBOARD);
-				artboard = new paper.Path.Rectangle({
+				artboard = new paper.Group({
 					parent: designer.art_layer.layer,
+					position: paper.view.center,
+					name: "NCB: artboard"
+				});
+				var p = paper.Path.Rectangle({
+					parent: artboard, 
 					width: Ruler.mm2pts(paper_size.width),
 					height: Ruler.mm2pts(paper_size.height),
-					position: paper.view.center,
 					fillColor: "white", 
 					shadowColor: new paper.Color(0.8),
 		    		shadowBlur: 10,
 		    		shadowOffset: new paper.Point(0, 0), 
-		    		name: "NCB: artboard"
 				});
+				var gtext = new paper.PointText({
+						parent: artboard, 
+						point: artboard.bounds.topRight.clone(),
+						content: "A4",
+						fillColor: 'gray', 
+						fontFamily: 'Arial', 
+						fontWeight: 'bold', 
+						fontSize: 20
+				});
+			
+				var gtext_adj = gtext.bounds;
+				gtext.point.x -= gtext_adj.width + 15;
+				gtext.point.y += gtext_adj.height + 10;
+				
 			}else{
 				console.log("Using artboard", ARTBOARD);
 				artboard = ARTBOARD[0];
 				designer.art_layer.layer.addChild(ARTBOARD[0]);
 			
 			}
+			
 		}
 
 
