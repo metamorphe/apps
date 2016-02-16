@@ -142,20 +142,14 @@ CircuitDesigner.prototype = {
 	}, 
 	clearForSave: function(){
 		this.state.tool = this.toolbox.clearTool();
-		// artboard.remove();
 		this.circuit_layer.legend.remove();		
 	}, 
 	unclearForSave: function(){
-		// add back artboard
-		console.log("Adding back legend");
-		this.circuit_layer.addLegend();
-		// this.art_layer.layer.addChild(artboard);
-		// artboard.sendToBack();
-		// if(!_.isNull(this.state.tool)){
-		// 	this.state.tool.dom.addClass('btn-warning').removeClass('btn-ellustrate');
-		// 	this.toolbox.reenable(this.state.tool.name);
-		// }
-		// paper.project.activeLayer.addChild(artboard);
+		console.log("Tool reenable", this.state.tool.name);
+		if(!_.isNull(this.state.tool)){
+			this.state.tool.dom.addClass('btn-warning').removeClass('btn-ellustrate');
+			this.toolbox.reenable(this.state.tool.name);
+		}
 	}
 }
                  
