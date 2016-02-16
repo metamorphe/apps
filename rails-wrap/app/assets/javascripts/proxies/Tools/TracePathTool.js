@@ -41,7 +41,7 @@ function TracePathTool(paper){
 		if(_.isUndefined(scope[scope.canvas_item_type])) return;
 		scope[scope.canvas_item_type].onMouseUp(event, scope);
 		scope.canvas_item_type = null;
-		hm.save();
+		
 	}
 
 }
@@ -155,7 +155,7 @@ TracePathTool.prototype = {
 				designer.circuit_layer.add(trace, true);
 	    		if(valid.intersects) valid.intersects.remove();
 	    		trace = null;
-
+	    		hm.save();
 			}
 
 
@@ -245,6 +245,7 @@ TracePathTool.prototype = {
 				designer.circuit_layer.add(trace, true);
 	    		if(valid.intersects) valid.intersects.remove();
 	    		trace = null;
+	    		hm.save();
 			}
 		}
 	},
