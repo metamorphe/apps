@@ -129,30 +129,6 @@ CircuitDesigner.prototype = {
 		item[0].remove();
 
 		eSVG = new EllustrateSVG(item[0], scope);
-		
-
-		// // Base canvas, if not added
-		// var paper_size = PaperSetup.orientation(PaperTypes.A4, 'hoz');
-
-		// artboard = EllustrateSVG.match(paper.project, {prefix: ["NCB"]})
-		
-		// if(artboard.length == 0){
-		// 	console.log("Adding artboard", artboard);
-		// 	artboard = new paper.Path.Rectangle({
-		// 		parent: this.art_layer.layer,
-		// 		width: Ruler.mm2pts(paper_size.width),
-		// 		height: Ruler.mm2pts(paper_size.height),
-		// 		position: paper.view.center,
-		// 		fillColor: "white", 
-		// 		shadowColor: new paper.Color(0.8),
-	 //    		shadowBlur: 10,
-	 //    		shadowOffset: new paper.Point(0, 0), 
-	 //    		name: "NCB: artboard"
-		// 	});
-		// }else{
-		// 	console.log("Using artboard", artboard);
-		// 	artboard = artboard[0];
-		// }
 
    		scope.update();
 	},
@@ -213,13 +189,44 @@ EllustrateSVG.prototype = {
 		// console.log("Adding ", this.svg);
 		// SPECIFICATION
 		// console.log("1º: Removing dud elements");
-		console.log("ARTB", this.select( { prefix: ["NCB"]}));
 		var NEL = this.select( { prefix: ["NEL"]});
 		_.each(NEL, 
 			function(el, i, arr){ el.remove();}
 		);
+
+		// // Base canvas, if not added
+		var paper_size = PaperSetup.orientation(PaperTypes.A4, 'hoz');
+
 		
+		var ARTBOARD = this.select(
+			{ 
+			  prefix: ["NCB"]
+			});
+
+
+		if(ARTBOARD.length == 0){
+			console.log("Adding artboard", ARTBOARD);
+			artboard = new paper.Path.Rectangle({
+				parent: designer.art_layer.layer,
+				width: Ruler.mm2pts(paper_size.width),
+				height: Ruler.mm2pts(paper_size.height),
+				position: paper.view.center,
+				fillColor: "white", 
+				shadowColor: new paper.Color(0.8),
+	    		shadowBlur: 10,
+	    		shadowOffset: new paper.Point(0, 0), 
+	    		name: "NCB: artboard"
+			});
+		}else{
+			console.log("Using artboard", ARTBOARD);
+			artboard = ARTBOARD[0];
+			designer.art_layer.layer.addChild(ARTBOARD[0]);
 		
+		}
+
+
+
+		// console.log(ARTBOARD[0].bounds);
 		var ART = this.select(
 			{ 
 			  prefix: ["ART"]
