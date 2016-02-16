@@ -31,9 +31,7 @@
     guide = new FabricationGuide($("#fab-guide"));
     debug = new DebugGuide($("#debug-guide"));
 
-    resp = $.getJSON(design.json.url, function(resp){
-       designer.loadJSON(resp);
-    });
+   
 
     alerter = new Alerter($('#alerter'));
     // AUTOSAVE

@@ -6,6 +6,10 @@ function HistoryManager(storage){
 	// If there is no save history
 	console.log("HISTORY ITEMS" + this.getHistory().length);
 	if(this.getHead() == Number.NEGATIVE_INFINITY){
+		console.log("No history in cache");
+		resp = $.getJSON(design.json.url, function(resp){
+       		designer.loadJSON(resp);
+    	});
 		this.save();
 	}else{
 		this.trimToHead();
@@ -83,7 +87,6 @@ HistoryManager.prototype = {
 		designer.unclearForSave();
 	}, 
 	redo: function(){
-		designer.clearForSave();
 		var save_events = this.getHistory();
 
 		var scope = this;
@@ -103,11 +106,8 @@ HistoryManager.prototype = {
 		this.loadEvent(rel_event);
 		this.current_save = rel_event;
 		sys.show("Redoing last action");
-		designer.unclearForSave();
 	},
 	undo: function(){
-		designer.toolbox.clearTool();
-
 		var save_events = this.getHistory();
 		var scope = this;
 		var rel_events = _.filter(save_events, function(t){
@@ -121,6 +121,7 @@ HistoryManager.prototype = {
 		rel_event = _.max(rel_events);
 		
 		designer.loadJSON(eval(storage.get('saveevent_' + rel_event)), CircuitDesigner.BLANK_CANVAS);
+		
 		this.current_save = rel_event;
 		sys.show("Loading:" + rel_event);
 	}, 

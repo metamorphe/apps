@@ -2,6 +2,8 @@
 var sr_model;
 var artboard;
 CircuitDesigner.BLANK_CANVAS = 1;
+CircuitDesigner.UNIT_ADD = 2;
+CircuitDesigner.ARTBOARD_ADD = 3;
 function CircuitDesigner(container){
 	sr_model = new SheetResistanceModel(10);
 	this.paper = paper;
@@ -61,19 +63,8 @@ CircuitDesigner.prototype = {
 		this.paper.view.zoom = 1.5;	
 		var scope = this; 
 
-		// Base canvas
-		var paper_size = PaperSetup.orientation(PaperTypes.A4, 'hoz');
-
-		artboard = new paper.Path.Rectangle({
-			width: Ruler.mm2pts(paper_size.width),
-			height: Ruler.mm2pts(paper_size.height),
-			position: paper.view.center,
-			fillColor: "white", 
-			shadowColor: new paper.Color(0.8),
-    		shadowBlur: 10,
-    		shadowOffset: new paper.Point(0, 0), 
-    		name: "NC: artboard"
-		});
+		
+		
 
 		
 		// Setups tools
@@ -124,7 +115,7 @@ CircuitDesigner.prototype = {
 		this.paper.project.importSVG(filename, {
 	    	onLoad: function(item) { 
 		    	item.position = position;
-				eSVG = new EllustrateSVG(item, scope);
+				eSVG = new EllustrateSVG(item, scope, CircuitDesigner.UNIT_ADD);
 	    	}
 		});
 	},
@@ -136,7 +127,11 @@ CircuitDesigner.prototype = {
 		}
 		// sys.log(json);
 		var item = this.paper.project.importJSON(json); 
-		eSVG = new EllustrateSVG(item[0], scope);
+		// console.log(item[]);
+		item[0].remove();
+
+		eSVG = new EllustrateSVG(item[0], scope, CircuitDesigner.ARTBOARD_ADD);
+
    		scope.update();
 	},
 	json: function(){
@@ -147,26 +142,24 @@ CircuitDesigner.prototype = {
 	}, 
 	clearForSave: function(){
 		this.state.tool = this.toolbox.clearTool();
-		artboard.remove();
 		this.circuit_layer.legend.remove();		
 	}, 
 	unclearForSave: function(){
-		// if(!_.isNull(this.state.tool)){
-		// 	this.state.tool.dom.addClass('btn-warning').removeClass('btn-ellustrate');
-		// 	this.toolbox.reenable(this.state.tool.name);
-		// }
-		// this.circuit_layer.addLegend();
-		// paper.project.activeLayer.addChild(artboard);
+		console.log("Tool reenable", this.state.tool.name);
+		if(!_.isNull(this.state.tool)){
+			this.state.tool.dom.addClass('btn-warning').removeClass('btn-ellustrate');
+			this.toolbox.reenable(this.state.tool.name);
+		}
 	}
 }
                  
 var test; 
 
 var eSVG = null;
-function EllustrateSVG(svg, designer){
+function EllustrateSVG(svg, designer, flag){
 	this.svg = svg;
 	this.designer = designer;
-	this.parse();
+	this.parse(flag);
 }
 
 EllustrateSVG.prototype = {
@@ -186,7 +179,7 @@ EllustrateSVG.prototype = {
 	select: function(match){
 		return this.match(this.svg, match);
 	},
-	parse: function(){
+	parse: function(flag){
 		// Remove non-ellustrator elements
 		var scope = this;
 		// console.log("Adding ", this.svg);
@@ -196,8 +189,40 @@ EllustrateSVG.prototype = {
 		_.each(NEL, 
 			function(el, i, arr){ el.remove();}
 		);
-		
-		
+
+		// // Base canvas, if not added
+		var paper_size = PaperSetup.orientation(PaperTypes.A4, 'hoz');
+
+		if(flag == CircuitDesigner.ARTBOARD_ADD){
+			var ARTBOARD = this.select(
+				{ 
+				  prefix: ["NCB"]
+				});
+
+
+			if(ARTBOARD.length == 0){
+				console.log("Adding artboard", ARTBOARD);
+				artboard = new paper.Path.Rectangle({
+					parent: designer.art_layer.layer,
+					width: Ruler.mm2pts(paper_size.width),
+					height: Ruler.mm2pts(paper_size.height),
+					position: paper.view.center,
+					fillColor: "white", 
+					shadowColor: new paper.Color(0.8),
+		    		shadowBlur: 10,
+		    		shadowOffset: new paper.Point(0, 0), 
+		    		name: "NCB: artboard"
+				});
+			}else{
+				console.log("Using artboard", ARTBOARD);
+				artboard = ARTBOARD[0];
+				designer.art_layer.layer.addChild(ARTBOARD[0]);
+			
+			}
+		}
+
+
+		// console.log(ARTBOARD[0].bounds);
 		var ART = this.select(
 			{ 
 			  prefix: ["ART"]
