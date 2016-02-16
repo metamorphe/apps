@@ -3,6 +3,9 @@ $(function(){
 	
 	$('#collection').hide();
 	var lib_on = false;
+	$("#clear-canvas-and-history").click(function(){
+		hm.clear_all();
+	});	
 	$('#add-library').click(function(){
 		$('#collection').slideToggle(500);
 		lib_on = !lib_on;
@@ -126,6 +129,11 @@ function calibrationScripts(){
 		<button id="add-library" class="pull-left btn btn-norm btn-ellustrator">
 			<span class='glyphicon glyphicon-plus'></span>
 			ADD FROM LIBRARY
+		</button>
+
+		<button id="clear-canvas-and-history" class="pull-left btn btn-norm btn-ellustrator">
+			<span class='glyphicon glyphicon-ban-circle'></span>
+			CLEAR CANVAS AND HISTORY
 		</button>
 
 
