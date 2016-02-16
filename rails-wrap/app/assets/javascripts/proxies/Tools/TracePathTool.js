@@ -152,6 +152,7 @@ TracePathTool.prototype = {
 
 				trace.simplify();
 				TracePathTool.traceUpdate(trace, polarity);
+				designer.circuit_layer.add(trace, true);
 	    		if(valid.intersects) valid.intersects.remove();
 	    		trace = null;
 
@@ -241,6 +242,7 @@ TracePathTool.prototype = {
 			if(valid.connection){
 				trace.simplify();
 				TracePathTool.traceUpdate(trace, polarity);
+				designer.circuit_layer.add(trace, true);
 	    		if(valid.intersects) valid.intersects.remove();
 	    		trace = null;
 			}
@@ -426,7 +428,6 @@ TracePathTool.traceUpdate = function(path_trace, polarity){
 	path_trace.polarity = pLetterToCLPolarity(polarity);
 	if(TracePathTool.isPath(path_trace)) path_trace.style.strokeColor = pLetterToCLPolarity(polarity);
 	else path_trace.style.fillColor = pLetterToCLPolarity(polarity);
-	designer.circuit_layer.add(path_trace, true);
 }
 TracePathTool.isPath = function(trace){
 	var prefix = EllustrateSVG.getPrefix(trace);
