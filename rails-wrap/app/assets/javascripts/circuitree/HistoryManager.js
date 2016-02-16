@@ -1,13 +1,37 @@
 // HistoryManager.js
 
-
 function HistoryManager(storage){
 	this.storage = storage;
+	this.current_save = this.getHead();
+	// If there is no save history
+	console.log("HISTORY ITEMS" + this.getHistory().length);
+	if(this.getHead() == Number.NEGATIVE_INFINITY){
+		this.save();
+	}else{
+		this.trimToHead();
+		this.loadEvent(this.current_save);
+	}
+	// If there is, just keep the head
 	this.current_save = this.getHead();	
 }
 
 
 HistoryManager.prototype = {
+	loadEvent: function(t){
+		designer.loadJSON(eval(storage.get('saveevent_' + t)), CircuitDesigner.BLANK_CANVAS);
+	},
+	trimToHead: function(){
+		var save_events = this.getHistory();
+
+		var scope = this;
+		var rel_events = _.filter(save_events, function(t){
+			return t > scope.current_save; 
+		});
+		_.each(rel_events, function(t){
+			storage.remove("saveevent_" + t);
+		});
+		console.log("Pruned the tree by", rel_events.length, "elements.");
+	},
 	getHistory: function(){
 		save_events = $.map(storage.keys(), function(el, i){
 			flag = el.split('_')[0];
@@ -42,22 +66,24 @@ HistoryManager.prototype = {
 		// sys.log("Saving to the server!");
 	},
 	save: function(){
-		var tool = designer.toolbox.clearTool();
+		designer.clearForSave();
+		
 		var s = Math.floor(Date.now() / 1000);
-		var timestamp_key = "saveevent_" + s;
-		storage.set(timestamp_key, designer.json());
+		var key = "saveevent_" + s;
+	
+		// PRUNE THE TREE
+		if(this.current_save != this.getHead()){
+			// If you are not at head of the list, then remove. 
+			this.trimToHead();
+		} 
+	
+		storage.set(key, designer.json());
 		this.current_save = s;
-		// If you are not at head of the list, then remove. 
-
-		if(!_.isNull(tool)){
-			tool.dom.addClass('btn-warning').removeClass('btn-ellustrate');
-			designer.toolbox.reenable(tool.name);
-		}
-
-		// sys.log("Saved design!");
+		
+		designer.unclearForSave();
 	}, 
 	redo: function(){
-		designer.toolbox.clearTool();
+		designer.clearForSave();
 		var save_events = this.getHistory();
 
 		var scope = this;
@@ -72,20 +98,22 @@ HistoryManager.prototype = {
 		}
 		rel_event = _.min(rel_events);
 
-		console.log("redoing", rel_event);
+		console.log("Redoing", rel_event);
 		
-		designer.loadJSON(eval(storage.get('saveevent_' + rel_event)), CircuitDesigner.BLANK_CANVAS);
+		this.loadEvent(rel_event);
 		this.current_save = rel_event;
 		sys.show("Redoing last action");
+		designer.unclearForSave();
 	},
 	undo: function(){
 		designer.toolbox.clearTool();
+
 		var save_events = this.getHistory();
 		var scope = this;
 		var rel_events = _.filter(save_events, function(t){
 			return t < scope.current_save; 
 		});
-		
+		sys.log("rel_events:" + rel_events.join("<br/>"));
 		if(_.isEmpty(rel_events)){ 
 			sys.show("Can't undo...");
 			return;
@@ -94,32 +122,11 @@ HistoryManager.prototype = {
 		
 		designer.loadJSON(eval(storage.get('saveevent_' + rel_event)), CircuitDesigner.BLANK_CANVAS);
 		this.current_save = rel_event;
-		sys.show("Undoing last acition");
+		sys.show("Loading:" + rel_event);
 	}, 
-
 	clear_history: function(){
-		designer.toolbox.clearTool();
-		designer.toolbox.clearTool();
 		storage.clear();
 		sys.show("Clearing browser history.");
-	},
-	revert: function(){
-		designer.toolbox.clearTool();
-		save_events = this.getHistory();
-
-		if(_.isEmpty(save_events)){
-			console.log("No save events to revert to...");
-			return;
-		}
-
-		console.log("save events", save_events);
-		last_event =  _.min(save_events);
-
-		console.log("loading json", last_event);
-
-		this.loadJSON(eval(storage.get('saveevent_' + last_event)), CircuitDesigner.BLANK_CANVAS);
-		this.current_save = last_event;
-		sys.log("Undoing all changes");
-		this.clear_history();
 	}
 }
+

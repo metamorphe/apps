@@ -175,8 +175,7 @@ CircuitLayer.prototype = {
 		this.legend.position.y += 50;
 	},
 	circuit_view: function(){
-		this.layer.addChild(this.legend);
-		this.resetLegend();
+		this.addLegend();
 		// this.legend.scaling = new paper.Point(this.paper.view.zoom, this.paper.view.zoom);
 		// paper.view.bounds.topRight.clone();
 		CircuitLayer.select_and_color_and_code(this.layer, ["CNT"], { shadowBlur: 0, fillColor: CircuitLayer.NEUTRAL}, CircuitLayer.NEUTRAL);
@@ -188,6 +187,10 @@ CircuitLayer.prototype = {
 
 		paper.view.update();
 	}, 
+	addLegend: function(){
+		this.layer.addChild(this.legend);
+		this.resetLegend();
+	}
 
 }
 

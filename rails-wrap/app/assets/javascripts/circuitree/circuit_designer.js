@@ -7,16 +7,13 @@ function CircuitDesigner(container){
 	this.paper = paper;
 	this.container = container;
 	this.init();
-	this.layer = new paper.Layer({
-		name: "EL: Ellustrator SVG"
-	});
-	this.art_layer = new ArtworkLayer(paper, this.layer);
-	this.circuit_layer = new CircuitLayer(paper, this.layer, "SI");
+	this.makeLayers();
 
 	this.animations = [];
 	this.update();
 	var self = this;
 	this.animation_handler = new AnimationHandler(paper);
+	this.state = {};
 }
 var visiting = [];
 // mm base
@@ -37,6 +34,16 @@ PaperSetup.orientation = function(paper_type, t){
 }
 
 CircuitDesigner.prototype = {
+	makeLayers: function(){
+		while(paper.project.layers.length > 0)
+			paper.project.layers[0].remove();
+		this.layer = new paper.Layer({
+			name: "EL: Ellustrator SVG"
+		});
+		this.art_layer = new ArtworkLayer(paper, this.layer);
+		this.circuit_layer = new CircuitLayer(paper, this.layer, "SI");
+		this.paper.view.update();
+	},
 	init: function(){
 		// setups paperjs 
 		var c = this.container;
@@ -104,8 +111,7 @@ CircuitDesigner.prototype = {
 	},
 
 	clear: function(){
-		this.circuit_layer.layer.clear();
-		this.art_layer.layer.clear();
+		this.makeLayers();
 		this.update();
 	},
 	addSVG: function(filename, position, callback){
@@ -124,8 +130,10 @@ CircuitDesigner.prototype = {
 	},
 	loadJSON: function(json, clearCanvas){
 		var scope = this;
-		if(clearCanvas == CircuitDesigner.BLANK_CANVAS)
+		if(clearCanvas == CircuitDesigner.BLANK_CANVAS){
 			this.clear();
+			sys.log("Clearing canvas!");
+		}
 		// sys.log(json);
 		var item = this.paper.project.importJSON(json); 
 		eSVG = new EllustrateSVG(item[0], scope);
@@ -136,6 +144,19 @@ CircuitDesigner.prototype = {
 			asString: true,
 			precision: 5
 		});
+	}, 
+	clearForSave: function(){
+		this.state.tool = this.toolbox.clearTool();
+		artboard.remove();
+		this.circuit_layer.legend.remove();		
+	}, 
+	unclearForSave: function(){
+		if(!_.isNull(this.state.tool)){
+			this.state.tool.dom.addClass('btn-warning').removeClass('btn-ellustrate');
+			this.toolbox.reenable(this.state.tool.name);
+		}
+		this.circuit_layer.addLegend();
+		paper.project.activeLayer.addChild(artboard);
 	}
 }
                  

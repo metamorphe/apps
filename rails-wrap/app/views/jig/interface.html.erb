@@ -8,7 +8,7 @@
 // `8888Y'  `Y88P' 88   YD Y888888P 88         YP    
                                                   
   var design = <%= @design %>;
-  var designer, zoom, materials, storage, alerter, guide, debug;
+  var designer, sys, zoom, materials, storage, alerter, guide, debug;
   $(function(){
     attachHandlers();
     dim = new DimensionsPreview($("#sandbox"));
@@ -19,10 +19,12 @@
       top: "auto"
     });
     dim.set(0, 0, 0);
+    
+    sys = new SystemMessageManager($('#system-messages'));
 
     storage = new WebStorage();
-    hm = new HistoryManager(storage);
     designer = new CircuitDesigner($("#sandbox"));
+    hm = new HistoryManager(storage);
     
     
     zoom = new Zoom(designer.paper.view.zoom, designer.paper);
