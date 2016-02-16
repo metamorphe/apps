@@ -102,11 +102,9 @@ var tool_config = [
       <% button_tag :id => "pan-tool", :class => "btn btn-ellustrator" do %>
         <span class="glyphicon glyphicon-hand-up"></span>
       <% end %>
-       <div class="btn-group pull-right" role="group">
-        <%= button_tag :id=>"remove-element", :class=>"btn btn-md btn-ellustrator" do %>
-          <span class="glyphicon glyphicon-ban-circle"></span>
-        <% end %>
-      </div>
+       <!-- <div class="btn-group pull-right" role="group"> -->
+      
+      <!-- </div> -->
     </div>
 
 
@@ -117,22 +115,23 @@ var tool_config = [
       <% end %>   
 
          <%= button_tag :id=>"homing", :class=>"btn btn-md btn-ellustrator" do %>
-          <span class="glyphicon glyphicon-home"></span>
+          <span class="icon-homing"></span>
         <% end %>
       
         <% button_tag :id=>"zoom-out", :class=>"btn btn-md btn-ellustrator" do %>
           <span class="glyphicon glyphicon-zoom-out"></span>
         <% end %>
 
-          <%= button_tag :id=>"scale", :class=>"btn btn-md btn-ellustrator" do %>
-          <span class="glyphicon glyphicon-text-width"></span>
-        <% end %>
+          
         
         <% button_tag :id=>"zoom-in", :class=>"btn btn-md btn-ellustrator" do %>
             <span class="glyphicon glyphicon-zoom-in"></span>
         <% end %>
       
       </div>
+      <%= button_tag :id=>"scale", :class=>"btn btn-md btn-ellustrator" do %>
+          <span class="icon-ruler"></span>
+        <% end %>
      
       <!-- END ZOOM TOOLS -->
 
@@ -144,19 +143,23 @@ var tool_config = [
     <!-- PATH TOOLS -->
       <div class="btn-group" role="group" aria-label="pen-tools">
         <%= button_tag :id => "path-tool", :class => "btn btn-ellustrator" do %>
-        <span class="icon-path-draw"></span>
+        <span class="icon-path"></span>
         <% end %>
+         
         
     </div>
+     <%= button_tag :id=>"remove-element", :class=>"btn btn-md btn-ellustrator" do %>
+          <span class="icon-delete-path"></span>
+        <% end %>
       <div class="btn-group" role="group" aria-label="pen-tools">
        <% button_tag :id => "anchor-tool", :class => "btn btn-ellustrator" do %>
         <span class="icon-pen-tool"></span>
         <% end %>
         <%= button_tag :id => "brush-size-increase", :class => "btn btn-ellustrator" do %>
-        <span class="icon-pen-add-tool"></span>
+        <span class="icon-brush-size-increase"></span>
         <% end %>
         <%= button_tag :id => "brush-size-decrease", :class => "btn btn-ellustrator" do %>
-        <span class="icon-pen-remove-tool"></span>
+        <span class="icon-brush-size-decrease"></span>
         <% end %>
       </div>
       <% button_tag :class => "btn btn-ellustrator" do %>
@@ -216,7 +219,7 @@ var tool_config = [
   top: 110px;
   left: 0px;
   /*calc(34% + 98px + 10px);*/
-  width: 240px;
+  width: 200px;
   z-index: 100000;
 }
 #circuit-toolbox{
@@ -225,7 +228,7 @@ var tool_config = [
   /*left: 10px;*/
   /*left: 310px;*/
   left: 0px;
-  width: 160px;
+  width: 200px;
   z-index: 1000000;
 }
 #artwork-toolbox {
