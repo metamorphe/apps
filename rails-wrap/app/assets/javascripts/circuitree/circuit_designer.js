@@ -61,19 +61,8 @@ CircuitDesigner.prototype = {
 		this.paper.view.zoom = 1.5;	
 		var scope = this; 
 
-		// Base canvas
-		var paper_size = PaperSetup.orientation(PaperTypes.A4, 'hoz');
-
-		artboard = new paper.Path.Rectangle({
-			width: Ruler.mm2pts(paper_size.width),
-			height: Ruler.mm2pts(paper_size.height),
-			position: paper.view.center,
-			fillColor: "white", 
-			shadowColor: new paper.Color(0.8),
-    		shadowBlur: 10,
-    		shadowOffset: new paper.Point(0, 0), 
-    		name: "NC: artboard"
-		});
+		
+		
 
 		
 		// Setups tools
@@ -136,7 +125,35 @@ CircuitDesigner.prototype = {
 		}
 		// sys.log(json);
 		var item = this.paper.project.importJSON(json); 
+		// console.log(item[]);
+		item[0].remove();
+
 		eSVG = new EllustrateSVG(item[0], scope);
+		
+
+		// // Base canvas, if not added
+		// var paper_size = PaperSetup.orientation(PaperTypes.A4, 'hoz');
+
+		// artboard = EllustrateSVG.match(paper.project, {prefix: ["NCB"]})
+		
+		// if(artboard.length == 0){
+		// 	console.log("Adding artboard", artboard);
+		// 	artboard = new paper.Path.Rectangle({
+		// 		parent: this.art_layer.layer,
+		// 		width: Ruler.mm2pts(paper_size.width),
+		// 		height: Ruler.mm2pts(paper_size.height),
+		// 		position: paper.view.center,
+		// 		fillColor: "white", 
+		// 		shadowColor: new paper.Color(0.8),
+	 //    		shadowBlur: 10,
+	 //    		shadowOffset: new paper.Point(0, 0), 
+	 //    		name: "NCB: artboard"
+		// 	});
+		// }else{
+		// 	console.log("Using artboard", artboard);
+		// 	artboard = artboard[0];
+		// }
+
    		scope.update();
 	},
 	json: function(){
@@ -147,15 +164,19 @@ CircuitDesigner.prototype = {
 	}, 
 	clearForSave: function(){
 		this.state.tool = this.toolbox.clearTool();
-		artboard.remove();
+		// artboard.remove();
 		this.circuit_layer.legend.remove();		
 	}, 
 	unclearForSave: function(){
+		// add back artboard
+		console.log("Adding back legend");
+		this.circuit_layer.addLegend();
+		// this.art_layer.layer.addChild(artboard);
+		// artboard.sendToBack();
 		// if(!_.isNull(this.state.tool)){
 		// 	this.state.tool.dom.addClass('btn-warning').removeClass('btn-ellustrate');
 		// 	this.toolbox.reenable(this.state.tool.name);
 		// }
-		// this.circuit_layer.addLegend();
 		// paper.project.activeLayer.addChild(artboard);
 	}
 }
@@ -192,6 +213,7 @@ EllustrateSVG.prototype = {
 		// console.log("Adding ", this.svg);
 		// SPECIFICATION
 		// console.log("1º: Removing dud elements");
+		console.log("ARTB", this.select( { prefix: ["NCB"]}));
 		var NEL = this.select( { prefix: ["NEL"]});
 		_.each(NEL, 
 			function(el, i, arr){ el.remove();}

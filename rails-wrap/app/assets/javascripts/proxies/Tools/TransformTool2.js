@@ -32,7 +32,7 @@ function TransformTool2(paper){
 	var whatDidIHit = function(positionOnCanvas){
 		hitResult = scope.paper.project.hitTest(positionOnCanvas, hitOptions);	
 		if(_.isNull(hitResult)) return {type: "canvas", result: hitResult}
-		else if(hitResult.item.name == "NC: artboard") return {type: "canvas", result: hitResult}
+		else if(hitResult.item.name == "NCB: artboard") return {type: "canvas", result: hitResult}
 		else{ return {type: "element", result: hitResult} }
 	}
 	var route = function(event, allowableSubEvents, eventFN){
