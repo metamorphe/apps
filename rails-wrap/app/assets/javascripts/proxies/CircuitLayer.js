@@ -48,7 +48,7 @@ CircuitLayer.legend = function(parent, pt){
 			point: new paper.Point(0, 20),
 			content: "NEGATIVE",
 			fillColor: 'black', 
-			fontFamily: 'Museo Sans', 
+			fontFamily: 'Arial', 
 			// fontWeight: 'bold', 
 			fontSize: 12
 	});
@@ -68,7 +68,7 @@ CircuitLayer.legend = function(parent, pt){
 			point: new paper.Point(0, 40),
 			content: "NEUTRAL",
 			fillColor: 'black', 
-			fontFamily: 'Museo Sans', 
+			fontFamily: 'Arial', 
 			// fontWeight: 'bold', 
 			fontSize: 12
 	});
@@ -89,7 +89,7 @@ CircuitLayer.legend = function(parent, pt){
 			point: new paper.Point(0, 60),
 			content: "GUIDES",
 			fillColor: 'black', 
-			fontFamily: 'Museo Sans', 
+			fontFamily: 'Arial', 
 			// fontWeight: 'bold', 
 			fontSize: 12
 	});
