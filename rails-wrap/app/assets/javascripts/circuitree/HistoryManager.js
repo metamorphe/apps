@@ -100,6 +100,7 @@ HistoryManager.prototype = {
 		designer.unclearForSave();
 	}, 
 	redo: function(){
+		designer.clearForSave();
 		var save_events = this.getHistory();
 
 		var scope = this;
@@ -119,8 +120,10 @@ HistoryManager.prototype = {
 		this.loadEvent(rel_event);
 		this.current_save = rel_event;
 		sys.show("Redoing last action");
+		designer.unclearForSave();
 	},
 	undo: function(){
+		designer.clearForSave();
 		var save_events = this.getHistory();
 		var scope = this;
 		var rel_events = _.filter(save_events, function(t){
@@ -137,6 +140,7 @@ HistoryManager.prototype = {
 		
 		this.current_save = rel_event;
 		sys.show("Loading:" + rel_event);
+		designer.unclearForSave();
 	}, 
 	clear_history: function(){
 		storage.clear();

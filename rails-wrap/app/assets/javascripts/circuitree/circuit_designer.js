@@ -144,12 +144,34 @@ CircuitDesigner.prototype = {
 		this.state.tool = this.toolbox.clearTool();
 		this.circuit_layer.legend.remove();		
 	}, 
+	svg: function(){
+		this.clearForSave();
+		var filename = $('#design-name b').html().trim().replace(/ /g, "_").toLowerCase();
+ 
+
+		if(_.isUndefined(filename)) filename = "export";
+		if(filename == "") filename = "export"; 
+		filename = filename.split('.')[0];
+
+		console.log("Exporting file as SVG");
+		zoom = 1;
+
+		paper.view.update();
+		exp = paper.project.exportSVG({ 
+			asString: true,
+			precision: 5
+		});
+
+		saveAs(new Blob([exp], {type:"application/svg+xml"}), filename + ".svg")
+		this.unclearForSave();
+	},	
 	unclearForSave: function(){
-		// console.log("Tool reenable", this.state.tool.name);
 		if(!_.isNull(this.state.tool)){
+			console.log("Tool reenable", this.state.tool.name);
 			this.state.tool.dom.addClass('btn-warning').removeClass('btn-ellustrate');
 			this.toolbox.reenable(this.state.tool.name);
 		}
+		this.paper.view.update();
 	}
 }
                  
@@ -205,7 +227,8 @@ EllustrateSVG.prototype = {
 				artboard = new paper.Group({
 					parent: designer.art_layer.layer,
 					position: paper.view.center,
-					name: "NCB: artboard"
+					name: "NCB: artboard", 
+					canvasItem: true
 				});
 				var p = paper.Path.Rectangle({
 					parent: artboard, 
@@ -215,6 +238,8 @@ EllustrateSVG.prototype = {
 					shadowColor: new paper.Color(0.8),
 		    		shadowBlur: 10,
 		    		shadowOffset: new paper.Point(0, 0), 
+		    		canvasItem: true, 
+		    		name: "NCB: artboard", 
 				});
 				var gtext = new paper.PointText({
 						parent: artboard, 
@@ -223,7 +248,8 @@ EllustrateSVG.prototype = {
 						fillColor: 'gray', 
 						fontFamily: 'Arial', 
 						fontWeight: 'bold', 
-						fontSize: 20
+						fontSize: 20, 
+						name: "NCB: artboard"
 				});
 			
 				var gtext_adj = gtext.bounds;

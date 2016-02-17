@@ -52,6 +52,21 @@ Zoom.CMRuler = function(pt){
 					});
 
 		if(tickNo % 10 == 0){
+			var pos = new paper.Point(i, -25);
+			var text = new paper.PointText({
+				parent: ruler, 
+				point: pos,
+				content: tickNo,
+				fillColor: 'black', 
+				fontFamily: 'Arial', 
+				// fontWeight: 'bold', 
+				fontSize: 12
+			});
+			var text_adj = text.bounds.width / 2;
+			text.point.x -= text_adj;
+		}
+
+		else if(tickNo % 5 == 0){
 			var pos = new paper.Point(i, -20);
 			var text = new paper.PointText({
 				parent: ruler, 
@@ -179,6 +194,11 @@ Zoom.prototype = {
 		});
 
 		paper.view.zoom /= Math.max(zoomFactorW, zoomFactorH);
+		// _.each(paper.project.layers, function(el, i, arr){
+		// 	var pos = paper.view.center.clone();
+		// 	pos.y -= 50;
+		// 	el.position = pos;
+		// });
 		designer.circuit_layer.resetLegend();
 		paper.view.update();
 	},
