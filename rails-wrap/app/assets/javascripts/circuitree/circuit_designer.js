@@ -71,31 +71,6 @@ CircuitDesigner.prototype = {
 	    this.toolbox = new Toolbox(this.paper, $("#toolbox"));	
 		return this;
 	},
-	findRoot: function(){
-		var BATTERY = EllustrateSVG.match( this.circuit_layer.layer, { prefix: ["CVTB"]});
-
-		_.each(BATTERY, function(el, i, arr){
-			// el.selected = true;
-			el.style.fillColor = "yellow";
-		});
-		console.log("BATTERY", BATTERY);
-		visiting.push(BATTERY[0]);
-	}, 
-	nextNode: function(){
-		var conductive = ["CGP", "CVP", "CNP", "CGB", "CVB", "CNB"];
-		conductive = EllustrateSVG.match(designer.circuit_layer.layer, { prefix: conductive });
-		var parents = visiting;
-		visiting = [];
-		for(var i in parents){
-			parents[i].style.strokeColor = "yellow";
-			var intersects = TracePathTool.getAllIntersections(parents[i], conductive);
-
-			visiting.push(_.map(intersects, function(el, i, arr){
-				return el._curve2.path;
-			}));
-		}
-		visiting = _.flatten(visiting);
-	},
 	update: function(){
 		if(typeof this.paper == "undefined") return;
 		paper.view.update();
@@ -303,7 +278,7 @@ EllustrateSVG.prototype = {
 EllustrateSVG.match = function(collection, match){
 	if("prefix" in match){
 		var prefixes = match["prefix"];
-
+		
 		match["name"] = function(item){				
 			var p = EllustrateSVG.getPrefixItem(item); 
 			return prefixes.indexOf(p) != -1;

@@ -38,5 +38,6 @@
 //= require circuitree/DebugGuide
 //= require circuitree/sheet_resistance
 //= require circuitree/HistoryManager
+//= require circuitree/TreeSearcher
 #//= require dropzone
 //= require hammer

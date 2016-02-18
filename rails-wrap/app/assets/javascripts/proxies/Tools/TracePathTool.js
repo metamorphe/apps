@@ -174,7 +174,7 @@ TracePathTool.prototype = {
 
 	    	trace.add(event.point);
 
-	    	var polarity = detectPolarity(trace);
+	    	var polarity = TracePathTool.detectPolarity(trace);
 
 	    	var terminals = ["C"+ polarity +"T"];
 			terminals = EllustrateSVG.match(designer.circuit_layer.layer, { prefix: terminals });
@@ -225,7 +225,7 @@ TracePathTool.prototype = {
 		}, 
 		onMouseUp: function(event, scope){
 			if(_.isNull(trace)) return;
-			var polarity = detectPolarity(trace);
+			var polarity = TracePathTool.detectPolarity(trace);
 
 		
 
@@ -253,7 +253,7 @@ TracePathTool.prototype = {
 }
 
 TracePathTool.isValidPath = function(trace, scope){
-	var polarity = detectPolarity(trace);
+	var polarity = TracePathTool.detectPolarity(trace);
 
 	// GET ALL CONDUCTIVE offending_elements (paths, blobs, )
 	var conductive = ["CGP", "CNP", "CVP", "CGB", "CVB", "CNB", "CVTB", "CGTB"];
@@ -324,7 +324,7 @@ TracePathTool.shortDetection = function(trace, intersects, polarity){
 
 		// For each IntersectedPath 
 		var int_path = el._curve2.path;
-		var pol_int_path = detectPolarity(int_path);
+		var pol_int_path = TracePathTool.detectPolarity(int_path);
 
 		if(polarity == "N" || pol_int_path == "N"){
 			if(pol_int_path == "G") g_count ++;
@@ -423,19 +423,24 @@ function pLetterToCLPolarity(char){
 		return CircuitLayer.NEGATIVE; 
 }
 
+
+// TRACE UPDATE LOGIC
 TracePathTool.traceUpdate = function(path_trace, polarity){
+
 	if(_.isNull(path_trace)) return;
 	path_trace.name = "C" + polarity + "P: trace";
 	path_trace.polarity = pLetterToCLPolarity(polarity);
 	if(TracePathTool.isPath(path_trace)) path_trace.style.strokeColor = pLetterToCLPolarity(polarity);
 	else path_trace.style.fillColor = pLetterToCLPolarity(polarity);
+
 }
+
 TracePathTool.isPath = function(trace){
 	var prefix = EllustrateSVG.getPrefix(trace);
 	// console.log(["T", "B"].indexOf(prefix.slice(-1)) != -1);
 	return ["T", "B"].indexOf(prefix.slice(-1)) == -1;
 }
-function detectPolarity(trace){	
+TracePathTool.detectPolarity = function(trace){	
 	var compare;
 	if(TracePathTool.isPath(trace)) compare = trace.style.strokeColor;
 	else compare = trace.style.fillColor;

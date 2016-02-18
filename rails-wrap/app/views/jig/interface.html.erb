@@ -9,6 +9,7 @@
                                                   
   var design = <%= @design %>;
   var designer, sys, zoom, materials, storage, alerter, guide, debug;
+  var search;
   $(function(){
     attachHandlers();
     // dim = new DimensionsPreview($("#sandbox"));
@@ -34,6 +35,7 @@
    
 
     alerter = new Alerter($('#alerter'));
+    search = new TreeSearcher();
     // AUTOSAVE
     // setInterval(function(){ 
     //   hm.save();

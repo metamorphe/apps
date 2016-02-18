@@ -88,7 +88,26 @@ var tool_config = [
 </div>
 
 
+<div id="dev-toolbox" class="toolbox shadowed">
+   <label class="text-shadowed"> DEV TOOLS </label>
+      <div class="btn-group" role="group" aria-label="pen-tools">
+      
+      <%= button_tag :id => "dev-tool-1", :class => "btn btn-ellustrator" do %>
+        <span class="glyphicon glyphicon-backward"></span>
+      <% end %>
 
+      <%= button_tag :id => "dev-tool-2", :class => "btn btn-ellustrator" do %>
+        <span class="glyphicon glyphicon-cog"></span>
+      <% end %>
+
+      <%= button_tag :id => "dev-tool-3", :class => "btn btn-ellustrator" do %>
+         <span class="glyphicon glyphicon-forward"></span>
+      <% end %>   
+      <%= button_tag :id => "dev-tool-4", :class => "btn btn-ellustrator" do %>
+         <span class="glyphicon glyphicon-record"></span>
+      <% end %>
+      </div>
+</div>
   <!-- SELECTION TOOLS -->
    
   <div id="canvas-toolbox" class="toolbox shadowed">
@@ -220,6 +239,14 @@ var tool_config = [
   left: 0px;
   /*calc(34% + 98px + 10px);*/
   width: 200px;
+  z-index: 100000;
+}
+#dev-toolbox {
+  position: absolute;
+  top: 110px;
+  left: 220px;
+  /*calc(34% + 98px + 10px);*/
+  width: 180px;
   z-index: 100000;
 }
 #circuit-toolbox{

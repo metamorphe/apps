@@ -130,6 +130,25 @@ CircuitLayer.prototype = {
 			cp.canvasItem = true;
 			scope.layer.addChild(cp);
 			cp.addChild(layer);
+
+			var trace = layer;
+			console.log("ADDING TO CIRCUIT WITH ENDINGS");
+			var polarity = TracePathTool.detectPolarity(trace);
+
+			var start = new paper.Path.Circle({
+				parent: cp, 
+				name: "C"+ polarity +"T: trace terminal", 
+				radius: trace.style.strokeWidth * 0.6, 
+				fillColor: trace.style.strokeColor, 
+				position: trace.getPointAt(0)
+			});
+			var end = new paper.Path.Circle({
+				parent: cp, 
+				name: "C"+ polarity +"T: trace terminal", 
+				radius: trace.style.strokeWidth * 0.6, 
+				fillColor: trace.style.strokeColor, 
+				position: trace.getPointAt(trace.length)
+			});
 			// scope.layer.addChild(layer);
 			// this.circuit_view();
 		}
@@ -159,6 +178,8 @@ CircuitLayer.prototype = {
 			  	shadowBlur: 0,
 			  	shadowOffset: new paper.Point(0, 0)
 			});
+
+		console.log("CVT", EllustrateSVG.match(this.layer, {prefix: ["CVT", "CGT", "CNT"]}));
 		CircuitLayer.select_and_color_and_code(this.layer, ["CNT", "CGT", "CVT", "CVTB", "CGTB"], 
 			{ fillColor: CircuitLayer.silver, 
 			  dashArray:[], 
