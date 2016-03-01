@@ -198,7 +198,7 @@ EllustrateSVG.prototype = {
 
 
 			if(ARTBOARD.length == 0){
-				console.log("Adding artboard", ARTBOARD);
+				// console.log("Adding artboard", ARTBOARD);
 				artboard = new paper.Group({
 					parent: designer.art_layer.layer,
 					position: paper.view.center,
@@ -232,7 +232,7 @@ EllustrateSVG.prototype = {
 				gtext.point.y += gtext_adj.height + 10;
 				
 			}else{
-				console.log("Using artboard", ARTBOARD);
+				// console.log("Using artboard", ARTBOARD);
 				artboard = ARTBOARD[0];
 				designer.art_layer.layer.addChild(ARTBOARD[0]);
 			
@@ -259,7 +259,7 @@ EllustrateSVG.prototype = {
 				}
 			);
 		// CIRCUIT_LAYER[0].remove();
-		console.log("3º: Add circuit layer to base", CIRCUIT_LAYER);
+		// console.log("3º: Add circuit layer to base", CIRCUIT_LAYER);
 		var COMPONENTS = this.select(
 				{ 
 			  		prefix: ["CP"]
@@ -269,7 +269,7 @@ EllustrateSVG.prototype = {
 		_.each(COMPONENTS, function(el, i, arr){
 			el.canvasItem = true;
 		});
-		console.log("4º: Add components", COMPONENTS);
+		// console.log("4º: Add components", COMPONENTS);
 		
 		designer.circuit_layer.add(COMPONENTS);
 		// $("#path-tool").click();

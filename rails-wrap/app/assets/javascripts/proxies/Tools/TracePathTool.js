@@ -149,9 +149,13 @@ TracePathTool.prototype = {
 			var polarity = valid.polarity;
 
 			if(valid.connection){
-
+				before = trace.getPointAt(0);
+				after = trace.getPointAt(trace.length);
 				trace.simplify();
 				TracePathTool.traceUpdate(trace, polarity);
+				trace.insertSegments(0, [before]);
+				trace.addSegments([after]);
+
 				designer.circuit_layer.add(trace, true);
 	    		if(valid.intersects) valid.intersects.remove();
 	    		trace = null;
@@ -240,7 +244,13 @@ TracePathTool.prototype = {
 			valid = TracePathTool.isValidPath(trace, scope);
 
 			if(valid.connection){
+				before = trace.getPointAt(0);
+				after = trace.getPointAt(trace.length);
 				trace.simplify();
+				TracePathTool.traceUpdate(trace, polarity);
+				trace.insertSegments(0, [before]);
+				trace.addSegments([after]);
+
 				TracePathTool.traceUpdate(trace, polarity);
 				designer.circuit_layer.add(trace, true);
 	    		if(valid.intersects) valid.intersects.remove();
@@ -405,6 +415,53 @@ function highlight(paths, color){
 	paper.view.update();
 }
 
+var wiress;
+TracePathTool.getAllIntersectionsAndInsides = function(path, wires){
+	var intersects = [];
+	var path_bounds = path.bounds;
+	wires = _.reject(wires, function(el, i, arr){
+		return el.id == path.id;
+	});
+	wiress = wires;
+	// console.log("Wires", wires.length, path)
+	for(var i in wires){
+		// console.log(path.id, wires[i].id);
+		var s = path.getIntersections(wires[i]);
+		// console.log(path.id, wires[i].id);
+		// console.log("Comparing", path.id, wires[i].id, s.length)
+
+		if(s.length > 0)
+			intersects.push(s);
+
+		var ins = _.filter(wires, function(el, i, arr){
+			return el.isInside(path.bounds);
+		});
+		if(ins.length > 0)
+			intersects.push(ins);
+	}
+	intersects = _.flatten(intersects);
+	// console.log(path.id, "intersects before", intersects.length, _.map(intersects, function(el){
+	// 	return el._curve2.path.id;
+	// }));
+	
+	intersects = _.unique(intersects, function(el, i, arr){
+		return el._curve2.path.id;
+	})
+	// console.log("intersects after", intersects.length);
+	return intersects;
+} 
+
+
+TracePathTool.getAllInsides = function(path, wires){
+		intersections = _.reduce(wires, function(memo, el){
+	 		var a = path.isInside(el.bounds);
+			if(a) memo.push(el);
+			return memo;
+	 	}, []);
+		return _.flatten(intersections);
+	} 
+
+
 TracePathTool.getAllIntersections = function(path, wires){
 	var intersects = [];
 	for(var i in wires){
@@ -437,6 +494,7 @@ TracePathTool.traceUpdate = function(path_trace, polarity){
 
 TracePathTool.isPath = function(trace){
 	var prefix = EllustrateSVG.getPrefix(trace);
+	// console.log(prefix);
 	// console.log(["T", "B"].indexOf(prefix.slice(-1)) != -1);
 	return ["T", "B"].indexOf(prefix.slice(-1)) == -1;
 }
@@ -448,4 +506,7 @@ TracePathTool.detectPolarity = function(trace){
 	if(compare.equals(CircuitLayer.POSITIVE)) return "V";
 	if(compare.equals(CircuitLayer.NEUTRAL )) return "N";
 	if(compare.equals(CircuitLayer.NEGATIVE)) return "G";
+}
+TracePathTool.readPolarity = function(trace){
+	return trace.name.split(":")[0][1];
 }

@@ -39,5 +39,8 @@
 //= require circuitree/sheet_resistance
 //= require circuitree/HistoryManager
 //= require circuitree/TreeSearcher
+//= require circuitree/Node
+//= require circuitree/GraphUtil
+//= require circuitree/PowerPaths
 #//= require dropzone
 //= require hammer

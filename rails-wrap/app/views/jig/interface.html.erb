@@ -9,7 +9,7 @@
                                                   
   var design = <%= @design %>;
   var designer, sys, zoom, materials, storage, alerter, guide, debug;
-  var search;
+  var graph;
   $(function(){
     attachHandlers();
     // dim = new DimensionsPreview($("#sandbox"));
@@ -26,8 +26,9 @@
     storage = new WebStorage();
     designer = new CircuitDesigner($("#sandbox"));
     hm = new HistoryManager(storage);
-    
-    
+    graph = new Graph();
+    Graph.printIDs();
+
     zoom = new Zoom(designer.paper.view.zoom, designer.paper);
     guide = new FabricationGuide($("#fab-guide"));
     debug = new DebugGuide($("#debug-guide"));
@@ -35,7 +36,6 @@
    
 
     alerter = new Alerter($('#alerter'));
-    search = new TreeSearcher();
     // AUTOSAVE
     // setInterval(function(){ 
     //   hm.save();
