@@ -1,16 +1,3 @@
-function Graph(){
-	this.className = "Graph";
-	this.nodes = [];
-	this.init();
-	this.processTraceIntersections();
-	
-	
-	this.walked = [];
-}
-var dchildren;
-var r;
-
-
 Graph.test = function(){
 	Graph.printIDs();
 	// r = graph.getSourceNode();
@@ -44,11 +31,21 @@ Graph.test = function(){
 	// console.log("R", r.self.id);
 	Graph.printAdjacencyList();
 	// console.log("S", s.self.id);	
-	var s = paper.project.getItem({id: 39}).node;
-	var t = paper.project.getItem({id: 41}).node;
+	var s = paper.project.getItem({id: 48}).node;
+	var t = paper.project.getItem({id: 56}).node;
 
 	console.log("RESULTS:", Graph.printAllPaths(s, t));
 }
+
+function Graph(){
+	this.className = "Graph";
+	this.nodes = [];
+	this.init();
+	this.processTraceIntersections();	
+}
+
+
+
 Graph.prototype = {
 	init: function(){
 		var scope = this;
@@ -94,10 +91,6 @@ Graph.prototype = {
 			
 			el.processed = true;
 			_.each(intersects, function(el2, i2, arr2){
-				// console.log("SET", _.map(conductiveTracesB, function(el){
-				// 	return el.id;
-				// }));
-				
 				var pathIn = el2._curve.path;
 				var pathOut = el2._curve2.path;
 				var offsetA = pathIn.getOffsetOf(el2.point);
@@ -106,12 +99,7 @@ Graph.prototype = {
 				var ids = [pathIn.id, pathOut.id];
 				
 				scope.addNode(new Node(pathIn, position, ids ));
-				// Graph.processIntersection(pathIn, pathOut, el2.point);
 				
-				// conductiveTracesB = EllustrateSVG.match(designer.circuit_layer.layer, { prefix: conductiveTraces });
-				// conductiveTracesB = _.reject(conductiveTracesB, function(el3, i3, arr3){
-					// return el3.self || el3.processed;
-				// });
 			});
 
 			el.self = false;		
@@ -138,128 +126,11 @@ Graph.prototype = {
 		console.log("Node has", children.length, "children.");
 		return children;		
 	},
-	enumeratePaths: function(){
-		var FROM = EllustrateSVG.match( designer.circuit_layer.layer, { prefix: ["CVTB"]})[0].node;	
-		var TO = EllustrateSVG.match( designer.circuit_layer.layer, { prefix: ["CGTB"]})[0].node;	
-		var visited = [];
-		
-		var ptg = new PathToGround([FROM]);
-		var searchable = [{el: FROM, parent_path: ptg}];
-
-		var next = [];
-
-		var level = 0;
-		var paths = {};
-		paths[ptg.id] = ptg;
-		var parent_path = ptg;
-
-		var max_levels = 2;
-		// while(max_levels > 0){
-			
-		while(searchable.length > 0){
-
-			console.log("LEVEL", level);
-			// console.log(level, "Searching through...", searchable.length, "elements.");
-			// console.log("PATHS", paths);
-			_.each(searchable, function(el2, i2, arr2){
-				
-				parent_path = el2.parent_path;
-				el2 = el2.el;
-				el2.visited = true;
-				// console.log("CURRENT", parent_path, el2);
-				var children = el2.getChildren();
-				children = _.reject(children, function(el, i, arr){ return el.visited;});
-				children = _.uniq(children, function(el, i, arr){ return el.id;});
-				
-				// console.log("Element", i2, "has", children.length, "children", "isPath:", TracePathTool.isPath(el2.self));
-				
-				children = _.map(children, function(el, i, arr){
-					// console.log(parent_path);
-					ptg = parent_path.clone();
-					ptg.addNode(el);
-					paths[ptg.id] = ptg;
-					return {el: el, parent_path: ptg}
-				});
-				// console.log("Processed Children", children);
-				if(children.length > 0)
-					delete paths[parent_path.id];
-
-				// PUSH TO BE SEARCHABLE
-				_.each(children, function(el, i, arr){ next.push(el); });				
-				paper.view.update();
-			});
-			_.each(searchable, function(el, i, arr){
-				el.el.self.selected = false;
-			});
-			searchable = next;
-			console.log("SEARCHING", searchable);
-			_.each(searchable, function(el, i, arr){
-				el.el.colorize("blue");
-				// el.el.self.position.x += 20;
-				// el.el.self.position.y += 20;
-				el.el.self.selected = true;
-				console.log("ELEMENT", el.el.self);
-				// debugv["el"] = el.el;
-				// debugv["child"] = el.el.getChildren();
-				console.log("ELEMENTCHI", el.el.getChildren());
-			});
-			next = [];
-			level++;
-			max_levels --;
-		}
-		
-		_.each(this.nodes, function(el, i, arr){
-			el.visited = false;
-		});
-		paths = _.values(paths);
-		var c = new paper.Color("red");
-		var hue = c.hue;
-		_.each(paths, function(el, i, arr){
-			c.clone();
-			hue += 20;
-			c.hue = hue;
-			el.color(c);
-		});
-		return paths;
-	},
 	update: function(){
 		paper.view.update();
 		return this;
 	}
 }
-
-
-	// var children = this.nextNodes(this.visited);
-	// console.log("Children", children.length);
-	// this.markAsVisited(children);
-// IDENTIFY ROOT
-	// var BATTERIES = EllustrateSVG.match( designer.circuit_layer.layer, { prefix: ["CVTB"]});	
-	// var roots =  new TreeCrawl(BATTERIES);
-
-	// // EXTRACT GRAPH
-	// var visited = [];
-	// var next = [];
-// Graph.nextNodes = function(parents){
-// 	var scope = this;
-// 	var conductive = ["CGP", "CVP", "CNP", "CGB", "CVB", "CNB", "CNT", "CGT", "CVT", "CVTB", "CGTB"];
-// 	conductive = EllustrateSVG.match(designer.circuit_layer.layer, { prefix: conductive });
-	
-// 	var children = [];
-// 	_.each(parents, function(el, i, arr){
-// 		var intersects = TracePathTool.getAllIntersections(el, conductive);
-// 		children.push(_.map(intersects, function(el, i, arr){
-// 			var pathOut = el._curve2.path;
-// 			return pathOut;
-// 		}));
-// 	});
-// 	children = _.flatten(children);
-	
-// 	children = _.reject(children, function(el, i, arr){
-// 		return el.visited;
-// 	});
-// 	return children;
-// }
-
 
 
 
