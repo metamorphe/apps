@@ -44,31 +44,10 @@ Graph.test = function(){
 	// console.log("R", r.self.id);
 	Graph.printAdjacencyList();
 	// console.log("S", s.self.id);	
-	var s = paper.project.getItem({id: 72}).node;
-	var t = paper.project.getItem({id: 80}).node;
+	var s = paper.project.getItem({id: 39}).node;
+	var t = paper.project.getItem({id: 41}).node;
 
 	console.log("RESULTS:", Graph.printAllPaths(s, t));
-	// console.log("COUT", cout.join(""));
-	// r = graph.getRootNode();
-	// paths = [];
-	// dchildren = graph.walkFrom(r);
-	
-	// ptg = new PathToGround([r]);
-	// _.each(dchildren, function(el, i, arr){
-	// 	var a = ptg.clone();
-	// 		a.addNode(el);
-	// 		if(i in paths) paths[i].push(a);
-	// 		else paths[i] = [{ptg: a}];
-	// });
-	// console.log(paths);
-
-	// r = dchildren[0];
-	// dchildren = r.getChildren();
-	// ptg = paths[0];
-	// paths[0]
-
-	// dchildren = graph.walkFrom(dchildren[0]);
-	// Graph.colorizeNodes(dchildren, "yellow")
 }
 Graph.prototype = {
 	init: function(){
@@ -89,6 +68,13 @@ Graph.prototype = {
 				el.processed = false;
 				el.self = false;
 				
+			}else{
+				intersects = TracePathTool.getAllIntersectionsAndInsides(el, conductive);
+				intersects = _.map(intersects, function(el, i, arr){
+					return el._curve2.path.id;
+				});
+				intersects.push(el.id);
+				scope.addNode(new Node(el, el.bounds.center, intersects));
 			}
 		});
 		

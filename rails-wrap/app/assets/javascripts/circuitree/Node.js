@@ -3,15 +3,18 @@ function Node(path, position, pathIDs){
 	this.className = "Node";
 
 	var polarity = TracePathTool.readPolarity(path);
+	color = "red"
+	if(path.closed) color = "blue";
 	var c_int = new paper.Path.Circle({
 					parent: path, 
 					name: "C"+ polarity +"T: terminal from fragmentation",
 					position: position,
 					radius: path.style.strokeWidth * 2, 
-					fillColor: path.style.strokeColor, 
+					fillColor: color,//path.style.strokeColor, 
 					polarity: path.polarity,
 					node: this // pointer to self
 				});
+	// console.log(c_int.id);
 	this.self = c_int;
 	this.pathIDs = pathIDs;
 	_.each(this.pathIDs, function(el, i, arr){
@@ -50,6 +53,23 @@ Node.test = function(id){
 		});	
 }
 Node.prototype = {
+	// blob: function(blob, position, terminals){
+	// 	this.self = blob;
+	// 	this.pathIDs = pathIDs;
+	// 	_.each(this.pathIDs, function(el, i, arr){
+	// 		var el = scope.get(el);
+	// 		if(_.isUndefined(el.terminals)) el.terminals = [scope.self.id];
+	// 		else el.terminals.push(scope.self.id);
+	// 	});
+	// 	this.children = [];
+	// 	this.parents = []; 
+	// 	this.childrenComputed = false;
+	// 	this.parentsComputed = false;
+	// 	this.init();
+	// },
+	// path: function(path, position, pathIDs){
+
+	// },
 	init: function(conductive){
 		// this.self.mark = true;
 
@@ -87,21 +107,34 @@ Node.prototype = {
 	getChildren: function(){
 		var scope = this;
 		var children = [];
+		console.log("Looking along path", this.pathIDs);
 		_.each(this.pathIDs, function(el, i, arr){
+
 			var path = scope.get(el);
-			var self_offset = path.getOffsetOf(scope.self.position);
+			// var self_offset = path.getOffsetOf(scope.self.position);
+			var self_offset = path.getNearestPoint(scope.self.position);
+			var self_offset = path.getOffsetOf(self_offset);
 			var terminals = _.reject(path.terminals, function(el2){
 				return el2 == scope.self.id;
 			});
+			
 			// console.log(terminals);
 			var terminal_offsets = _.map(terminals, function(el2){
 				var terminal = scope.get(el2);
+				var offset = path.getNearestPoint(terminal.position);
+				var penalty = offset.getDistance(terminal.position);
+				// console.log("Penalty", penalty )
+				offset = path.getOffsetOf(offset) - penalty;
+
 				return {id: el2, 
-						d_offset: path.getOffsetOf(terminal.position) - self_offset,
+						d_offset: offset - self_offset,
 						};
 			});
+
+			console.log(el, "CANDIDATES", terminal_offsets);
+
 			var childA = _.filter(terminal_offsets, function(el2){
-				return el2.d_offset > 0;
+				return el2.d_offset >= 0;
 			});
 			if(childA.length > 0){
 				childA = _.min(childA, function(el2){ return el2.d_offset});
@@ -109,7 +142,7 @@ Node.prototype = {
 			}
 
 			var childB = _.filter(terminal_offsets, function(el2){
-				return el2.d_offset < 0;
+				return el2.d_offset <= 0;
 			});
 			if(childB.length > 0){
 				childB = _.max(childB, function(el2){ return el2.d_offset});
@@ -117,6 +150,9 @@ Node.prototype = {
 			}
 
 			// console.log(path.id, self_offset, terminal_offsets);
+		});
+		children = _.uniq(children, function(el){
+			return el;
 		});
 		return children;
 		// if(!this.childrenComputed){
