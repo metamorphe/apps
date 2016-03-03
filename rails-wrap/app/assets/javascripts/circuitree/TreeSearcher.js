@@ -1,36 +1,40 @@
 
 var EPSILON = 2;
 Graph.test = function(){
-	Graph.printIDs();
-	
 	// console.log("ROOT:", r.getID(), ", SINK:", s.getID());
 
 	Graph.printAdjacencyList();
 	// console.log("S", s);
-	// r = graph.getSourceNode();
+	
 	// console.log("R", r);
 	
+	r = graph.getSourceNode();
+	s = graph.getSinkNode();
+	s = Node.get(s).path.terminals[0];
+	r = Node.get(r).path.terminals[0];
+	console.log(r, s);
+	r = paper.project.getItem({id: r}).node;
+	s = paper.project.getItem({id: s}).node;
 
-	// s = graph.getSinkNode();
-// 	r = paper.project.getItem({id: 55}).node;
-// 	s = paper.project.getItem({id: 70}).node;
+	results = Graph.printAllPaths(r, s);
+	console.log("RESULTS:", results);
 
-// 	results = Graph.printAllPaths(r, s);
-// 	console.log("RESULTS:", results);
-// 	var color = new paper.Color("red");
-// 	hue = 0;
 
-// 	ptgs = _.map(results, function(el, i, arr){
-// 		// if(i != 4) return;
-// 		// console.log(el);
-// 		myColor = color.clone();
-// 		myColor.hue = hue;
-// 		var ptg = new PathToGround(el, myColor);
-// 		hue += 20;
-// 		return ptg;
-// 	});
-// 	min = _.min(ptgs, function(ptg){ return ptg.length;});
-// 	paper.project.addChild(min.solution);
+	var color = new paper.Color("red");
+	hue = 0;
+
+	ptgs = _.map(results, function(el, i, arr){
+		// if(i != 4) return;
+		// console.log(el);
+		myColor = color.clone();
+		myColor.hue = hue;
+		var ptg = new PathToGround(el, myColor);
+		hue += 20;
+		return ptg;
+	});
+	sorted = _.sortBy(ptgs, function(ptg){ return ptg.length;});
+	paper.project.addChild(sorted[0].solution);
+	paper.project.addChild(sorted[1].solution);
 }
 
 function Graph(){
@@ -40,15 +44,6 @@ function Graph(){
 	this.breakUpIntersections();
 	this.generateBlobPaths();
 	this.processEnds();
-
-	// var path33 = Node.get(33);
-	// this.splitPathAtOffsets(path33, [50]);
-	// splitPathAtOffsets: function(path, offsets){
-	
-
-	// this.processTraceIntersections();	
-	// this.processEnds();
-
 }
 
 
@@ -66,12 +61,12 @@ Graph.prototype = {
 				var start = trace.getPointAt(0).clone();
 				var end = trace.getPointAt(trace.length).clone();
 				
-				n = new Node(trace, start);
+				n = new Node([trace], start);
 				nodes.push(n);
 				scope.addNode(n);
 				// console.log("NODE", n.self.id);
 
-				n = new Node(trace, end);
+				n = new Node([trace], end);
 				nodes.push(n);
 				scope.addNode(n);
 				// console.log("NODE", n.self.id);
@@ -88,28 +83,146 @@ Graph.prototype = {
 			// var edges = TracePathTool.getAllIntersections(nodeC, compare);
 			// edges = _.map(edges, function(edge, i, arr){ return edge._curve2.path.id});
 			// var pathID = nodeC.parent.id;
+			
+			terminals = _.reduce(nodeC.paths, function(memo, path){
+				memo.push(path.terminals);
+				return memo;
+			}, []);
+			terminals = _.flatten(terminals);
 
-			pathBrother = _.reject(nodeC.path.terminals, function(term){
+			pathBrother = _.reject(terminals, function(term){
 				return nodeC.id == term;
 			});
 			edges = _.flatten([pathBrother, edges]);
 			// console.log(nodeC.id, "EDGES", edges);
 			nodeC.node.setChildren(_.uniq(edges));
 		});
-		// CONSOLIDATE nodes
-		
 
+		// IDENTIFY CLUSTER NODES
+		console.log("CLUSTERS");
+		groups = _.map(nodes, function(node, i, arr){
+			var nodeC = node.self;
+			var edges = scope.getNodeIntersections(node.self.id);
+			edges.push(nodeC.id);
+			edges = _.sortBy(edges);
+			// console.log(edges);
+			return edges;
+		});
+
+		groups = _.groupBy(groups);
+		// groups = 
+		_.each(groups, function(value, key){
+			var ids = key.split(",");
+			for(var i in ids) ids[i] = parseInt(ids[i]);
+			// return ids;
+		});
+
+		groups2 = {};
+		var getOverlaps = function(i, keys){
+			return _.filter(keys, function(el){
+				if(el == i) return;
+				a = el.split(',');
+				b = i.split(',');
+				return _.intersection(a, b).length > 3;
+			});
+		}
+		var keys = _.keys(groups);
+		for(var key in groups){
+			overlaps = getOverlaps(key, keys);
+			// console.log(overlaps);
+			if(overlaps.length > 0){
+				var key = _.reduce(overlaps, function(memo, overlap){
+					return _.intersection(memo, overlap.split(','));
+				}, key.split(','))
+				groups2[key.join(',')] = true;
+			}
+			else if(key.split(',').length > 3){
+				groups2[key] = true;
+			}
+		}
+		groups2 = _.map(_.keys(groups2), function(key){
+			return _.map(key.split(','), function(el){
+				return parseInt(el);
+			});
+		});
+		console.log(groups2);
+		// while(Object.size(groups) > 0){
+		// 	var keys =_.keys(groups);
+		// 	var key = keys[0];
+
+		// 	groups2[key] = [groups[key]]
+		// 	for(var i in keys){
+		// 		if(i == 0) continue;
+		// 		key2 = keys[i];
+		// 		// console.log(key, key2, _.intersection(groups[key2], groups[key]));
+		// 			if(_.intersection(groups[key2], groups[key]).length >= 3){
+		// 				groups2[key].push(groups[key2]);
+		// 				delete groups[key2];
+		// 			}
+		// 	}
+		// 	delete groups[key];
+		// }
+		// console.log(groups2);
+
+		
+		// groups = _.filter(groups, function(el){
+		// 	return el.length >= 3;
+		// });
+		// groups = _.each(groups, function(el){
+		// 	console.log(el);
+		// });
+
+		// type = {}
+		// console.log(groups);
+
+		console.log("END CLUSTERS");
+
+
+
+		// // CONSOLIDATE nodes
+		_.each(groups2, function(g, i, arr){
+			// if(i > 2) return;
+			
+			console.log(g);
+			// console.log(i.split(","));
+			test = Node.join(g);
+			n = new Node(test.paths, test.position);
+			nodes.push(n);
+			console.log(g, "-->", n.id);
+			
+			scope.addNode(n);
+			
+
+			test.children.push(n.id);
+			_.each(test.children, function(child, i, arr){
+				// console.log("HMM", child, n.id);
+				var x = Node.get(child).node;
+				// console.log(n.id);
+				x.children.push(n.id);
+			});
+			scope.removeNodes(g);
+			n.setChildren(test.children);
+
+		});
+
+		// console.log("NODE", n.self.id);
+	},
+	removeNodes: function(removeThese){
+		this.nodes = _.reject(this.nodes, function(node){
+			
+			var marked = removeThese.indexOf(node.id) > -1
+			if(marked){
+				// console.log("DELETING", node.id)
+				node.self.remove();
+			}
+			return marked;
+		});
 	},
 	getNodeIntersections: function(nodeID){
 		var nodePath = Node.get(nodeID);
 		var nodeCs = paper.project.getItems({is_node: true});
 		nodeCs = _.reject(nodeCs, function(n){ return n.id == nodeID});
-		
-		// var edges = TracePathTool.getAllIntersections(nodePath, compare);
-		// var inners = TracePathTool.getAllInsides(nodePath, compare);
-		
-
-		// Node.get(80).position.isInside(Node.get(84).bounds)
+	
 
 		inside = _.filter(nodeCs, function(el, i, arr){
 			return nodePath.position.isInside(el.bounds);
@@ -121,14 +234,11 @@ Graph.prototype = {
 			return el.id;
 		});
 
-		// edges = _.map(edges, function(edge, i, arr){ return edge._curve2.path.id});
-		// console.log(edges, inners);
-		// console.log(inside, nodeCs);
 		return inside;
 	},
 	generateBlobPaths: function(){
 		var scope = this;
-		var blobs = ["CGB", "CVB", "CNB", "CNTB", "CVTB", "CGTB"];
+		var blobs = ["CGB", "CVB", "CNB", "CGT", "CVT", "CNT", "CNTB", "CVTB", "CGTB"];
 		blobs = EllustrateSVG.match(designer.circuit_layer.layer, { prefix: blobs });
 		// console.log("Blob count", blobs.length);
 		var traces = ["CGP", "CVP", "CNP"];		
@@ -145,7 +255,7 @@ Graph.prototype = {
 					name: "TMP: temporary",
 					segments: [blob.position.clone(), near], 
 					strokeColor: "yellow", 
-					strokeWidth: 3,
+					strokeWidth: 4,
 					terminal_helper: true
 				});
 				blob.path = path;

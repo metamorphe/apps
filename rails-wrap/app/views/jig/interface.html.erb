@@ -27,7 +27,9 @@
     designer = new CircuitDesigner($("#sandbox"));
     hm = new HistoryManager(storage);
     graph = new Graph();
-    Graph.test();
+    // Graph.test();
+    Graph.printIDs();
+  
 
     zoom = new Zoom(designer.paper.view.zoom, designer.paper);
     guide = new FabricationGuide($("#fab-guide"));
