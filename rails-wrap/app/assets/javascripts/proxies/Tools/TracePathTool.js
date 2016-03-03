@@ -276,7 +276,7 @@ TracePathTool.isValidPath = function(trace, scope){
 	_.each(intersects, function(el, i, arr){
 		var c = new paper.Path.Circle({
 			position: el.point,
-			radius: el.path.strokeWidth * 1.1, 
+			radius: el.path.strokeWidth / 2.0, 
 			fillColor: el._curve2.path.style.strokeColor
 		});
 		c.remove();
@@ -465,7 +465,16 @@ TracePathTool.getAllInsides = function(path, wires){
 TracePathTool.getAllIntersections = function(path, wires){
 	var intersects = [];
 	for(var i in wires){
+		// console.log(path.id, wires[i].id);
+		// if you share a common parent, then continue
+
+		if(path.parent.id == wires[i].parent.id)
+			continue;
 		var s = path.getIntersections(wires[i]);
+		// console.log(path.id, wires[i].id, s.length);
+
+
+		// console.log("INTERSECTS", s);
 		if(s.length > 0)
 			intersects.push(s);
 	}

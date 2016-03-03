@@ -8,6 +8,7 @@ function CircuitDesigner(container){
 	sr_model = new SheetResistanceModel(10);
 	this.paper = paper;
 	this.container = container;
+	this.temp = null;
 	this.init();
 	this.makeLayers();
 
@@ -16,6 +17,7 @@ function CircuitDesigner(container){
 	var self = this;
 	this.animation_handler = new AnimationHandler(paper);
 	this.state = {};
+
 }
 var visiting = [];
 // mm base
@@ -117,6 +119,12 @@ CircuitDesigner.prototype = {
 	}, 
 	clearForSave: function(){
 		this.state.tool = this.toolbox.clearTool();
+		this.temp = getTerminalHelpers();
+		this.temp = _.map(this.temp, function(el, i, arr){
+			var e = {parent: el.parent, el: el}
+			el.remove();
+			return e;
+		});
 		this.circuit_layer.legend.remove();		
 	}, 
 	svg: function(){
@@ -132,6 +140,7 @@ CircuitDesigner.prototype = {
 		zoom = 1;
 
 		paper.view.update();
+
 		exp = paper.project.exportSVG({ 
 			asString: true,
 			precision: 5
@@ -146,8 +155,18 @@ CircuitDesigner.prototype = {
 			this.state.tool.dom.addClass('btn-warning').removeClass('btn-ellustrate');
 			this.toolbox.reenable(this.state.tool.name);
 		}
+		if(!_.isNull(this.temp)){
+			_.each(this.temp, function(el, i, arr){
+				el.parent.addChild(el.el);
+			});
+			this.temp = null;
+		}
+
 		this.paper.view.update();
 	}
+}
+var getTerminalHelpers = function(){
+	return paper.project.getItems({terminal_helper: true});
 }
                  
 var test; 
