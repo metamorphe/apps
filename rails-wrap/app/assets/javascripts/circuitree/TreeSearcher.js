@@ -59,6 +59,16 @@ function Graph(){
 
 var intersectionNodes = [];
 Graph.prototype = {
+	enable: function(){
+		_.each(this.nodes, function(node){
+			node.enable();
+		});
+	},
+	disable: function(){
+		_.each(this.nodes, function(node){
+			node.disable();
+		});
+	},
 	processEnds: function(){
 		var scope = this;
 
@@ -109,7 +119,7 @@ Graph.prototype = {
 		});
 
 		// IDENTIFY CLUSTER NODES
-		console.log("CLUSTERS");
+		// console.log("CLUSTERS");
 		groups = _.map(nodes, function(node, i, arr){
 			var nodeC = node.self;
 			var edges = scope.getNodeIntersections(node.self.id);
@@ -155,36 +165,6 @@ Graph.prototype = {
 				return parseInt(el);
 			});
 		});
-		console.log(groups2);
-		// while(Object.size(groups) > 0){
-		// 	var keys =_.keys(groups);
-		// 	var key = keys[0];
-
-		// 	groups2[key] = [groups[key]]
-		// 	for(var i in keys){
-		// 		if(i == 0) continue;
-		// 		key2 = keys[i];
-		// 		// console.log(key, key2, _.intersection(groups[key2], groups[key]));
-		// 			if(_.intersection(groups[key2], groups[key]).length >= 3){
-		// 				groups2[key].push(groups[key2]);
-		// 				delete groups[key2];
-		// 			}
-		// 	}
-		// 	delete groups[key];
-		// }
-		// console.log(groups2);
-
-		
-		// groups = _.filter(groups, function(el){
-		// 	return el.length >= 3;
-		// });
-		// groups = _.each(groups, function(el){
-		// 	console.log(el);
-		// });
-
-		// type = {}
-		// console.log(groups);
-
 		console.log("END CLUSTERS");
 
 
@@ -193,12 +173,12 @@ Graph.prototype = {
 		_.each(groups2, function(g, i, arr){
 			// if(i > 2) return;
 			
-			console.log(g);
+			// console.log(g);
 			// console.log(i.split(","));
 			test = Node.join(g);
 			n = new Node(test.paths, test.position);
 			nodes.push(n);
-			console.log(g, "-->", n.id);
+			// console.log(g, "-->", n.id);
 			
 			scope.addNode(n);
 			
@@ -257,7 +237,7 @@ Graph.prototype = {
 		_.each(blobs, function(blob, i, arr){
 			
 			intersects = TracePathTool.getAllIntersections(blob, traces);
-			console.log(blob.id, intersects);
+			// console.log(blob.id, intersects);
 			_.each(intersects, function(its){
 				// var point = its.point;
 				var near = its._curve2.path.getNearestPoint(blob.position);

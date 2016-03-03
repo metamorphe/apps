@@ -4,6 +4,7 @@ function Node(paths, position){
 	this.paths = paths;
 	var polarity = TracePathTool.readPolarity(paths[0]);
 	// console.log("I am here");
+	this.parent = paths[0].parent;
 	var c_int = new paper.Path.Circle({
 					parent: paths[0].parent, 
 					paths: paths,
@@ -30,7 +31,7 @@ function Node(paths, position){
 
 Node.join = function(nodes){
 	var nodeIDs = nodes;
-	console.log(nodeIDs);
+	// console.log(nodeIDs);
 	nodes = _.map(nodes, function(node){
 		// console.log("JOIN", node)
 		return Node.get(node).node;
@@ -95,6 +96,12 @@ Node.get = function(id){
 		return paper.project.getItem({id: id});
 	}
 Node.prototype = {
+	disable: function(){
+		this.self.remove();
+	},
+	enable: function(){
+		this.parent.addChild(this.self);
+	},
 	setChildren: function(children){
 		this.children = children;
 	},
