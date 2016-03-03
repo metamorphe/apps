@@ -33,8 +33,18 @@ Graph.test = function(){
 		return ptg;
 	});
 	sorted = _.sortBy(ptgs, function(ptg){ return ptg.length;});
-	paper.project.addChild(sorted[0].solution);
-	paper.project.addChild(sorted[1].solution);
+	console.log("SOLUTIONS", sorted.length);
+
+	sorted = _.uniq(ptgs, function(ptg){ 
+		console.log((ptg.length / 20).toFixed(0));
+		return (ptg.length / 20).toFixed(0);
+	});
+	console.log("THRESHOLD SOLUTIONS", sorted.length);
+	_.each(sorted, function(el){
+		paper.project.addChild(el.solution);
+		paper.project.addChild(el.solution);
+	});
+
 }
 
 function Graph(){
@@ -240,14 +250,14 @@ Graph.prototype = {
 		var scope = this;
 		var blobs = ["CGB", "CVB", "CNB", "CGT", "CVT", "CNT", "CNTB", "CVTB", "CGTB"];
 		blobs = EllustrateSVG.match(designer.circuit_layer.layer, { prefix: blobs });
-		// console.log("Blob count", blobs.length);
+		console.log("Blob count", blobs.length);
 		var traces = ["CGP", "CVP", "CNP"];		
 		traces = EllustrateSVG.match(designer.circuit_layer.layer, { prefix: traces });
 		
 		_.each(blobs, function(blob, i, arr){
 			
 			intersects = TracePathTool.getAllIntersections(blob, traces);
-			// console.log(blob.id, intersects);
+			console.log(blob.id, intersects);
 			_.each(intersects, function(its){
 				// var point = its.point;
 				var near = its._curve2.path.getNearestPoint(blob.position);
@@ -286,20 +296,11 @@ Graph.prototype = {
 				var offsetA = pathIn.getOffsetOf(pointA);
 				var pointB = pathOut.getNearestPoint(point);
 				var offsetB = pathOut.getOffsetOf(pointB);
-				// console.log(pathIn.id, pathOut.id, offsetA, offsetB, el2);
 
 				if(offsetA && scope.isValidSplitLocation(pathIn, offsetA))
 					cuts.push({point: point.clone(), path: pathIn.id, offset: offsetA});
 				if(offsetB && scope.isValidSplitLocation(pathOut, offsetB))
 					cuts.push({point: point.clone(), path: pathOut.id, offset: offsetB});
-				// console.log("EXIT");
-				// var position = pathIn.getPointAt(offsetA).clone();
-				// var ids = [pathIn.id, pathOut.id];
-				
-				// // valid = scope.isValidNodeLocation(position);
-				// // if(valid)
-				// 	scope.addNode(new Node(pathIn, position, ids ));
-				// console.log(valid);
 					
 			});
 			el.self = false;		
@@ -312,9 +313,10 @@ Graph.prototype = {
 		// CUT IT OPEN
 		_.each(cuts, function(el, pathID, arr){
 			var pathID = parseInt(pathID);
-			var offsets = _.pluck(el, "offset");
-			scope.splitPathAtOffsets(Node.get(pathID), offsets);
+			var offsets = _.sortBy(_.pluck(el, "offset"));
 			// console.log(pathID, offsets)
+			scope.splitPathAtOffsets(Node.get(pathID), offsets);
+			
 		});
 
 		// console.log("CUTS", cuts);
@@ -330,15 +332,17 @@ Graph.prototype = {
 			return scope.isValidSplitLocation(path, e);
 		});
 		offsets = _.uniq(offsets);
-		// console.log('Slicing', path.id, "@", offsets);
+		// console.log('Slicing', path.id, "@", offsets, path.length);
 
 		var cut = 0;
 		var newPath = path;
 		var created = [];
+
 		_.each(offsets, function(offset){
+			// console.log(offset, offset - cut);
 			newPath = newPath.split(offset - cut);
 			created.push(newPath.id);
-			cut += offset;
+			cut += (offset - cut);
 		});
 		// console.log("Created:", created);
 		return;
