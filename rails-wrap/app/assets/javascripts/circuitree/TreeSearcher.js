@@ -1,5 +1,6 @@
 
 var EPSILON = 2;
+solutions = null;
 Graph.test = function(){
 	// console.log("ROOT:", r.getID(), ", SINK:", s.getID());
 
@@ -28,7 +29,7 @@ Graph.test = function(){
 		// console.log(el);
 		myColor = color.clone();
 		myColor.hue = hue;
-		var ptg = new PathToGround(el, myColor);
+		var ptg = new EllustratePath(el, myColor);
 		hue += 20;
 		return ptg;
 	});
@@ -44,7 +45,7 @@ Graph.test = function(){
 		paper.project.addChild(el.solution);
 		paper.project.addChild(el.solution);
 	});
-
+	solutions = sorted;
 }
 
 function Graph(){

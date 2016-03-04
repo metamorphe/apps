@@ -2,6 +2,10 @@ var GETN = function(id){
 	return paper.project.getItem({id: id});
 }
 
+Graph.colorPath = function(){
+	
+}
+
 // GraphUtil.js
 
 Graph.colorizeNodes = function(nodes, color){

@@ -7,13 +7,63 @@ $(function() {
 </script>
 
 <div id="debug-guide" class="guide-container col-xs-3 pull-right">
-    <label class="text-shadowed"> DEBUG </label>
+    <!-- <label class="text-shadowed"> DEBUG </label> -->
     <div id="debugger">
       <ul class="list-group">
 
       <li class="list-group-item">
-        <p class="title"> Continuity Check </p>
-        <p>
+        <div class="row">
+          <div class="col-xs-2">
+            <div class="btn-group">
+                <span class="list-check glyphicon glyphicon-check"></span>
+            </div>
+          </div>
+          <div class="col-xs-10 text-center">
+            <p class="title"> BRANCH 1 </p>
+          </div>
+       </div>
+       <div class="row">
+        <!-- STEPS -->
+        <ul class="h2 list-group">
+          <li class="list-group-item"> 
+           <div class="row">
+             <div class="col-xs-2">
+            <div class="btn-group">
+                <span class="list-check glyphicon glyphicon-check"></span>
+            </div>
+          </div>
+          <div class="col-xs-10 text-center">
+            <p class="title"> INK THE TRACES </p>
+          </div>
+           </div>
+         </li>
+
+         <li class="list-group-item"> 
+           <div class="row">
+             <div class="col-xs-2">
+            <div class="btn-group">
+                <span class="list-check glyphicon glyphicon-unchecked"></span>
+            </div>
+          </div>
+          <div class="col-xs-10 text-center">
+            <p class="title"> WAIT _ SECONDS </p>
+          </div>
+           </div>
+         </li>
+
+        </ul>
+      </div>
+        <!-- END SUBSTEPS -->
+       
+      </li>
+
+    </ul>  
+  </div>
+</div>
+
+
+<!-- 
+  <p>
           Set your multimeter to continuity mode. 
         <p>
         <p>
@@ -21,16 +71,9 @@ $(function() {
         </p>
         <p>
           Is it continuous?
-        </p>
-        <div class="pull-right btn-group">
-          <button class="btn btn-sm btn-success"><span class="glyphicon glyphicon-arrow-right"></span></button>
-          <!-- <button class="btn btn-sm btn-danger"><span class="glyphicon glyphicon-remove"></span></button> -->
-        </div>
+        </p> -->
 
-      </li>
-
-      </ul>
-      <div id="confirm">
+<!-- <div id="confirm">
         <p>
           Has your LED#1 turned on?
         </p>
@@ -38,14 +81,7 @@ $(function() {
           <button class="exit btn btn-sm btn-success">
             <span class="glyphicon glyphicon-ok"></span>
           </button>
-          <!-- <button class="btn btn-sm btn-danger"><span class="glyphicon glyphicon-remove"></span></button> -->
+          <button class="btn btn-sm btn-danger"><span class="glyphicon glyphicon-remove"></span></button>
         </div>
       </div>
-    </div>
-  </div>
-
-
-
-  
-
-
+    </div> -->

@@ -1,7 +1,7 @@
 
 function DebugGuide(dom){
 	this.dom = dom;
-	// this.hide();
+	this.hide();
 }
 
 DebugGuide.prototype = {

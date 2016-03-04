@@ -10,7 +10,33 @@
   var design = <%= @design %>;
   var designer, sys, zoom, materials, storage, alerter, guide, debug;
   var graph;
+
+
+  var modes = {
+    // edit: "rgb(207, 244, 255)", 
+    edit: {color: "rgb(92, 184, 92)", dom: '#add-library, #dev-toolbox, #system-messages, #history-bar, #artwork-toolbox, #canvas-toolbox, #big-undo, #clear-canvas-and-history,  #circuit-toolbox'}, 
+    validate: {color:"rgb(66, 139, 202)", dom: '#debug-guide'}, 
+    make: {color:"rgb(217, 83, 79)", dom: '#fab-guide'}
+  };
+
+  var current_mode = "edit";
+  function modify(){
+    $('#make-design, #validate-design, #edit-design').click(function(){
+      var mode = $(this).attr('data-mode');
+      $('#interface-container').css("background", modes[mode].color);
+      for(var i in modes){
+        if(i == mode){
+          $(modes[i].dom).show();
+        }else{
+          $(modes[i].dom).hide();
+        }
+      }
+      current_mode = mode;
+    });
+    $('#edit-design').click();
+  }
   $(function(){
+    modify();
     attachHandlers();
     // dim = new DimensionsPreview($("#sandbox"));
     // dim.dom.css({
