@@ -1,54 +1,3 @@
-<script type="text/javascript">
-// CANVAS - TRANSFORM, PAN, CANVAS_PAN
-var tool_config = [
-  {
-    name: "anchortool",
-    dom: "anchor-tool",
-    js: "AnchorPointTool"
-  },
-  {
-    name: "pathtool",
-    dom: "path-tool",
-    js: "TracePathTool"
-  },
-  {
-    name: "transformtool",
-    dom: "transform-tool",
-    js: "TransformTool2"
-  },
-  // {
-  //   name: "pantool",
-  //   dom: "pan-tool",
-  //   js: "PanTool"
-  // },
-  {
-    name: "canvaspantool",
-    dom: "canvas-pan-tool",
-    js: "CanvasPanTool"
-  }
-  // ,
-  // {
-  //   name: "runtool",
-  //   dom: "run-tool",
-  //   js: "RunTool"
-  // },
-  // {
-  //   name: "debugtool",
-  //   dom: "debug-tool",
-  //   js: "DebugTool"
-  // },
-  // {
-  //   name: "fabtool",
-  //   dom: "fab-tool",
-  //   js: "FabTool"
-  // },
-  // {
-  //   name: "ohmtool",
-  //   dom: "ohm-tool",
-  //   js: "OhmTool"
-  // }
-];
-</script>
 
 <div id="artwork-toolbox" class="toolbox shadowed">
    <label class="text-shadowed"> ARTWORK </label>
@@ -88,7 +37,37 @@ var tool_config = [
 </div>
 
 
+<div id="dev-toolbox" class="toolbox shadowed">
+   <label class="text-shadowed"> DEV TOOLS </label>
+      <div class="btn-group" role="group" aria-label="pen-tools">
+      
+      <%= button_tag :id => "dev-tool-1", :class => "btn btn-ellustrator" do %>
+        <span class="glyphicon glyphicon-backward"></span>
+      <% end %>
 
+      <%= button_tag :id => "dev-tool-2", :class => "btn btn-ellustrator" do %>
+        <span class="glyphicon glyphicon-cog"></span>
+      <% end %>
+
+      <%= button_tag :id => "dev-tool-3", :class => "btn btn-ellustrator" do %>
+         <span class="glyphicon glyphicon-forward"></span>
+      <% end %>   
+      <%= button_tag :id => "dev-tool-4", :class => "btn btn-ellustrator" do %>
+         <span class="glyphicon glyphicon-record"></span>
+      <% end %>
+      </div>
+      <div class='btn-group'>
+      <%= button_tag :id=>"zoom-out", :class=>"btn btn-md btn-ellustrator" do %>
+          <span class="glyphicon glyphicon-zoom-out"></span>
+        <% end %>
+
+          
+        
+        <%= button_tag :id=>"zoom-in", :class=>"btn btn-md btn-ellustrator" do %>
+            <span class="glyphicon glyphicon-zoom-in"></span>
+        <% end %>
+    </div>
+</div>
   <!-- SELECTION TOOLS -->
    
   <div id="canvas-toolbox" class="toolbox shadowed">
@@ -118,15 +97,7 @@ var tool_config = [
           <span class="icon-homing"></span>
         <% end %>
       
-        <% button_tag :id=>"zoom-out", :class=>"btn btn-md btn-ellustrator" do %>
-          <span class="glyphicon glyphicon-zoom-out"></span>
-        <% end %>
-
-          
         
-        <% button_tag :id=>"zoom-in", :class=>"btn btn-md btn-ellustrator" do %>
-            <span class="glyphicon glyphicon-zoom-in"></span>
-        <% end %>
       
       </div>
       <%= button_tag :id=>"scale", :class=>"btn btn-md btn-ellustrator" do %>
@@ -222,6 +193,14 @@ var tool_config = [
   width: 200px;
   z-index: 100000;
 }
+#dev-toolbox {
+  position: absolute;
+  top: 110px;
+  left: 220px;
+  /*calc(34% + 98px + 10px);*/
+  width: 270px;
+  z-index: 100000;
+}
 #circuit-toolbox{
   position: absolute;
   top: 170px;
@@ -297,4 +276,55 @@ var tool_config = [
     cursor: pointer;
   }
 </style> 
+<script type="text/javascript">
+// CANVAS - TRANSFORM, PAN, CANVAS_PAN
+var tool_config = [
+  {
+    name: "anchortool",
+    dom: "anchor-tool",
+    js: "AnchorPointTool"
+  },
+  {
+    name: "pathtool",
+    dom: "path-tool",
+    js: "TracePathTool"
+  },
+  {
+    name: "transformtool",
+    dom: "transform-tool",
+    js: "TransformTool2"
+  },
+  // {
+  //   name: "pantool",
+  //   dom: "pan-tool",
+  //   js: "PanTool"
+  // },
+  {
+    name: "canvaspantool",
+    dom: "canvas-pan-tool",
+    js: "CanvasPanTool"
+  }
+  // ,
+  // {
+  //   name: "runtool",
+  //   dom: "run-tool",
+  //   js: "RunTool"
+  // },
+  // {
+  //   name: "debugtool",
+  //   dom: "debug-tool",
+  //   js: "DebugTool"
+  // },
+  // {
+  //   name: "fabtool",
+  //   dom: "fab-tool",
+  //   js: "FabTool"
+  // },
+  // {
+  //   name: "ohmtool",
+  //   dom: "ohm-tool",
+  //   js: "OhmTool"
+  // }
+];
+</script>
 

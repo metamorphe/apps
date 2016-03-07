@@ -149,9 +149,13 @@ TracePathTool.prototype = {
 			var polarity = valid.polarity;
 
 			if(valid.connection){
-
+				before = trace.getPointAt(0);
+				after = trace.getPointAt(trace.length);
 				trace.simplify();
 				TracePathTool.traceUpdate(trace, polarity);
+				trace.insertSegments(0, [before]);
+				trace.addSegments([after]);
+
 				designer.circuit_layer.add(trace, true);
 	    		if(valid.intersects) valid.intersects.remove();
 	    		trace = null;
@@ -174,7 +178,7 @@ TracePathTool.prototype = {
 
 	    	trace.add(event.point);
 
-	    	var polarity = detectPolarity(trace);
+	    	var polarity = TracePathTool.detectPolarity(trace);
 
 	    	var terminals = ["C"+ polarity +"T"];
 			terminals = EllustrateSVG.match(designer.circuit_layer.layer, { prefix: terminals });
@@ -225,7 +229,7 @@ TracePathTool.prototype = {
 		}, 
 		onMouseUp: function(event, scope){
 			if(_.isNull(trace)) return;
-			var polarity = detectPolarity(trace);
+			var polarity = TracePathTool.detectPolarity(trace);
 
 		
 
@@ -240,7 +244,13 @@ TracePathTool.prototype = {
 			valid = TracePathTool.isValidPath(trace, scope);
 
 			if(valid.connection){
+				before = trace.getPointAt(0);
+				after = trace.getPointAt(trace.length);
 				trace.simplify();
+				TracePathTool.traceUpdate(trace, polarity);
+				trace.insertSegments(0, [before]);
+				trace.addSegments([after]);
+
 				TracePathTool.traceUpdate(trace, polarity);
 				designer.circuit_layer.add(trace, true);
 	    		if(valid.intersects) valid.intersects.remove();
@@ -253,7 +263,7 @@ TracePathTool.prototype = {
 }
 
 TracePathTool.isValidPath = function(trace, scope){
-	var polarity = detectPolarity(trace);
+	var polarity = TracePathTool.detectPolarity(trace);
 
 	// GET ALL CONDUCTIVE offending_elements (paths, blobs, )
 	var conductive = ["CGP", "CNP", "CVP", "CGB", "CVB", "CNB", "CVTB", "CGTB"];
@@ -266,7 +276,7 @@ TracePathTool.isValidPath = function(trace, scope){
 	_.each(intersects, function(el, i, arr){
 		var c = new paper.Path.Circle({
 			position: el.point,
-			radius: el.path.strokeWidth * 1.1, 
+			radius: el.path.strokeWidth / 2.0, 
 			fillColor: el._curve2.path.style.strokeColor
 		});
 		c.remove();
@@ -324,7 +334,7 @@ TracePathTool.shortDetection = function(trace, intersects, polarity){
 
 		// For each IntersectedPath 
 		var int_path = el._curve2.path;
-		var pol_int_path = detectPolarity(int_path);
+		var pol_int_path = TracePathTool.detectPolarity(int_path);
 
 		if(polarity == "N" || pol_int_path == "N"){
 			if(pol_int_path == "G") g_count ++;
@@ -405,10 +415,66 @@ function highlight(paths, color){
 	paper.view.update();
 }
 
+var wiress;
+TracePathTool.getAllIntersectionsAndInsides = function(path, wires){
+	var intersects = [];
+	var path_bounds = path.bounds;
+	wires = _.reject(wires, function(el, i, arr){
+		return el.id == path.id;
+	});
+	wiress = wires;
+	// console.log("Wires", wires.length, path)
+	for(var i in wires){
+		// console.log(path.id, wires[i].id);
+		var s = path.getIntersections(wires[i]);
+		// console.log(path.id, wires[i].id);
+		// console.log("Comparing", path.id, wires[i].id, s.length)
+
+		if(s.length > 0)
+			intersects.push(s);
+
+		var ins = _.filter(wires, function(el, i, arr){
+			return el.isInside(path.bounds);
+		});
+		if(ins.length > 0)
+			intersects.push(ins);
+	}
+	intersects = _.flatten(intersects);
+	// console.log(path.id, "intersects before", intersects.length, _.map(intersects, function(el){
+	// 	return el._curve2.path.id;
+	// }));
+	
+	intersects = _.unique(intersects, function(el, i, arr){
+		return el._curve2.path.id;
+	})
+	// console.log("intersects after", intersects.length);
+	return intersects;
+} 
+
+
+TracePathTool.getAllInsides = function(path, wires){
+		intersections = _.reduce(wires, function(memo, el){
+	 		var a = path.isInside(el.bounds);
+			if(a) memo.push(el);
+			return memo;
+	 	}, []);
+		return _.flatten(intersections);
+	} 
+
+
 TracePathTool.getAllIntersections = function(path, wires){
 	var intersects = [];
 	for(var i in wires){
+		// console.log(path.id, wires[i].id);
+		// if you share a common parent, then continue
+
+		if(path.parent.id == wires[i].parent.id)
+			continue;
 		var s = path.getIntersections(wires[i]);
+		// console.log(path.id, wires[i].id, s.length);
+
+
+		// console.log("INTERSECTS", s);
 		if(s.length > 0)
 			intersects.push(s);
 	}
@@ -423,19 +489,25 @@ function pLetterToCLPolarity(char){
 		return CircuitLayer.NEGATIVE; 
 }
 
+
+// TRACE UPDATE LOGIC
 TracePathTool.traceUpdate = function(path_trace, polarity){
+
 	if(_.isNull(path_trace)) return;
 	path_trace.name = "C" + polarity + "P: trace";
 	path_trace.polarity = pLetterToCLPolarity(polarity);
 	if(TracePathTool.isPath(path_trace)) path_trace.style.strokeColor = pLetterToCLPolarity(polarity);
 	else path_trace.style.fillColor = pLetterToCLPolarity(polarity);
+
 }
+
 TracePathTool.isPath = function(trace){
 	var prefix = EllustrateSVG.getPrefix(trace);
+	// console.log(prefix);
 	// console.log(["T", "B"].indexOf(prefix.slice(-1)) != -1);
 	return ["T", "B"].indexOf(prefix.slice(-1)) == -1;
 }
-function detectPolarity(trace){	
+TracePathTool.detectPolarity = function(trace){	
 	var compare;
 	if(TracePathTool.isPath(trace)) compare = trace.style.strokeColor;
 	else compare = trace.style.fillColor;
@@ -443,4 +515,7 @@ function detectPolarity(trace){
 	if(compare.equals(CircuitLayer.POSITIVE)) return "V";
 	if(compare.equals(CircuitLayer.NEUTRAL )) return "N";
 	if(compare.equals(CircuitLayer.NEGATIVE)) return "G";
+}
+TracePathTool.readPolarity = function(trace){
+	return trace.name.split(":")[0][1];
 }

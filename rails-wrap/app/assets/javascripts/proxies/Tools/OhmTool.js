@@ -171,18 +171,48 @@ OhmTool.prototype = {
 
 
 OhmTool.glow = function(path, isOn){
-	if(isOn)
-		path.style = {
-			shadowColor: "blue",
-			shadowBlur: 30,
-			shadowOffset: new paper.Point(0, 0)
+	if(["CP:_circuit_x5F_led_1_", "CP:_Battery_1_"].indexOf(path.name) > -1){
+		if(isOn){
+			path.style = {
+				shadowColor: "blue",
+				shadowBlur: 30,
+				shadowOffset: new paper.Point(0, 0)
+			}
+			path.opacity = 1;
 		}
-	else
-		path.style = {
-			shadowColor: "blue",
-			shadowBlur: 0,
-			shadowOffset: new paper.Point(0, 0)
+		else{
+			path.style = {
+				shadowColor: "blue",
+				shadowBlur: 0,
+				shadowOffset: new paper.Point(0, 0)
+			}
 		}
+	}
+	else if(path.className == "Group"){
+		_.each(path.children, function(el, i, arr){
+			OhmTool.glow(el, isOn);
+		});
+		if(isOn)path.opacity = 1;
+		else path.opacity = 0;
+	}
+	else{
+		if(isOn){
+			path.style = {
+				shadowColor: "blue",
+				shadowBlur: 30,
+				shadowOffset: new paper.Point(0, 0)
+			}
+			path.opacity = 1;
+		}
+		else{
+			path.style = {
+				shadowColor: "blue",
+				shadowBlur: 0,
+				shadowOffset: new paper.Point(0, 0)
+			}
+			if(path.ellustrate_path) path.opacity = 0;
+		}
+	}
 }
 
 
