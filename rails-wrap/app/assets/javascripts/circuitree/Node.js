@@ -11,7 +11,7 @@ function Node(paths, position){
 					name: "TMT: temp", //"C"+ polarity +"T: terminal from fragmentation",
 					position: position,
 					radius:  paths[0].style.strokeWidth, 
-					fillColor:  paths[0].style.strokeColor, 
+					fillColor:  "#00A8E1", 
 					polarity:  paths[0].polarity,
 					terminal_helper: true,
 					is_node: true,

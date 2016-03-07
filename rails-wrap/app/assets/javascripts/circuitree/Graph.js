@@ -11,6 +11,9 @@ function Graph(){
 	this.breakUpIntersections();
 	this.generateBlobPaths();
 	this.processEnds();
+	$.each(paper.project.getItems({blob_line: true}), function(i, el){
+		el.remove();
+	});
 }
 
 
@@ -228,12 +231,11 @@ Graph.prototype = {
 		var scope = this;
 		var blobs = ["CGB", "CVB", "CNB", "CGT", "CVT", "CNT", "CNTB", "CVTB", "CGTB"];
 		blobs = EllustrateSVG.match(designer.circuit_layer.layer, { prefix: blobs });
-		// console.log("Blob count", blobs.length);
+		console.log("Blob count", blobs.length);
 		var traces = ["CGP", "CVP", "CNP"];		
 		traces = EllustrateSVG.match(designer.circuit_layer.layer, { prefix: traces });
 		
 		_.each(blobs, function(blob, i, arr){
-			
 			intersects = TracePathTool.getAllIntersections(blob, traces);
 			// console.log(blob.id, intersects);
 			_.each(intersects, function(its){
@@ -244,10 +246,25 @@ Graph.prototype = {
 					segments: [blob.position.clone(), near], 
 					strokeColor: "yellow", 
 					strokeWidth: 4,
-					terminal_helper: true
+					terminal_helper: true, 
+					blob_line: true
 				});
 				blob.path = path;
-			});	
+			});
+			// if(intersects.length == 0){
+			// 	var near = blob.position.clone();
+			// 	near.y -= 1;
+			// 	near.x += 1;
+
+			// 	var path = new paper.Path({
+			// 		name: "TMP: temporary",
+			// 		segments: [blob.position.clone(), near], 
+			// 		strokeColor: "yellow", 
+			// 		strokeWidth: 4,
+			// 		terminal_helper: true
+			// 	});
+			// 	blob.path = path;
+			// }	
 		});
 	},
 	breakUpIntersections: function(){

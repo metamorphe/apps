@@ -32,7 +32,7 @@ EllustratePath.prototype = {
 				path = path[0];
 				var p = path.clone();
 				p.terminal_helper = true;
-				p.style.strokeColor = scope.color;
+				p.style.strokeColor = "#C0C0C0";//scope.color;
 				this.length += p.length;
 				scope.solution.addChild(p);
 			}

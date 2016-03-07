@@ -49,18 +49,21 @@
         }
       }
       if(mode == "validate"){
-          graph = new Graph();
+          if(_.isUndefined(graph)) graph = new Graph();
           // graph.disable();
+          graph.enable();
           v = new Validator(graph);
           errorsA = v.validateLEDsConnectedToGround();
           errorsB = v.validateOhmThreshold();
-          // console.log(errorsA, errorsB);
+          console.log(errorsA, errorsB);
           errors = _.flatten([errorsA, errorsB]);
+          errors = [];
           v.updateSidePanel(errors);
           graph.disable();
       }
       if(mode == "make"){
           if(_.isUndefined(graph)) graph = new Graph();
+          graph.enable();
           // graph.disable();
           f = new FabGuide(graph);
           f.updateSidePanel();

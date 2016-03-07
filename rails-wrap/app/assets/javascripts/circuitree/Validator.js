@@ -3,6 +3,7 @@ function Validator(graph){
 	this.graph = graph;
 	
 	var paths = graph.getPathsToGround();
+	console.log(paths);
 	this.paths = _.map(paths, function(path){
 		return _.map(path.str.split('-'), function(el){ return parseInt(el);});
 	});
@@ -22,6 +23,7 @@ function Validator(graph){
 		else negative_terminal = [];
 		return _.flatten([positive_terminal, negative_terminal]); 
 	});
+	console.log("LEDS", this.leds, "PATHS", this.paths);
 }
 
 Validator.prototype = {
