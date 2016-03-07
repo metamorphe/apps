@@ -2,50 +2,6 @@
 var EPSILON = 2;
 solutions = null;
 Graph.test = function(){
-	// console.log("ROOT:", r.getID(), ", SINK:", s.getID());
-
-	Graph.printAdjacencyList();
-	// console.log("S", s);
-	
-	// console.log("R", r);
-	
-	r = graph.getSourceNode();
-	s = graph.getSinkNode();
-	s = Node.get(s).path.terminals[0];
-	r = Node.get(r).path.terminals[0];
-	console.log(r, s);
-	r = paper.project.getItem({id: r}).node;
-	s = paper.project.getItem({id: s}).node;
-
-	results = Graph.printAllPaths(r, s);
-	console.log("RESULTS:", results);
-
-
-	var color = new paper.Color("red");
-	hue = 0;
-
-	ptgs = _.map(results, function(el, i, arr){
-		// if(i != 4) return;
-		// console.log(el);
-		myColor = color.clone();
-		myColor.hue = hue;
-		var ptg = new EllustratePath(el, myColor);
-		hue += 20;
-		return ptg;
-	});
-	sorted = _.sortBy(ptgs, function(ptg){ return ptg.length;});
-	console.log("SOLUTIONS", sorted.length);
-
-	sorted = _.uniq(ptgs, function(ptg){ 
-		console.log((ptg.length / 20).toFixed(0));
-		return (ptg.length / 20).toFixed(0);
-	});
-	console.log("THRESHOLD SOLUTIONS", sorted.length);
-	_.each(sorted, function(el){
-		paper.project.addChild(el.solution);
-		paper.project.addChild(el.solution);
-	});
-	solutions = sorted;
 }
 
 function Graph(){
@@ -60,15 +16,56 @@ function Graph(){
 
 var intersectionNodes = [];
 Graph.prototype = {
+	getPathsToGround: function(){
+
+		r = graph.getSourceNode();
+		s = graph.getSinkNode();
+		s = Node.get(s).path.terminals[0];
+		r = Node.get(r).path.terminals[0];
+		// console.log(r, s);
+		r = paper.project.getItem({id: r}).node;
+		s = paper.project.getItem({id: s}).node;
+
+		results = Graph.printAllPaths(r, s);
+		// console.log("RESULTS:", results);
+
+
+		var color = new paper.Color("red");
+		hue = 0;
+
+		ptgs = _.map(results, function(el, i, arr){
+			myColor = color.clone();
+			myColor.hue = hue;
+			var ptg = new EllustratePath(el, myColor);
+			hue += 20;
+			return ptg;
+		});
+
+		sorted = _.sortBy(ptgs, function(ptg){ return ptg.length;});
+		// console.log("SOLUTIONS", sorted.length);
+
+		sorted = _.uniq(ptgs, function(ptg){ 
+			return (ptg.length / 20).toFixed(0);
+		});
+		// console.log("THRESHOLD SOLUTIONS", sorted.length);
+		// _.each(sorted, function(el){
+		// 	paper.project.addChild(el.solution);
+		// 	paper.project.addChild(el.solution);
+		// });
+		solutions = sorted;
+		return solutions;
+	}, 
 	enable: function(){
 		_.each(this.nodes, function(node){
 			node.enable();
 		});
+		paper.view.update();
 	},
 	disable: function(){
 		_.each(this.nodes, function(node){
 			node.disable();
 		});
+		paper.view.update();
 	},
 	processEnds: function(){
 		var scope = this;
@@ -166,7 +163,7 @@ Graph.prototype = {
 				return parseInt(el);
 			});
 		});
-		console.log("END CLUSTERS");
+		// console.log("END CLUSTERS");
 
 
 
@@ -231,7 +228,7 @@ Graph.prototype = {
 		var scope = this;
 		var blobs = ["CGB", "CVB", "CNB", "CGT", "CVT", "CNT", "CNTB", "CVTB", "CGTB"];
 		blobs = EllustrateSVG.match(designer.circuit_layer.layer, { prefix: blobs });
-		console.log("Blob count", blobs.length);
+		// console.log("Blob count", blobs.length);
 		var traces = ["CGP", "CVP", "CNP"];		
 		traces = EllustrateSVG.match(designer.circuit_layer.layer, { prefix: traces });
 		
@@ -364,17 +361,7 @@ Graph.prototype = {
 			});
 	},
 	
-	isValidNodeLocation: function(position){
-		
-		var loc = [];
-		var valid =  _.reduce(intersectionNodes, function(memo, el){
-					var d = el.point.getDistance(position);
-					// console.log(el.self.id, d);
-					if(d <= 3) loc.push(el.paths);
-					return memo;//d > 3 && memo;
-				}, true);
-		return {valid: valid, paths: _.flatten(loc)}
-	},
+
 	addNode: function(node){
 		this.nodes.push(node);
 	},
@@ -384,18 +371,7 @@ Graph.prototype = {
 	getSinkNode: function(){
 		return EllustrateSVG.match( designer.circuit_layer.layer, { prefix: ["CGTB"]})[0].id;	
 	},
-	walkFrom: function(node){
-		this.walked.push(node);
-		node.walked = true;
-
-		var children = node.getChildren();
-		// rejected walked children
-		children = _.reject(children, function(el, i, arr){ return el.walked;});
-		// reject duplicates
-		children = _.uniq(children, function(el, i, arr){ return el.self.id;});
-		console.log("Node has", children.length, "children.");
-		return children;		
-	},
+	
 	update: function(){
 		paper.view.update();
 		return this;

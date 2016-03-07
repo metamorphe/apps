@@ -26,7 +26,7 @@
 #// require proxies/Tools/RunTool
 #// require proxies/Tools/DebugTool
 #// require proxies/Tools/FabTool
-#// require proxies/Tools/OhmTool
+//= require proxies/Tools/OhmTool
 //= require proxies/CircuitLayer
 #// require clipper
 //= require circuitree/CanvasItem
@@ -38,9 +38,11 @@
 //= require circuitree/DebugGuide
 //= require circuitree/sheet_resistance
 //= require circuitree/HistoryManager
-//= require circuitree/TreeSearcher
+//= require circuitree/Graph
 //= require circuitree/Node
 //= require circuitree/GraphUtil
-//= require circuitree/PowerPaths
+//= require circuitree/EllustratePath
+//= require circuitree/Validator
+//= require circuitree/FabGuide
 #//= require dropzone
 //= require hammer

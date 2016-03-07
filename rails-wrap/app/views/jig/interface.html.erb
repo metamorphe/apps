@@ -14,29 +14,63 @@
 
   var modes = {
     // edit: "rgb(207, 244, 255)", 
-    edit: {color: "rgb(92, 184, 92)", dom: '#add-library, #dev-toolbox, #system-messages, #history-bar, #artwork-toolbox, #canvas-toolbox, #big-undo, #clear-canvas-and-history,  #circuit-toolbox'}, 
+    draw: {color: "rgb(92, 184, 92)", dom: '#add-library, #dev-toolbox, #system-messages, #history-bar, #artwork-toolbox, #canvas-toolbox, #big-undo, #clear-canvas-and-history,  #circuit-toolbox'}, 
     validate: {color:"rgb(66, 139, 202)", dom: '#debug-guide'}, 
     make: {color:"rgb(217, 83, 79)", dom: '#fab-guide'}
   };
 
-  var current_mode = "edit";
+  var current_mode = "draw";
   function modify(){
-    $('#make-design, #validate-design, #edit-design').click(function(){
+    $('#make-design, #validate-design, #draw-design').click(function(){
       var mode = $(this).attr('data-mode');
       $('#interface-container').css("background", modes[mode].color);
       for(var i in modes){
         if(i == mode){
-          $(modes[i].dom).show();
+          $(modes[i].dom).fadeIn(200);
         }else{
-          $(modes[i].dom).hide();
+          $(modes[i].dom).fadeOut(200);
         }
+        if(["validate", "make"].indexOf(mode) > -1){
+          var w2 = paper.project.activeLayer.bounds.width;
+          
+
+          var w = $('body').width();
+          var stop = w * 0.20;
+          w -= stop;
+          var center = w/2;
+
+          center *= paper.view.zoom;
+          // console.log(w);
+
+          paper.project.activeLayer.position.x = center - 20;// - paper.project.activeLayer.bounds.width;
+        }
+        else{
+          zoom.home();
+        }
+      }
+      if(mode == "validate"){
+          graph = new Graph();
+          // graph.disable();
+          v = new Validator(graph);
+          errorsA = v.validateLEDsConnectedToGround();
+          errorsB = v.validateOhmThreshold();
+          // console.log(errorsA, errorsB);
+          errors = _.flatten([errorsA, errorsB]);
+          v.updateSidePanel(errors);
+          graph.disable();
+      }
+      if(mode == "make"){
+          if(_.isUndefined(graph)) graph = new Graph();
+          // graph.disable();
+          f = new FabGuide(graph);
+          f.updateSidePanel();
+          graph.disable();
       }
       current_mode = mode;
     });
-    $('#edit-design').click();
+    $('#draw-design').click();
   }
   $(function(){
-    modify();
     attachHandlers();
     // dim = new DimensionsPreview($("#sandbox"));
     // dim.dom.css({
@@ -52,7 +86,7 @@
     storage = new WebStorage();
     designer = new CircuitDesigner($("#sandbox"));
     hm = new HistoryManager(storage);
-    graph = new Graph();
+    
     // Graph.test();
     // Graph.printIDs();
   
@@ -74,7 +108,9 @@
     // collections.switchTo("Artwork")
     // dropLogic();
     // designer.addSVG("/primitives/PrettyCircuit_Bird.svg", paper.view.center);
-    zoom.home();
+    modify();
+    
+    // zoom.home();
   });
 
   getActiveTool = function(){ return paper.tool.toolholder; }

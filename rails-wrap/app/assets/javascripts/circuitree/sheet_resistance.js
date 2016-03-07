@@ -21,9 +21,20 @@ function SheetResistanceModel(sr){
 SheetResistanceModel.prototype = {
 	/* Returns the resistance of a uniform path */
 	apply: function(path){
-		var W = Ruler.pts2mm(path.style.strokeWidth); // width of stroke in mm
-		var L = Ruler.pts2mm(path.length);
-		return this.sr * L / W; 
+    var scope = this;
+    // console.log(path);
+    var ohmage = 0;
+    if(path.className == "Group"){
+      _.each(path.children, function(el, i, arr){
+        ohmage += scope.apply(el);
+      });
+    }
+    else{
+	 	  var W = Ruler.pts2mm(path.style.strokeWidth); // width of stroke in mm
+		  var L = Ruler.pts2mm(path.length);
+      ohmage = this.sr * L / W; 
+    }
+		return ohmage;
 	}, 
 	update: function(sr){
 		this.sr = sr;

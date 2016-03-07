@@ -1,14 +1,17 @@
 
 function EllustratePath(str, color){
+	var scope = this;
+	this.str = str;
+	// console.log("STR", str);
 	this.nodes = _.map(str.split('-'), function(el){ return parseInt(el);});
 	this.length = 0;
 	this.paths = [];
 	this.color = color;
 	this.solution = new paper.Group({
-		terminal_helper: true
+		terminal_helper: true, 
+		ellustrate_path: true
 	});
-	this.init();
-	
+	scope.init();
 }
 EllustratePath.prototype = {
 	init: function(){
@@ -35,9 +38,10 @@ EllustratePath.prototype = {
 			}
 			index++;
 		}
-		this.solution.position.x += -200 + scope.color.hue * 5;//20;
-		this.solution.position.y += 200;
-		this.solution.remove();
+		// this.solution.position.x += -200 + scope.color.hue * 5;//20;
+		// this.solution.position.y += 200;
+		// this.solution.remove();
+		this.solution.opacity = 0;
 		paper.view.update();
 	},	
 	colorize: function(color){
