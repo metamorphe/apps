@@ -7,6 +7,8 @@ function FabGuide(graph){
 	this.paths = _.map(this.ptgs, function(path){
 		return _.map(path.str.split('-'), function(el){ return parseInt(el);});
 	});
+	this.battery = paper.project.getItems({name: "CP:_Battery_1_"})[0];
+
 	var leds = paper.project.getItems({name:"CP:_circuit_x5F_led_1_"});
 	this.ledIDs = _.map(leds, function(led){
 			return led.id;
@@ -60,9 +62,17 @@ FabGuide.prototype = {
 		console.log(this.ptgs);
 
 		var guides = _.map(this.ptgs, function(el, i, arr){
+			var dryingtime = Ruler.pts2mm(el.length);
+			dryingtime /= 10;
+			dryingtime = dryingtime.toFixed(0);
 			var guide = [
-				{elements: [el.solution.id], message: "Draw the following trace."},
-				{elements: [scope.ledIDs[scope.match[i]]], message: "Place the following LED."}
+				{level: 1, elements: [el.solution.id], message: "Draw Trace #" + (i+ 1) + " with your silver ink pen."},
+				{level: 2, elements: [el.solution.id], message: "Let these traces dry for "+ dryingtime +" seconds."},
+				{level: 2, elements: [scope.battery.id], message: "Add the battery."},
+				{level: 2, elements: [el.solution.id], message: "With your multimeter, check if the line is powered."},
+				{level: 2, elements: [scope.ledIDs[scope.match[i]]], message: "Place the following LED."},
+				{level: 3, elements: [scope.ledIDs[scope.match[i]]], message: "Does the LED turn on?"},
+				{level: 2, elements: [scope.battery.id], message: "Remove the battery."}	
 			]
 			return guide;
 		});
@@ -70,7 +80,11 @@ FabGuide.prototype = {
 
 		_.each(guides, function(el, i, arr){
 				console.log(el);
-		    	var guide_dom = $('<li class="list-group-item active">'+ el.message +'</li>');
+				// var level = el.level == 1 ? "active" : "warning";
+				if(el.level == 1) level = "active";
+				if(el.level == 2) level = "list-group-item";
+				if(el.level == 3) level = "list-group-item-warning";
+		    	var guide_dom = $('<li class="list-group-item '+ level +'">'+ el.message +'</li>');
 		    	guide_dom.attr('data-highlight', el.elements.join(','));
 		    	guide_dom.hover(
 		    		function(){

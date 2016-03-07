@@ -171,7 +171,7 @@ OhmTool.prototype = {
 
 
 OhmTool.glow = function(path, isOn){
-	if(path.name == "CP:_circuit_x5F_led_1_"){
+	if(["CP:_circuit_x5F_led_1_", "CP:_Battery_1_"].indexOf(path.name) > -1){
 		if(isOn){
 			path.style = {
 				shadowColor: "blue",

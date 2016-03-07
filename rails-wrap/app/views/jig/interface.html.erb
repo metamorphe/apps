@@ -57,7 +57,7 @@
           errorsB = v.validateOhmThreshold();
           console.log(errorsA, errorsB);
           errors = _.flatten([errorsA, errorsB]);
-          errors = [];
+          // errors = [];
           v.updateSidePanel(errors);
           graph.disable();
       }
