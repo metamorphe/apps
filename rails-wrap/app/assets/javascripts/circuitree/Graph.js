@@ -19,6 +19,9 @@ function Graph(){
 
 var intersectionNodes = [];
 Graph.prototype = {
+	find: function(id){
+		return _.filter(graph.nodes, function(el, i, arr){ return el.id == id})[0];
+	},
 	getPathsToGround: function(){
 
 		r = graph.getSourceNode();

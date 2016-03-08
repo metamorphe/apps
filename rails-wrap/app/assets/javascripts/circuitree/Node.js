@@ -102,6 +102,15 @@ Node.prototype = {
 	enable: function(){
 		this.parent.addChild(this.self);
 	},
+	getPosition: function(){
+		var pos = this.self.position;
+		if(_.isUndefined(pos)){
+			this.enable();
+			pos = this.self.position;
+			this.disable();
+		}
+		return pos;
+	},
 	setChildren: function(children){
 		this.children = children;
 	},
