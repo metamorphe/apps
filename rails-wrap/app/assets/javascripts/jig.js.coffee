@@ -20,8 +20,10 @@
 //= require proxies/Tools/AnchorPointTool
 //= require proxies/Tools/VectorTool
 #// require proxies/Tools/TransformTool
+//= require proxies/Tools/SelectionManager
 //= require proxies/Tools/TransformTool2
 //= require proxies/Tools/PanTool
+//= require proxies/Tools/DeleteTool
 //= require proxies/Tools/CanvasPanTool
 #// require proxies/Tools/RunTool
 #// require proxies/Tools/DebugTool

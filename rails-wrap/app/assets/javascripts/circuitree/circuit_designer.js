@@ -94,6 +94,7 @@ CircuitDesigner.prototype = {
 	    	onLoad: function(item) { 
 		    	item.position = position;
 				eSVG = new EllustrateSVG(item, scope, CircuitDesigner.UNIT_ADD);
+	    		hm.save();
 	    	}
 		});
 	},
