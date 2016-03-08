@@ -1,3 +1,4 @@
+
 function FabGuide(graph){
 	this.dom = $('#fab-guide .list-group');
 	this.ptgs = graph.getPathsToGround();
@@ -71,37 +72,46 @@ FabGuide.prototype = {
 			
 			var guide = [
 				{level: 1, 
+					icon: "pen",
 					elements: [el.solution.id], 
 					message: "Draw Trace #" + (i+ 1) + " with your silver ink pen."},
 				{level: 2, 
+					icon: "clock",
 					elements: [el.solution.id], 
 					message: "Let these traces dry for <b>"+ dryingtime +" seconds</b>.", 
 					time: dryingtime },
-				{level: 3, 
+				{level: 3,
+					icon: "multimeter", 
 					multimeter: "resistance", 
 					probeA: el.nodes[0], 
 					probeB: led_terminals[0],  
 					elements: [el.solution.id], 
 					message: "Check the resistance of this trace. If the multimeter reads greater than <b>" + ohmage_upperbound + " Ω</b>, then let it dry a bit longer."},
 				{level: 3, 
+					icon: "multimeter",
 					multimeter: "resistance", 
 					probeA: led_terminals[1], 
 					probeB: el.nodes[el.nodes.length -1],  
 					elements: [el.solution.id], 
 					message: "Check the resistance of this trace. If the multimeter reads greater than <b>" + ohmage_upperbound + " Ω</b>, then let it dry a bit longer."},
 				{level: 2, 
+					icon: "place",
 					elements: [scope.battery.id], 
 					message: "Add the battery."},
 				{level: 2, 
+					icon: "multimeter",
 					multimeter: "voltage", 
 					probeA: led_terminals[0], probeB: led_terminals[1], elements: [el.solution.id], message: "With your multimeter, check if the line is powered (voltage setting). Position the probes on the dots."},
 				{level: 2, 
+					icon: "place",
 					elements: [scope.ledIDs[scope.match[i]]], 
 					message: "Place the following LED."},
 				{level: 3, 
+					icon: "eye",
 					elements: [scope.ledIDs[scope.match[i]]], 
 					message: "Does the LED turn on?"},
 				{level: 2, 
+					icon: "place",
 					elements: [scope.battery.id], 
 					message: "Remove the battery."}	
 			]
@@ -120,9 +130,20 @@ FabGuide.prototype = {
 				if(el.level == 3) level = "list-group-item-warning";
 		    	
 
-		    	var guide_dom = $('<li class="list-group-item '+ level +'">'+ el.message +'</li>');
+		    	var guide_dom = $('<li class="list-group-item '+ level +'"></li>');
+		    	var row = $('<div></div>').addClass("row");
+		    	var col_a = $('<div></div>').addClass('col-xs-2');
+		    	var col_b = $('<div></div>').addClass('col-xs-10');
+		    	row.append([col_a, col_b]);
+		    	guide_dom.append(row);
+
+		    	var icon = "icon-" + el.icon;
+		    	col_a.prepend("<span class='"+ icon +" guide-icon'></span>");
+		    	col_b.html(el.message); 
+
 		    	guide_dom.attr('data-highlight', el.elements.join(','));
-		    	if(el.multimeter){
+		    	
+		    	if(el.multimeter){	
 			    	guide_dom.attr('data-multimeter', el.multimeter);
 			    	guide_dom.attr('data-probe-a', el.probeA);
 			    	guide_dom.attr('data-probe-b', el.probeB);

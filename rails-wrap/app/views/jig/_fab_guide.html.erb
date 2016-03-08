@@ -162,6 +162,25 @@ FabricationGuide.prototype = {
     height: calc(100% - 100px);
     overflow-y: scroll;
   }
+  .guide-container [class^='icon-']:before {
+      display: inline-block;
+      font-family: 'Glyphter';
+      font-style: normal;
+      font-weight: normal;
+      line-height: 0.4;
+      font-size: 18pt;
+      padding-top: 0px;
+      padding-bottom: 0px;
+      position: relative;
+      top: 10px;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+  }
+  /*.guide-container .row{
+    padding-top: 4px;
+    padding-bottom: 4px;
+  }*/
+
   .guide-container .list-group{
     color: black;
   }
@@ -218,10 +237,10 @@ FabricationGuide.prototype = {
   .list-group-item{
     cursor: pointer;
   }
-  .list-group-item .row{
+/*  .list-group-item .row{
     padding: 0;
     margin-bottom: -10px;
-  }
+  }*/
   .list-group-item .title{
     font-weight: bold;
     margin-top: 4px;
