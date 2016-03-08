@@ -84,6 +84,7 @@ DeleteTool.prototype = {
 				cluster = cluster.parent;
 			scope.sm.add(cluster, event.srcEvent.shiftKey);
 			scope.sm.remove();
+			hm.save();
 		}
 	},
 	transform: {
