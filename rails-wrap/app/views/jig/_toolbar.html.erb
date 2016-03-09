@@ -5,6 +5,7 @@ $(function(){
 	var lib_on = false;
 	$("#clear-canvas-and-history").click(function(){
 		hm.clear_all();
+		zoom.home();
 	});	
 	$('#add-library').click(function(){
 		$('#collection').slideToggle(500);

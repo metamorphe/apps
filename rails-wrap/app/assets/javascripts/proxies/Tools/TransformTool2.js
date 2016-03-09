@@ -37,7 +37,7 @@ function TransformTool2(paper){
 	}
 	var route = function(event, allowableSubEvents, eventFN){
 		// Recalibrate event point geometry
-		console.log("ROUTING", event);
+		// console.log("ROUTING", event);
 
 		if(_.isUndefined(event.center)){
 			var positionOnCanvas = event.point;
@@ -51,7 +51,7 @@ function TransformTool2(paper){
 			var hitType = hit.type;
 			var hitResult = hit.result;
 			scope.canvas_item_type = hitType;
-			console.log("Hit test", scope.canvas_item_type, eventFN);		
+			// console.log("Hit test", scope.canvas_item_type, eventFN);		
 			if(allowableSubEvents.indexOf(scope.canvas_item_type) != -1){
 				scope[scope.canvas_item_type][eventFN](event, hitResult, scope);
 			}
@@ -69,7 +69,7 @@ function TransformTool2(paper){
 			if(allowableSubEvents.indexOf(scope.canvas_item_type) != -1){
 				scope[scope.canvas_item_type][eventFN](event, scope);
 			}
-			hm.save();
+			// hm.save();
 			scope.update();
 			// console.log("Setting to null")
 			// scope.canvas_item_type = null;
@@ -163,30 +163,30 @@ TransformTool2.prototype = {
  	}, 
 	element: {
 		onTap: function(event, hitResult, scope){
-			console.log("pTap");
+			// console.log("pTap");
 			var cluster = hitResult.item;
 			while(_.isUndefined(cluster.canvasItem))
 				cluster = cluster.parent;
 			scope.sm.add(cluster, event.srcEvent.shiftKey);
 		},
 		onMouseDown: function(event, hitResult, scope){
-			console.log("mDown");
+			// console.log("mDown");
 			var cluster = hitResult.item;
 			while(_.isUndefined(cluster.canvasItem))
 				cluster = cluster.parent;
 			scope.sm.add(cluster, event.shiftKey);
 		},
 		onPinchStart: function(event, scope){
-			console.log("pStart");
+			// console.log("pStart");
 			scope.pinching = true;
 		},
 		onPinchMove: function(event, scope){
-			console.log("pMove");
+			// console.log("pMove");
 			scope.pinching = true;
 			scope.sm.scale(event.scale, event.scale);
 		},
 		onPinchEnd: function(event, scope){
-			console.log("pEnd");
+			// console.log("pEnd");
 			scope.pinching = false;
 		},
 		onRotateStart: function(event, hitResult, scope){
@@ -205,81 +205,40 @@ TransformTool2.prototype = {
 		onMouseDrag: function(event, scope){	
 			if(scope.pinching || scope.rotating) return;
 
-			console.log("mousedrag", event.delta);
+			// console.log("mousedrag", event.delta);
 
 			scope.sm.translate(event.delta);
 		},
 	},
-	
-	transform: {
-		onMouseDown: function(event, hitResult, scope){
-			if(["segment"].indexOf(hitResult.type) != -1){
-				// var cluster = hitResult.item;
-				// while(_.isUndefined(cluster.canvasItem))
-				// 	cluster = cluster.parent;
-				var rect = hitResult.item;
-				var group = rect.group;
-				
-				var isRotate = hitResult.segment.index >= 2 && hitResult.segment.index <= 4;
-				var isScale = !isRotate;
-
-			    if(isRotate){
-			    	scope.action = TransformTool2.ROTATING;
-			    }
-			    if(isScale){
-			    	scope.action = TransformTool2.SCALING;
-			    }
-			}
-		},
-		onMouseDrag: function(event, scope){	
-			console.log(tS(scope.action));
-			if(scope.action == TransformTool2.SCALING){
-				var path_bounds = scope.sm.selection_rectangle.bounds.clone();   
-				var center = path_bounds.center.clone();   
-				var diag = event.point.subtract(center).length;
-				var init_diag = scope.sm.selection_rectangle.init_size;
-				var ratio = diag/init_diag;
-				scope.sm.scale(ratio, ratio);
-			}
-			if(scope.action == TransformTool2.ROTATING){
-				var angle = event.point.subtract(scope.sm.selection_rectangle.pivot).angle + 90;
-				scope.sm.rotate(angle);
-			}
-			
-		},
-		onMouseUp: function(event, scope){
-			scope.action = null;
-		}
-	},
 	canvas: {
 		onPinchStart: function(event, scope){
-			console.log("pStart");
+			// console.log("pStart");
 			scope.pinching = true;
 		},
 		onPinchMove: function(event, scope){
-			console.log("pMove");
+			// console.log("pMove");
 			scope.pinching = true;
 			scope.sm.scale(event.scale, event.scale);
 		},
 		onPinchEnd: function(event, scope){
-			console.log("pEnd");
+			// console.log("pEnd");
 			scope.pinching = false;
 		},
 		onRotateStart: function(event, hitResult, scope){
-			console.log("rStart");
+			console.log("Canvas rStart");
 			scope.rotating = true;
 		},
 		onRotateMove: function(event, scope){
-			console.log("rMove");
+			console.log("Canvas rMove");
 			scope.rotating = true;
 			scope.sm.rotate(event.rotation);
 		},
 		onRotateEnd: function(event, scope){
-			console.log("rEnd");
+			console.log("Canvas rEnd");
 			scope.rotating = false;
 		},
 		onTap: function(event, hitResult, scope){
-			console.log("hello!", event, event.point);
+			// console.log("hello!", event, event.point);
 			scope.canvas_item_type = null;
 			var pos = scope.paper.view.viewToProject(new paper.Point(event.center.x, event.center.y));
 			// check for bogus taps 
@@ -312,10 +271,15 @@ TransformTool2.prototype = {
 			c.remove();
 		},
 		onMouseDown: function(event, hitResult, scope){
-			console.log("c_mDown");
+			// console.log("c_mDown");
 			scope.sm.clear();
 		},
 		onMouseDrag: function(event, scope){
+			if(scope.pinching || scope.rotating) return;
+
+			// console.log("mousedrag", event.delta);
+
+			scope.sm.translate(event.delta);
 
 		},
 		onMouseUp: function(event, scope){
@@ -324,7 +288,7 @@ TransformTool2.prototype = {
 	},
 	pan:  {
 		onMouseDown: function(event, hitResult, scope){
-			console.log("PANNING", hitResult.type);
+			// console.log("PANNING", hitResult.type);
 			// GET SELECTED ITEM
 			if(["stroke", "fill", "segment"].indexOf(hitResult.type) != -1){
 				var cluster = hitResult.item;

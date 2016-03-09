@@ -36,7 +36,7 @@ SelectionManager.prototype = {
 		// this.selection_rectangle.position.x += delta.x;
 		// this.selection_rectangle.position.y += delta.y;
 		_.each(this.selection_group, function(el, i, arr){
-			console.log(el);
+			// console.log(el);
 			if(! eval(el.layerClass + ".translateable")) return;
 			el.position.x += delta.x;
 			el.position.y += delta.y;

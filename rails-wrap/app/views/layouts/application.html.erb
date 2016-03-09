@@ -7,11 +7,13 @@
   <!-- <%=params[:controller]%> -->
   <% if params[:controller] != "application" %>
 	  <%= stylesheet_link_tag params[:controller], media: 'all', 'data-turbolinks-track' => true %>
-	  
 	  <%= javascript_include_tag params[:controller], 'data-turbolinks-track' => true %>
   <% end %>
   
   <script type="text/javascript" src="//use.typekit.net/duw7epu.js"></script>
+ 
+  <link rel="apple-touch-icon" href="/ellustrate-icon.png" />
+
 	<script>
 		try { Typekit.load(); } catch (e) {}
 	</script>
