@@ -21,35 +21,45 @@
 
   var current_mode = "draw";
   function modify(){
-    $('#make-design, #validate-design, #draw-design').click(function(){
-      var mode = $(this).attr('data-mode');
+    // $('#make-design, #validate-design, #draw-design').click(function(){
+
+      var mode = GET().mode; //$(this).attr('data-mode');
       $('#interface-container').css("background", modes[mode].color);
+      console.log("mode", mode);
       for(var i in modes){
+
         if(i == mode){
-          $(modes[i].dom).fadeIn(200);
+          console.log("IN", modes[i].dom)
+          $(modes[i].dom).show(200);
+          $(modes[i].dom).show(200);
         }else{
-          $(modes[i].dom).fadeOut(200);
+          console.log("OUT", modes[i].dom)
+          $(modes[i].dom).hide(200);
         }
+
         if(["validate", "make"].indexOf(mode) > -1){
-          var w2 = paper.project.activeLayer.bounds.width;
+          zoom.home();
+          // var w2 = paper.project.activeLayer.bounds.width;
           
 
-          var w = $('body').width();
-          var stop = w * 0.20;
-          w -= stop;
-          var center = w/2;
+          // var w = $('body').width();
+          // var stop = w * 0.20;
+          // w -= stop;
+          // var center = w/2;
 
-          center *= paper.view.zoom;
-          // console.log(w);
+          // center *= paper.view.zoom;
+          // // console.log(w);
 
-          paper.project.activeLayer.position.x = center - 20;// - paper.project.activeLayer.bounds.width;
+          paper.project.activeLayer.position.x -= 100;
+          // - paper.project.activeLayer.bounds.width;
         }
         else{
           zoom.home();
         }
       }
       if(mode == "validate"){
-          if(_.isUndefined(graph)) graph = new Graph();
+          graph = new Graph();
+          
           // graph.disable();
           graph.enable();
           v = new Validator(graph);
@@ -62,7 +72,7 @@
           graph.disable();
       }
       if(mode == "make"){
-          if(_.isUndefined(graph)) graph = new Graph();
+          graph = new Graph();
           graph.enable();
           // graph.disable();
           f = new FabGuide(graph);
@@ -70,8 +80,9 @@
           graph.disable();
       }
       current_mode = mode;
-    });
-    $('#draw-design').click();
+    // });
+    
+    // $('#draw-design').click();
   }
   $(function(){
     attachHandlers();
@@ -90,7 +101,7 @@
     designer = new CircuitDesigner($("#sandbox"));
     hm = new HistoryManager(storage);
     
-    // Graph.test();
+    Graph.test();
     // Graph.printIDs();
   
 

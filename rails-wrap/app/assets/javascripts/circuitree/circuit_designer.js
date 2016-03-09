@@ -119,16 +119,6 @@ CircuitDesigner.prototype = {
 			precision: 5
 		});
 	}, 
-	clearForSave: function(){
-		this.state.tool = this.toolbox.clearTool();
-		this.temp = getTerminalHelpers();
-		this.temp = _.map(this.temp, function(el, i, arr){
-			var e = {parent: el.parent, el: el}
-			el.remove();
-			return e;
-		});
-		this.circuit_layer.legend.remove();		
-	}, 
 	svg: function(){
 		this.clearForSave();
 		var filename = $('#design-name b').html().trim().replace(/ /g, "_").toLowerCase();
@@ -151,6 +141,16 @@ CircuitDesigner.prototype = {
 		saveAs(new Blob([exp], {type:"application/svg+xml"}), filename + ".svg")
 		this.unclearForSave();
 	},	
+	clearForSave: function(){
+		this.state.tool = this.toolbox.clearTool();
+		this.temp = getTerminalHelpers();
+		this.temp = _.map(this.temp, function(el, i, arr){
+			var e = {parent: el.parent, el: el}
+			el.remove();
+			return e;
+		});
+		this.circuit_layer.legend.remove();		
+	}, 
 	unclearForSave: function(){
 		if(!_.isNull(this.state.tool)){
 			console.log("Tool reenable", this.state.tool.name);

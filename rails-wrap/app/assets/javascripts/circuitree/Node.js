@@ -29,13 +29,7 @@ function Node(paths, position){
 	this.children = [];
 }
 
-Node.join = function(nodes){
-	var nodeIDs = nodes;
-	// console.log(nodeIDs);
-	nodes = _.map(nodes, function(node){
-		// console.log("JOIN", node)
-		return Node.get(node).node;
-	});
+Node.centroid = function(nodes){
 	centroid = new paper.Point(0, 0);
 	_.each(nodes, function(el){
 		centroid.x += el.self.position.x; 
@@ -43,8 +37,9 @@ Node.join = function(nodes){
 	});
 	centroid.x /= nodes.length;
 	centroid.y /= nodes.length;
-
-
+	return centroid;
+}
+Node.allChildren = function(nodes, nodeIDs){
 	var children = _.reduce(nodes, function(memo, el){
 		memo.push(el.getChildren())
 		return memo;
@@ -53,25 +48,40 @@ Node.join = function(nodes){
 	children = _.filter(children, function(child){
 		return nodeIDs.indexOf(child) < 0;
 	});
+	return children;
+}
+Node.toNodes = function(nodeIDs){
+	return _.map(nodeIDs, function(node){
+		return Node.get(node).node;
+	});
+}
+Node.toNodeIDs = function(nodes){
+	return _.map(nodes, function(node){
+		return node.id;
+	});
+}
+Node.join = function(nodeIDs){
+	var nodeIDs = nodeIDs;
+	var nodes = Node.toNodes(nodeIDs)
+	
+	var centroid = Node.centroid(nodes);
+	var children = Node.allChildren(nodes, nodeIDs);
+
 
 	// For all the ones that are about to be deleted, 
 	// go through the children, remove references to them. 
 	_.each(children, function(id){
-		// console.log("Node getting cleaned", id);
 		var node = Node.get(id).node;
 		var children = node.getChildren();
-		// console.log("Original edges", children);
 		children = _.reject(children, function(child){
 			return nodeIDs.indexOf(child) > -1;
 		});
-		// console.log("Updated edges", children);
-
 		node.setChildren(children);
 	});
-
-	// console.log("Children", children);
 	
 	// Remove old path index
+
+
 	updated_paths = [];
 	_.each(nodes, function(node){
 		var paths = node.paths;
@@ -86,15 +96,14 @@ Node.join = function(nodes){
 	updated_paths =_.uniq(updated_paths, function(el){
 		return el.id;
 	});
-	// updated_paths =_.map(updated_paths, function(path){ return path.id });
 
-	// console.log(updated_paths);
 	return {position: centroid, paths: updated_paths, children: children};
 }
 
 Node.get = function(id){
-		return paper.project.getItem({id: id});
-	}
+	return paper.project.getItem({id: id});
+}
+
 Node.prototype = {
 	disable: function(){
 		this.self.remove();

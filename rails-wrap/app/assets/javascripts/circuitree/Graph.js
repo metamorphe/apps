@@ -1,8 +1,7 @@
 
 var EPSILON = 2;
 solutions = null;
-Graph.test = function(){
-}
+
 
 function Graph(){
 	this.className = "Graph";
@@ -10,15 +9,36 @@ function Graph(){
 	this.breakUpSelfIntersections();
 	this.breakUpIntersections();
 	this.generateBlobPaths();
-	this.processEnds();
-	$.each(paper.project.getItems({blob_line: true}), function(i, el){
-		el.remove();
-	});
+	this.init();
+
 }
 
 
 var intersectionNodes = [];
 Graph.prototype = {
+	init: function(){
+		this.processEnds();
+		this.lines = $.map(paper.project.getItems({blob_line: true}), function(el, i){
+			parent = el.parent;
+			el.remove();
+			return {el: el, parent: parent}
+		});
+	},
+	
+	regenerate: function(){
+		console.log("Regenerating!");
+		this.enable();
+		nodeIDs = Node.toNodeIDs(this.nodes);
+		Node.join(nodeIDs);
+		this.removeNodes(nodeIDs);
+		// END OF DESTRUCTION
+		
+		_.each(this.lines, function(line){
+				line.parent.addChild(line.el);
+		});
+		this.init();
+		paper.view.update();
+	}, 
 	find: function(id){
 		return _.filter(graph.nodes, function(el, i, arr){ return el.id == id})[0];
 	},
@@ -102,7 +122,7 @@ Graph.prototype = {
 		_.each(nodes, function(node, i, arr){
 			var nodeC = node.self;
 			var edges = scope.getNodeIntersections(node.self.id);
-
+			// console.log(nodeC.id, "P_EDGES", edges)
 			// compare = _.reject(nodeSet, function(n){ return n.id == nodeC.id});
 			// var edges = TracePathTool.getAllIntersections(nodeC, compare);
 			// edges = _.map(edges, function(edge, i, arr){ return edge._curve2.path.id});
@@ -208,6 +228,7 @@ Graph.prototype = {
 			if(marked){
 				// console.log("DELETING", node.id)
 				node.self.remove();
+				delete node;
 			}
 			return marked;
 		});
@@ -215,11 +236,13 @@ Graph.prototype = {
 	getNodeIntersections: function(nodeID){
 		var nodePath = Node.get(nodeID);
 		var nodeCs = paper.project.getItems({is_node: true});
+
 		nodeCs = _.reject(nodeCs, function(n){ return n.id == nodeID});
-	
+
+		if(nodeID == 70) console.log("NODECs 70:", nodeCs);
 
 		inside = _.filter(nodeCs, function(el, i, arr){
-			return nodePath.position.isInside(el.bounds);
+			return nodePath.position.isInside(el.bounds) || el.position.isInside(nodePath.bounds);
 		});
 		inside = _.map(inside, function(el, i, arr){
 			return el.id;
@@ -245,29 +268,31 @@ Graph.prototype = {
 				// var point = its.point;
 				var near = its._curve2.path.getNearestPoint(blob.position);
 				var path = new paper.Path({
+					blob: blob.id,
 					name: "TMP: temporary",
 					segments: [blob.position.clone(), near], 
 					strokeColor: "yellow", 
-					strokeWidth: 4,
+					strokeWidth: 2,
 					terminal_helper: true, 
 					blob_line: true
 				});
 				blob.path = path;
 			});
-			// if(intersects.length == 0){
-			// 	var near = blob.position.clone();
-			// 	near.y -= 1;
-			// 	near.x += 1;
+			if(intersects.length == 0){
+				var near = blob.position.clone();
+				near.y -= 1;
+				near.x += 1;
 
-			// 	var path = new paper.Path({
-			// 		name: "TMP: temporary",
-			// 		segments: [blob.position.clone(), near], 
-			// 		strokeColor: "yellow", 
-			// 		strokeWidth: 4,
-			// 		terminal_helper: true
-			// 	});
-			// 	blob.path = path;
-			// }	
+				var path = new paper.Path({
+					blob: blob.id,
+					name: "TMP: temporary",
+					segments: [blob.position.clone(), near], 
+					strokeColor: "yellow", 
+					strokeWidth: 2,
+					terminal_helper: true
+				});
+				blob.path = path;
+			}	
 		});
 	},
 	breakUpIntersections: function(){

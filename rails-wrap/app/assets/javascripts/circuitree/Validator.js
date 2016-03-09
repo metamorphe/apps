@@ -62,10 +62,7 @@ Validator.prototype = {
 		// ERROR LED ID, MESSAGE
 		return _.compact(errors);
 	}, 
-	validateOhmThreshold: function(){
-		var scope = this;
-		var errors = [];
-		// LOOKING AT ONLY THE POSITIVE SIDE
+	matchLEDsToPaths: function(){
 		var match = [];
 		for(var i in this.leds){
 			var led = this.leds[i];
@@ -80,7 +77,7 @@ Validator.prototype = {
 					else
 						return memo;
 				}, 0);
-				// console.log(nodes, led, in_path);
+				// console.log("FB", nodes, led, in_path);
 				is_connected = is_connected || in_path >= 2;
 				if(is_connected){
 					match.push(j);
@@ -89,6 +86,14 @@ Validator.prototype = {
 			}
 			if(match.length != i+1) match.push(false);
 		};
+		return match;
+	},
+	validateOhmThreshold: function(){
+		var scope = this;
+		var errors = [];
+		// LOOKING AT ONLY THE POSITIVE SIDE
+		var match = this.matchLEDsToPaths();
+		
 		// console.log(match);
 		positive_segments = _.map(this.leds, function(led, i){
 			if(! match[i]) return false;

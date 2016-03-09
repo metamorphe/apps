@@ -125,9 +125,19 @@ TransformTool2.prototype = {
 	   this.hammertime.on('rotatestart', scope.tool.onRotateStart);
 	   this.hammertime.on('rotateend', scope.tool.onRotateEnd);
 	   this.hammertime.on('rotatemove', scope.tool.onRotateMove);
-	   $('#remove-element').click(function(){
-	   	 scope.sm.remove();
-	   });
+	},
+	reenable: function(){
+	   var scope = this;
+	   this.hammertime = Hammer($('canvas')[0]);
+	   this.hammertime.get('rotate').set({ enable: true });
+	   this.hammertime.get('pinch').set({ enable: true });
+	   this.hammertime.on('tap', scope.tool.onTap);
+	   this.hammertime.on('pinchstart', scope.tool.onPinchStart);
+	   this.hammertime.on('pinchend', scope.tool.onPinchEnd);
+	   this.hammertime.on('pinchmove', scope.tool.onPinchMove);
+	   this.hammertime.on('rotatestart', scope.tool.onRotateStart);
+	   this.hammertime.on('rotateend', scope.tool.onRotateEnd);
+	   this.hammertime.on('rotatemove', scope.tool.onRotateMove);
 	},
 	disable: function(){
 	   console.log("Touch Tools Disabled");

@@ -4,8 +4,13 @@ function FabGuide(graph){
 	this.ptgs = graph.getPathsToGround();
 	this.ptgs = _.sortBy(this.ptgs, function(ptg){ return ptg.length;});
 	this.ptgs = _.uniq(this.ptgs, function(ptg){ 
-		return (ptg.length / 20).toFixed(0);
+		return (ptg.length / 30).toFixed(0);
 	});
+	this.ptgs = _.each(this.ptgs, function(ptg, i){ 
+		console.log(i, ptg.length)
+	});
+
+
 	this.paths = _.map(this.ptgs, function(path){
 		return _.map(path.str.split('-'), function(el){ return parseInt(el);});
 	});
@@ -23,9 +28,12 @@ function FabGuide(graph){
 		negative_terminal = EllustrateSVG.match(el, {prefix: ["CGT"]})[0].path; 
 		if(!_.isUndefined(negative_terminal)) negative_terminal = negative_terminal.terminals;
 		else negative_terminal = [];
+
 		return _.flatten([positive_terminal, negative_terminal]); 
 	});
+	console.log("LED Termins", this.leds);
 	this.match = this.matchLEDsToPaths();
+	
 	// console.log("MATCH", match);
 
 }
@@ -57,6 +65,7 @@ FabGuide.prototype = {
 		};
 		return match;
 	},
+
 	updateSidePanel: function(){
 		var scope = this;
 		this.dom.html("");	
@@ -69,7 +78,8 @@ FabGuide.prototype = {
 			ohmage_upperbound = ohmage_upperbound.toFixed(0);
 
 			led_terminals = scope.leds[i];
-			
+			// console.log("HGO", scope.ledIDs, scope.leds, led_terminals);
+
 			var guide = [
 				{level: 1, 
 					icon: "pen",
