@@ -33,7 +33,7 @@ function FabGuide(graph){
 	});
 	console.log("LED Termins", this.leds);
 	this.match = this.matchLEDsToPaths();
-	
+
 	// console.log("MATCH", match);
 
 }
@@ -125,6 +125,8 @@ FabGuide.prototype = {
 					elements: [scope.battery.id], 
 					message: "Remove the battery."}	
 			]
+			// LEAVE BATTERY ON IF ITS THE LAST ONE
+			if(arr.length - 1 == i) guide = guide.slice(0, guide.length - 1);
 			return guide;
 		});
 		guides = _.flatten(guides);

@@ -53,7 +53,7 @@
 	        	<a href="/"> Home</a>
 	        </li>
 	        <li class="<%= params[:action] == "interface" ? "active" : "" %>">
-	        	<%= link_to "Circuit Design", jig_interface_path(4) %>
+	        	<%= link_to "Circuit Design", jig_interface_path(6, {mode: "draw"}) %>
 	        </li>
 
 
