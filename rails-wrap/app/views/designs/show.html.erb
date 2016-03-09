@@ -22,7 +22,7 @@
 	</p>
 <br>
 <div class="btn-group">
-	<%= link_to jig_interface_path(@design), :class => "btn btn-primary" do %> 
+	<%= link_to jig_interface_path(@design, {mode: "draw"}), :class => "btn btn-primary" do %> 
 		<span class="glyphicon glyphicon-pencil"></span> DESIGN
 	<% end %>
 	<%= link_to edit_design_path(@design), :class => "btn btn-default"   do %> 
