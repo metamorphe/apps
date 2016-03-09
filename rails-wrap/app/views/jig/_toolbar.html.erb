@@ -149,16 +149,16 @@ function calibrationScripts(){
 
 
 		<div class="btn-group pull-right">
-			<a href="/jig/interface/1?mode=draw" id="draw-design" data-mode="draw" class="btn btn-norm btn-success">
+			<a href="/jig/interface/<%= @design_obj.id%>?mode=draw" id="draw-design" data-mode="draw" class="btn btn-norm btn-success">
 				<span class='glyphicon glyphicon-edit'></span>
 					Draw
 			</a>
 			
-			<a href="/jig/interface/1?mode=validate" id="validate-design" data-mode="validate" class=" btn btn-norm btn-primary">
+			<a href="/jig/interface/<%=@design_obj.id %>?mode=validate" id="validate-design" data-mode="validate" class=" btn btn-norm btn-primary">
 				<span class='glyphicon glyphicon-check'></span>
 					Validate
 			</a>	
-			<a href="/jig/interface/1?mode=make" id="make-design" data-mode="make" class="btn btn-norm btn-danger">
+			<a href="/jig/interface/<%= @design_obj.id%>?mode=make" id="make-design" data-mode="make" class="btn btn-norm btn-danger">
 				<span class='icon-inkwell'></span>
 					Make
 			</a>

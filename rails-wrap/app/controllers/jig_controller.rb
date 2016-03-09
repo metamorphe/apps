@@ -16,6 +16,7 @@ class JigController < ApplicationController
   def interface
     design = Design.find(params[:id])
     @design = design.to_json.html_safe
+    @design_obj = design
     @files = get_primitives()
     @guides = design.fab_guides.to_json.html_safe
     render :layout => "full_screen"
