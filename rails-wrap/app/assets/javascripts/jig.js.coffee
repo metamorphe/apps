@@ -8,6 +8,7 @@
 //= require paper-full
 //= require scraps/ruler
 //= require proxies/utility
+//= require circuitree/PaperSetup
 //= require circuitree/circuit_designer
 //= require proxies/zoom
 //= require proxies/Tools/Toolbox
@@ -29,6 +30,7 @@
 //= require circuitree/Graph
 //= require circuitree/Node
 //= require circuitree/GraphUtil
+//= require circuitree/EllustrateSVG
 //= require circuitree/EllustratePath
 //= require circuitree/Validator
 //= require circuitree/FabGuide

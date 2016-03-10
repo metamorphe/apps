@@ -24,24 +24,26 @@ Graph.colorizeNodes = function(nodes, color){
 }
 
 Graph.printAdjacencyList = function(){
-	r = graph.getSourceNode();
+		r = graph.getSourceNode();
 		s = graph.getSinkNode();
-		s = Node.get(s).path.terminals[0];
-		r = Node.get(r).path.terminals[0];
-		// console.log(r, s);
 
-		r = paper.project.getItem({id: r}).node;
-		s = paper.project.getItem({id: s}).node;
-	console.log("ROOT", r.id);
-	console.log("BEGIN ADJ");
+		if(!_.isNull(s) && !_.isNull(r)){
+			s = Node.get(s).path.terminals[0];
+			r = Node.get(r).path.terminals[0];
 		
+			r = paper.project.getItem({id: r}).node;
+			s = paper.project.getItem({id: s}).node;
+			console.log("ROOT", r.id);
+			console.log("SINK", s.id);
+		}
+		
+		console.log("BEGIN ADJ");
+			_.each(graph.nodes, function(el, i, arr){
+				console.log(el.self.id, el.getChildren().join(','));
 
-	_.each(graph.nodes, function(el, i, arr){
-		console.log(el.self.id, el.getChildren().join(','));
-
-	});
-	console.log("END ADJ");
-	console.log("SINK", s.id);
+			});
+		console.log("END ADJ");
+	
 }
 
 Graph.printIDs = function(){

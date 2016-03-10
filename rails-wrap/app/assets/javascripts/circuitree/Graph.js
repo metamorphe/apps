@@ -43,11 +43,13 @@ Graph.prototype = {
 		return _.filter(graph.nodes, function(el, i, arr){ return el.id == id})[0];
 	},
 	getPathsToGround: function(){
-
 		r = graph.getSourceNode();
 		s = graph.getSinkNode();
+		if(_.isNull(s) || _.isNull(r)) return [];
+		
 		s = Node.get(s).path.terminals[0];
 		r = Node.get(r).path.terminals[0];
+
 		// console.log(r, s);
 		r = paper.project.getItem({id: r}).node;
 		s = paper.project.getItem({id: s}).node;
@@ -411,10 +413,14 @@ Graph.prototype = {
 		this.nodes.push(node);
 	},
 	getSourceNode: function(){
-		return EllustrateSVG.match( designer.circuit_layer.layer, { prefix: ["CVTB"]})[0].id;	
+		var batt_terminals = EllustrateSVG.match( designer.circuit_layer.layer, { prefix: ["CVTB"]});
+		if(batt_terminals.length > 0) return batt_terminals[0].id;
+		else return null;
 	},
 	getSinkNode: function(){
-		return EllustrateSVG.match( designer.circuit_layer.layer, { prefix: ["CGTB"]})[0].id;	
+		var batt_terminals = EllustrateSVG.match( designer.circuit_layer.layer, { prefix: ["CGTB"]});
+		if(batt_terminals.length > 0) return batt_terminals[0].id;
+		else return null;
 	},
 	
 	update: function(){
