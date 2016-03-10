@@ -1,4 +1,66 @@
-	isValidNodeLocation: function(position){
+<nav class="navbar navbar-default shadowed" role="navigation">
+	  <div class="container-fluid">
+	    <!-- Brand and toggle get grouped for better mobile display -->
+	    <div class="navbar-header">
+	      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+	        <span class="sr-only">Toggle navigation</span>
+	        <span class="icon-bar"></span>
+	        <span class="icon-bar"></span>
+	        <span class="icon-bar"></span>
+	      </button>
+	      <a class="navbar-brand" href="/">
+	      	<b id='logo'>
+	      		<img src="/led.png"/>
+	      	</b>
+	      </a>
+	      <div id="design-name" class="navbar-brand" href="">
+	      	<b contentEditable="true"> </b>
+	      </span>
+	      </div>
+	    </div>
+
+	    <!-- Collect the nav links, forms, and other content for toggling -->
+	    <div class="collapse navbar-collapse" >
+	    	<div id="main-actions">
+		  <%= render :partial => "usernav.html.erb" %>
+
+	      <ul id="history-bar" class="nav navbar-nav pull-right">
+	      	    <li>
+		        	<% link_to "javascript:void(0)", :id=>"revert", :class=>"" do %>
+		          		<span class="glyphicon glyphicon-refresh"></span>
+		        		Revert
+		        	<% end %>
+		        </li>
+		        <li>
+		        	<%= link_to "javascript:void(0)", :id=>"undo", :class=>"" do %>
+		          		<span class="icon-undo"></span>
+		        	<% end %>
+		        </li>
+		      
+		        <li>
+		        	<%= link_to "javascript:void(0)", :id=>"redo" do %>
+		          		<span class="icon-redo"></span>
+		        	<% end %>
+		        </li>
+
+		        <li>
+		        	<%= link_to "javascript:void(0)", :id=>"save-json", :class=>"" do %>
+		          		<span class="glyphicon glyphicon-floppy-disk"></span>
+		        	<% end %>
+		        </li>
+		        <!-- <li>
+		        	<%= link_to :id=>"fast-forward", :class=>"btn btn-md btn-ellustrator" do %>
+		          		<span class="glyphicon glyphicon-repeat"></span>
+		        	<% end %>
+		        </li> -->
+	       </ul>
+	      </div>
+	    </div><!-- /.navbar-collapse -->
+	    
+	  </div><!-- /.container-fluid -->
+	</nav>
+
+		isValidNodeLocation: function(position){
 		
 		var loc = [];
 		var valid =  _.reduce(intersectionNodes, function(memo, el){

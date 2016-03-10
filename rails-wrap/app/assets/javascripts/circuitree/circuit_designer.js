@@ -34,7 +34,7 @@ CircuitDesigner.prototype = {
 		var c = this.container;
 		this.canvas = DOM.tag("canvas")
 				.prop('resize', true)
-				.height(c.height() - 100)
+				.height(c.height() - 50)
 				.width(c.width());
 
 		c.append(this.canvas);	

@@ -192,6 +192,7 @@ Zoom.prototype = {
 		var zoomFactorH = artboard.bounds.height  / canvasHeight;
 		zoomFactorH += 0.05;
 		zoomFactorW += 0.05;
+		
 		_.each(paper.project.layers, function(el, i, arr){
 			var pos = paper.view.center.clone();
 			el.position = pos;
