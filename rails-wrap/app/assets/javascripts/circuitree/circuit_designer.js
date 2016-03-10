@@ -34,7 +34,7 @@ CircuitDesigner.prototype = {
 		var c = this.container;
 		this.canvas = DOM.tag("canvas")
 				.prop('resize', true)
-				.height(c.height())
+				.height(c.height() - 100)
 				.width(c.width());
 
 		c.append(this.canvas);	
@@ -43,7 +43,7 @@ CircuitDesigner.prototype = {
 		this.paper.setup(this.canvas[0]);
 		this.height = this.paper.view.size.height;
 		this.width = this.paper.view.size.width;
-		this.paper.view.zoom = 1.5;	
+		this.paper.view.zoom = 1;	
 		var scope = this; 
 		
 		// Setups tools

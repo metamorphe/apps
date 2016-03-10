@@ -184,21 +184,22 @@ Zoom.prototype = {
 	},
 	home: function(){
 		sys.show("Homing the artboard.");
-		var zoomFactorW = artboard.bounds.width / paper.view.size.width;
-		var zoomFactorH = artboard.bounds.height / (paper.view.size.height -100);
+		
+		var canvasWidth = $('canvas').width(); // bottom part is 100 over
+		var canvasHeight = $('canvas').height();
 
+		var zoomFactorW = artboard.bounds.width  / canvasWidth;
+		var zoomFactorH = artboard.bounds.height  / canvasHeight;
+		zoomFactorH += 0.05;
+		zoomFactorW += 0.05;
+		console.log(zoomFactorH, zoomFactorW);
 		_.each(paper.project.layers, function(el, i, arr){
 			var pos = paper.view.center.clone();
-			pos.y -= 50;
 			el.position = pos;
 		});
 
-		paper.view.zoom /= Math.max(zoomFactorW, zoomFactorH);
-		// _.each(paper.project.layers, function(el, i, arr){
-		// 	var pos = paper.view.center.clone();
-		// 	pos.y -= 50;
-		// 	el.position = pos;
-		// });
+		paper.view.zoom = 1.0 / Math.max(zoomFactorW, zoomFactorH);
+	
 		designer.circuit_layer.resetLegend();
 		paper.view.update();
 	},
