@@ -48,6 +48,16 @@ $(function(){
     window.location = "/jig/generator";
    });
   calibrationScripts();
+  // MOBILE FIX
+
+  	$(".mode, a, button, .btn").on("touchstart", function(){ 
+  		// console.log("Mobile fix");
+    	$(this).removeClass("mobileHoverFix");
+	});
+	$(".mode, a, button, .btn").on("touchend", function(){ 
+		// console.log("Mobile fix");
+	    $(this).addClass("mobileHoverFix");
+	});
 });
 
 function calibrationScripts(){
@@ -150,16 +160,16 @@ function calibrationScripts(){
 
 
 		<div class="btn-group pull-right">
-			<a href="/jig/interface/<%= @design_obj.id%>?mode=draw" id="draw-design" data-mode="draw" class="btn btn-norm btn-success">
+			<a href="/jig/interface/<%= @design_obj.id%>?mode=draw" id="draw-design" data-mode="draw" class="mode btn btn-norm btn-success">
 				<span class='glyphicon glyphicon-edit'></span>
 					Draw
 			</a>
 			
-			<a href="/jig/interface/<%=@design_obj.id %>?mode=validate" id="validate-design" data-mode="validate" class=" btn btn-norm btn-primary">
+			<a href="/jig/interface/<%=@design_obj.id %>?mode=validate" id="validate-design" data-mode="validate" class=" mode btn btn-norm btn-primary">
 				<span class='glyphicon glyphicon-check'></span>
 					Validate
 			</a>	
-			<a href="/jig/interface/<%= @design_obj.id%>?mode=make" id="make-design" data-mode="make" class="btn btn-norm btn-danger">
+			<a href="/jig/interface/<%= @design_obj.id%>?mode=make" id="make-design" data-mode="make" class="mode btn btn-norm btn-danger">
 				<span class='icon-inkwell'></span>
 					Make
 			</a>
@@ -178,6 +188,16 @@ function calibrationScripts(){
 	  </div>
 
 <style>
+/* IPAD FIX */
+
+.mobileHoverFix:hover,
+.mobileHoverFix.hover{
+    background-position: 0 0px;
+}
+
+/* */
+
+
 #send-to-print{
 	z-index: 100000;
 }
