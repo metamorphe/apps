@@ -1,6 +1,3 @@
-
-
-
 CircuitLayer.POSITIVE = new paper.Color("red");
 CircuitLayer.NEGATIVE = new paper.Color("black");
 CircuitLayer.NEUTRAL = new paper.Color("#CCC");
@@ -122,37 +119,16 @@ CircuitLayer.prototype = {
 		if(single){
 			layer.remove();
 			layer.layerClass = scope.className;
-			var cp = new paper.Group({
-				name: "CP: Added trace", 
-				layerClass: scope.className
-			});
-			cp.remove();
-			cp.canvasItem = true;
-			scope.layer.addChild(cp);
-			cp.addChild(layer);
-
-			var trace = layer;
-			console.log("ADDING TO CIRCUIT WITH ENDINGS");
-			var polarity = TracePathTool.detectPolarity(trace);
-
 			
-			// var start = new paper.Path.Circle({
-			// 	parent: cp, 
-			// 	name: "C"+ polarity +"T: trace terminal", 
-			// 	radius: trace.style.strokeWidth * 0.6, 
-			// 	fillColor: trace.style.strokeColor, 
-			// 	position: trace.getPointAt(0)
-			// });
+			var cp = new paper.Group({
+				parent: scope.layer,
+				name: "CP: Added trace", 
+				layerClass: scope.className, 
+				children: [layer], 
+				canvasItem: true
+			});
 
-			// var end = new paper.Path.Circle({
-			// 	parent: cp, 
-			// 	name: "C"+ polarity +"T: trace terminal", 
-			// 	radius: trace.style.strokeWidth * 0.6, 
-			// 	fillColor: trace.style.strokeColor, 
-			// 	position: trace.getPointAt(trace.length)
-			// });
-			// scope.layer.addChild(layer);
-			// this.circuit_view();
+			this.circuit_view();
 		}
 		else{
 			_.each(layer, function(el, i, arr){
