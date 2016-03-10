@@ -27,6 +27,21 @@ function Validator(graph){
 }
 
 Validator.prototype = {
+	validate: function(){
+        errorsA = this.validateLEDsConnectedToGround();
+        errorsB = this.validateOhmThreshold();
+        errorsC = this.checkIfBatteryExists();
+		// console.log(errorsA, errorsB);
+        return _.flatten([errorsA, errorsB, errorsC]);
+	},
+	checkIfBatteryExists: function(){
+		r = graph.getSourceNode();
+   		s = graph.getSinkNode();
+ 		if(_.isNull(s) || _.isNull(r)) 
+			return [{elements: [], message: "You are missing a power source. Try adding a battery."}];
+		else
+			return [];
+	},
 	validateLEDsConnectedToGround: function(){
 		var scope = this;
 		var errors = [];
@@ -93,7 +108,7 @@ Validator.prototype = {
 		var errors = [];
 		// LOOKING AT ONLY THE POSITIVE SIDE
 		var match = this.matchLEDsToPaths();
-		
+
 		// console.log(match);
 		positive_segments = _.map(this.leds, function(led, i){
 			if(! match[i]) return false;

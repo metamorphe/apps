@@ -65,7 +65,7 @@ function TransformTool2(paper){
 			scope.update();
 		}
 		// STOP
-		else if(["rotateend","pinchend"].indexOf(event.type) != -1) {
+		else if(["rotateend","pinchend", "mouseup"].indexOf(event.type) != -1) {
 			if(allowableSubEvents.indexOf(scope.canvas_item_type) != -1){
 				scope[scope.canvas_item_type][eventFN](event, scope);
 			}
@@ -105,6 +105,9 @@ function TransformTool2(paper){
 	}
 	this.tool.onMouseDown = function(event){
 		// route(event, ["element", "canvas"], "onMouseDown");
+	}
+	this.tool.onMouseUp = function(event){
+		route(event, ["element", "canvas"], "onMouseUp");
 	}
 	
 
@@ -209,6 +212,9 @@ TransformTool2.prototype = {
 
 			scope.sm.translate(event.delta);
 		},
+		onMouseUp: function(event, scope){
+			hm.save();
+		}
 	},
 	canvas: {
 		onPinchStart: function(event, scope){
@@ -283,7 +289,7 @@ TransformTool2.prototype = {
 
 		},
 		onMouseUp: function(event, scope){
-
+			hm.save();
 		}
 	},
 	pan:  {
@@ -302,7 +308,7 @@ TransformTool2.prototype = {
 			scope.sm.translate(event.delta);
 		},
 		onMouseUp: function(event, scope){
-		
+			hm.save();
 		}
 	}
 }

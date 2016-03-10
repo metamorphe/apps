@@ -63,11 +63,7 @@
           // graph.disable();
           graph.enable();
           v = new Validator(graph);
-          errorsA = v.validateLEDsConnectedToGround();
-          errorsB = v.validateOhmThreshold();
-          console.log(errorsA, errorsB);
-          errors = _.flatten([errorsA, errorsB]);
-          // errors = [];
+          errors = v.validate();
           v.updateSidePanel(errors);
           graph.disable();
       }
