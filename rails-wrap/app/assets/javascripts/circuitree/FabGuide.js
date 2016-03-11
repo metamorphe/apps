@@ -85,7 +85,7 @@ FabGuide.prototype = {
 					[{level: 1, 
 						icon: "",
 						elements: [], 
-						message: "<b>STEP #" + 1 + ": Attach battery </b>"},
+						message: "<b>STEP #" + 1 + ": ATTACH BATTERY </b>"},
 					{level: 2, 
 						icon: "pen",
 						elements: [el.solution.id], 
@@ -98,11 +98,16 @@ FabGuide.prototype = {
 						icon: "multimeter",
 						multimeter: "voltage", 
 						probeA: led_terminals[0], probeB: led_terminals[1], elements: [el.solution.id], 
-						message: "<b class='check'>Power Check</b>: For all paths, position your probes on the dots. Is the reading approximately <b>3.3 V</b>? (YES | NO) "},
-					{level: 4,
-						icon: "", 
-						elements: [scope.battery.id], 
-						message: "Press the battery down with more pressure."}
+						message: "<b class='check'>Power Check</b>: For all paths, position your probes on the dots. Is the reading approximately <b>3.3 V</b>? (YES | NO) ",
+						debug: [
+							{level: 4,
+								icon: "", 
+								elements: [scope.battery.id], 
+								message: "Press the battery down with more pressure."
+							}
+						]
+					}
+					
 					]
 				);
 			}
@@ -112,7 +117,7 @@ FabGuide.prototype = {
 				{level: 1, 
 					icon: "",
 					elements: [], 
-					message: "<b>STEP #" + (i+ 2) + ": Draw branch </b>"},
+					message: "<b>STEP #" + (i+ 2) + ": DRAW BRANCH </b>"},
 				{level: 2, 
 					icon: "pen",
 					elements: [el.solution.id], 
@@ -128,23 +133,30 @@ FabGuide.prototype = {
 					probeA: el.nodes[0], 
 					probeB: led_terminals[0],  
 					elements: [el.solution.id], 
-					message: "<b class='check'>Resistance Check</b>: Position your probes on the dots. Is the reading less than <b>" + ohmage_upperbound + " Ω</b>? (YES | NO )"},
-				{level: 4,
-					icon: "eye", 
-					elements: [el.solution.id], 
-					message: "Let it dry a little longer and check again."},
+					message: "<b class='check'>Resistance Check</b>: Position your probes on the dots. Is the reading less than <b>" + ohmage_upperbound + " Ω</b>? (YES | NO )",
+					debug: [
+							{level: 4,
+								icon: "eye", 
+								elements: [el.solution.id], 
+								message: "Let it dry a little longer and check again."}
+						]
+					},
+				
 				{level: 3,
 					icon: "multimeter", 
 					multimeter: "resistance", 
 					probeA: el.nodes[0], 
 					probeB: led_terminals[0],  
 					elements: [el.solution.id], 
-					message: "<b class='check'>Resistance Check</b>: Position your probes on the dots. Is the reading less than <b>" + ohmage_upperbound + " Ω</b>? (YES | NO )"},
-				{level: 4,
-					icon: "eye", 
-					elements: [el.solution.id], 
-					message: "Let it dry a little longer and check again."},
-				
+					message: "<b class='check'>Resistance Check</b>: Position your probes on the dots. Is the reading less than <b>" + ohmage_upperbound + " Ω</b>? (YES | NO )",
+					debug: [
+							{level: 4,
+								icon: "eye", 
+								elements: [el.solution.id], 
+								message: "Let it dry a little longer and check again."
+							}
+						]
+					},
 				{level: 2, 
 					icon: "place",
 					elements: [scope.ledIDs[scope.match[i]]], 
@@ -152,11 +164,15 @@ FabGuide.prototype = {
 				{level: 3, 
 					icon: "eye",
 					elements: [scope.ledIDs[scope.match[i]]], 
-					message: "Do the LED(s) turn on?"},
-				{level: 4,
-					icon: "eye", 
-					elements: [scope.ledIDs[scope.match[i]]], 
-					message: "Press the LED(s) down with more pressure."}
+					message: "Do the LED(s) turn on?", 
+				debug: [
+						{level: 4,
+							icon: "eye", 
+							elements: [scope.ledIDs[scope.match[i]]], 
+							message: "Press the LED(s) down with more pressure."}
+						],
+				}
+				
 				]
 			);
 			// LEAVE BATTERY ON IF ITS THE LAST ONE
@@ -181,7 +197,12 @@ FabGuide.prototype = {
 		    	var row = $('<div></div>').addClass("row");
 		    	var col_a = $('<div></div>').addClass('col-xs-2');
 		    	var col_b = $('<div></div>').addClass('col-xs-10');
-		    	row.append([col_a, col_b]);
+		    	if(level == "active"){
+		    		col_a = col_b;
+		    		row.append(col_a);
+		    		col_a.removeClass('col-xs-10').addClass('col-xs-12');
+		    	}else
+			    	row.append([col_a, col_b]);
 		    	guide_dom.append(row);
 
 		    	var icon = "icon-" + el.icon;
