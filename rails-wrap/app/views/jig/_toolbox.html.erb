@@ -20,47 +20,49 @@
 
 <!-- CANVAS TOOLS -->
 <div id="canvas-toolbox" class="toolbox shadowed">
-   <label class="text-shadowed"> CANVAS </label>
+   <!-- <label class="text-shadowed"> CANVAS </label> -->
           
-          <%= button_tag :id => "transform-tool", :class => "btn btn-lg btn-ellustrator" do %>
-            <span class="glyphicon glyphicon-hand-up"></span>
+          <%= button_tag :id => "transform-tool", :class => "btn touch-btn-lg btn-ellustrator" do %>
+            <span class="touch-glyph glyphicon glyphicon-hand-up"></span>
+             <label id="select-label"> SELECT </label>
           <% end %>
           <!-- PAN AND HOME -->
-          <div class="btn-group" role="group" id="zoom-ui" aria-label="zoom-tools">
-              <%= button_tag :id => "canvas-pan-tool", :class => "btn btn-lg btn-ellustrator" do %>
+          <!-- <div class="btn-group" role="group" id="zoom-ui" aria-label="zoom-tools"> -->
+              <%= button_tag :id => "canvas-pan-tool", :class => "btn touch-btn-120 touch-btn-md btn btn-lg btn-ellustrator" do %>
                 <span class="icon-pan"></span>
               <% end %>   
 
-               <%= button_tag :id=>"homing", :class=>"btn btn-lg btn-ellustrator" do %>
+               <%= button_tag :id=>"homing", :class=>"btn touch-btn-150 touch-btn-md btn btn-lg btn-ellustrator" do %>
                 <span class="icon-homing"></span>
               <% end %>
-          </div>
+          <!-- </div> -->
 </div>
 
 <div id="circuit-toolbox" class="toolbox shadowed">
-     <label> CIRCUIT LAYER </label>
+     <!-- <label> CIRCUIT LAYER </label> -->
     
       <!-- PATH TOOLS -->
       <div class="btn-group" role="group" aria-label="pen-tools">
-        <%= button_tag :id => "path-tool", :class => "btn btn-lg btn-ellustrator" do %>
-        <span class="icon-path"></span>
+        <%= button_tag :id => "path-tool", :class => "btn touch-btn-lg btn-ellustrator" do %>
+        <span class="touch-icon-path"></span> 
+        <label> CIRCUIT </label>
         <% end %>
       </div>
       
       <!-- REMOVE ITEMS -->
-      <%= button_tag :id=>"remove-element", :class=>"btn btn-lg btn-ellustrator" do %>
+      <%= button_tag :id=>"remove-element", :class=>"btn touch-btn-md touch-btn-60 btn-ellustrator" do %>
         <span class="icon-delete-path"></span>
       <% end %>
       
         <!-- BRUSH SIZE BUTTONS -->
-      <div class="btn-group" role="group" aria-label="pen-tools">
-        <%= button_tag :id => "brush-size-increase", :class => "btn btn-lg btn-ellustrator" do %>
+      <!-- <div class="btn-group" role="group" aria-label="pen-tools"> -->
+        <%= button_tag :id => "brush-size-increase", :class => "btn touch-btn-30 touch-btn-md btn-ellustrator" do %>
         <span class="icon-brush-size-increase"></span>
         <% end %>
-        <%= button_tag :id => "brush-size-decrease", :class => "btn btn-lg btn-ellustrator" do %>
+        <%= button_tag :id => "brush-size-decrease", :class => "btn touch-btn-45 touch-btn-md btn-ellustrator" do %>
         <span class="icon-brush-size-decrease"></span>
         <% end %>
-      </div> 
+      <!-- </div>  -->
   </div>   
 
 
@@ -84,24 +86,36 @@
   position: absolute;
   top: 280px;
   right: 5px;
+  background: none;
+  border: none;
+  box-shadow: none;
   /*calc(34% + 98px + 10px);*/
   width: 120px;
 }
 #canvas-toolbox {
   position: absolute;
-  top: 60px;
-  left: 0px;
+  bottom: 50px;
+  right: 160px;
+   background: none;
+  border: none;
+  box-shadow: none;
   /*calc(34% + 98px + 10px);*/
-  width: 180px;
   z-index: 100000;
+}
+#select-label{
+    top: 110px;
+    left: 25px;
 }
 #circuit-toolbox{
   position: absolute;
-  top: 160px;
+  bottom: 50px;
   /*left: 10px;*/
   /*left: 310px;*/
-  left: 0px;
-  width: 250px;
+  right: 50px;
+  /*width: 250px;*/
+  background: none;
+  border: none;
+  box-shadow: none;
   z-index: 1000000;
 }
 #artwork-toolbox {
@@ -111,14 +125,86 @@
   width: 210px;
   display: none;
 }
+.touch-btn-lg{
+    height: 100px;
+    width: 100px;
+    padding: 10px 16px;
+    line-height: 1.33;
+    border-radius: 100px;
+}
+.touch-btn-lg > label{
+  display: block;
+  font-size: 14px !important;
+  position: relative;
+  text-align: left;
+  bottom: 15px;
+  width: 100%;
+  left: 20px;
+  font-size: 18pt;
+}
+
+  [class^='touch-icon-']:before {
+      display: inline-block;
+      font-family: 'Glyphter';
+      font-style: normal;
+      font-weight: normal;
+      line-height: 0.4;
+      font-size: 25pt;
+      padding-top: 0px;
+      padding-bottom: 0px;
+      position: relative;
+      top: 0px;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+  }
+.touch-glyph{
+  top: -5px;
+  font-size: 18pt;
+}
+.touch-btn-md{
+  padding: 10px 16px;
+  font-size: 18px;
+  line-height: 1.33;
+  border-radius: 40px;
+}
+.touch-btn-150{
+  position: absolute;
+  top: calc(55px - 80px);
+  left: calc(30px - 15px);
+  border: white 1px solid;
+}
+.touch-btn-60{
+  position: absolute;
+  top: calc(55px - 85px);
+  left: calc(30px + 15px);
+  border: white 1px solid;
+}
+.touch-btn-30{
+  position: absolute;
+  top: calc(55px - 50px);
+  left: calc(30px + 65px);
+  border: white 1px solid;
+}
+.touch-btn-120{
+  position: absolute;
+  top: calc(55px - 50px);
+  left: calc(30px - 65px);
+  border: white 1px solid;
+}
+.touch-btn-45{
+  position: absolute;
+  top: calc(55px - 0px);
+  left: calc(30px + 80px);
+  border: white 1px solid;
+}
 .btn-ellustrator{
   color: #FFF;
   background: #5d5d5d;
 }
-.btn-ellustrator:not(.btn-xs), #run-tool, #ohm-tool{
+/*.btn-ellustrator:not(.btn-xs), #run-tool, #ohm-tool{
   height: 36px;
   overflow: hidden;
-}
+}*/
 .btn-ellustrator.btn-lg{
   height: 48px;
   overflow: hidden;
@@ -155,7 +241,7 @@
   font-family: "Glyphter";
   color: white;
 }
-  .toolbox label:not(.info){
+  .toolbox label{
     font-family: "Helvetica", "Arial", sans-serif;
     font-weight: bold;
     color: #ddddd;
