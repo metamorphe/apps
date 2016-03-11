@@ -5,14 +5,14 @@ var files = <%= @files.to_json.html_safe %>;
 var collections; 
 
 $(function(){
-  $('#toggle-switch').click(function(){
-     $(this).parents('#collection').slideUp();
-     $("#big-undo").animate({
-        bottom: "-=200"
-      }, 500, function() {
-        // Animation complete.
-      });
-  });
+  // $('#toggle-switch').click(function(){
+  //    $(this).parents('#collection').slideUp();
+  //    $("#big-undo").animate({
+  //       bottom: "-=200"
+  //     }, 500, function() {
+  //       // Animation complete.
+  //     });
+  // });
   collections = new Collection(files);
   
   collections.switchTo("Artwork");
