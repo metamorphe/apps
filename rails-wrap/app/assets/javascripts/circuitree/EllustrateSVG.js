@@ -46,7 +46,7 @@ EllustrateSVG.prototype = {
 
 
 			if(ARTBOARD.length == 0){
-				// console.log("Adding artboard", ARTBOARD);
+				console.log("Adding artboard", ARTBOARD);
 				artboard = new paper.Group({
 					parent: designer.art_layer.layer,
 					position: paper.view.center,
@@ -78,15 +78,17 @@ EllustrateSVG.prototype = {
 				var gtext_adj = gtext.bounds;
 				gtext.point.x -= gtext_adj.width + 15;
 				gtext.point.y += gtext_adj.height + 10;
+			
 				
 			}else{
-				// console.log("Using artboard", ARTBOARD);
+				console.log("Using artboard", ARTBOARD);
 				artboard = ARTBOARD[0];
 				designer.art_layer.layer.addChild(ARTBOARD[0]);
 			
 			}
 			
 		}
+		zoom.home();
 
 
 		// console.log(ARTBOARD[0].bounds);

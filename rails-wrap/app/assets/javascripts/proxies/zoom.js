@@ -183,6 +183,7 @@ Zoom.prototype = {
 		if(this.level < Zoom.MIN) this.level = Zoom.MIN;
 	},
 	home: function(){
+		if(_.isUndefined(artboard)) return;
 		console.log("HOME");
 		sys.show("Homing the artboard.");
 		if(current_mode == "draw"){
