@@ -204,7 +204,8 @@ Zoom.prototype = {
 			sys.show("Homing the artboard.");
 			var canvasWidth = $('canvas').width(); // bottom part is 100 over
 			var canvasHeight = $('canvas').height();
-			var width_offset = canvasWidth * 0.31;
+			var width_offset = canvasWidth * 0.24;
+			// var offset = canvasWidth * 0.10;
 			canvasWidth -= width_offset;
 
 			// console.log(width_offset, canvasHeight, canvasWidth);
@@ -213,13 +214,18 @@ Zoom.prototype = {
 			zoomFactorH += 0.05;
 			zoomFactorW += 0.05;
 			
+		
+			paper.view.zoom = 1.0 / Math.max(zoomFactorW, zoomFactorH);
+			
+
+			var x_off = ((paper.view.size.width - width_offset)  - artboard.bounds.width ) / 2;
+
 			_.each(paper.project.layers, function(el, i, arr){
 				var pos = paper.view.center.clone();
-				pos.x -= width_offset/2;
+				pos.x -= 145;
 				el.position = pos;
 			});
 
-			paper.view.zoom = 1.0 / Math.max(zoomFactorW, zoomFactorH);
 		}
 		designer.circuit_layer.resetLegend();
 		paper.view.update();
