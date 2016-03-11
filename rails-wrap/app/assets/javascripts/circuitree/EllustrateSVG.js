@@ -46,7 +46,7 @@ EllustrateSVG.prototype = {
 
 
 			if(ARTBOARD.length == 0){
-				console.log("Adding artboard", ARTBOARD);
+				// console.log("Adding artboard", ARTBOARD);
 				artboard = new paper.Group({
 					parent: designer.art_layer.layer,
 					position: paper.view.center,
@@ -81,7 +81,7 @@ EllustrateSVG.prototype = {
 			
 				
 			}else{
-				console.log("Using artboard", ARTBOARD);
+				// console.log("Using artboard", ARTBOARD);
 				artboard = ARTBOARD[0];
 				designer.art_layer.layer.addChild(ARTBOARD[0]);
 			

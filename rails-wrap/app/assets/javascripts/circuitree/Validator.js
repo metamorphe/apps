@@ -1,26 +1,29 @@
 function Diode(id){
 	this.id = id;
-	this.node = Node.get(id).node;
+	this.item = Node.get(id);
 	this.positive_terminal;
 	this.negative_terminal;
 	this.terminals;
+	this.init();
 }
+
 Diode.prototype = {
 	init: function(){
-		this.positive_terminal = EllustrateSVG.match(el, {prefix: ["CVT"]})[0].path;
+		this.positive_terminal = EllustrateSVG.match(this.item, {prefix: ["CVT"]})[0].path;
 
-		if(!_.isUndefined(positive_terminal)) this.positive_terminal = this.positive_terminal.terminals;
+		if(!_.isUndefined(this.positive_terminal)) this.positive_terminal = this.positive_terminal.terminals[0];
 		else this.positive_terminal = [];
 
-		this.negative_terminal = EllustrateSVG.match(el, {prefix: ["CGT"]})[0].path; 
+		this.negative_terminal = EllustrateSVG.match(this.item, {prefix: ["CGT"]})[0].path; 
 
-		if(!_.isUndefined(negative_terminal)) this.negative_terminal = this.negative_terminal.terminals;
+		if(!_.isUndefined(this.negative_terminal)) this.negative_terminal = this.negative_terminal.terminals[0];
 		else this.negative_terminal = [];
 
 		this.terminals = _.flatten([this.negative_terminal, this.positive_terminal]);
 	}, 
 	whichPath: function(arrOfPathNodeIDArr){
 		var scope = this;
+		console.log(arrOfPathNodeIDArr);
 		inPaths = _.filter(arrOfPathNodeIDArr, function(nodeIDArray, i){
 			return {idx: i, nodes: scope.inPath(nodeIDArray)}
 		});
@@ -47,15 +50,42 @@ Diode.prototype = {
 		var nodes = nodeIDArray;
 		var idx = nodes.indexOf(this.negative_terminal);
 		return nodes.slice(idx, nodes.length - 1);
+	}, 
+	getPathsToPower: function(){
+		r = graph.getSourceNode();
+		if(_.isNull(r)) return [];
+		
+		r = Node.get(r).path.terminals[0];
+		r = Node.get(r).node;
+
+		p = this.positive_terminal;
+		p = Node.get(p).node;
+		
+		// console.log("PATH FROM", r.id, p.id)
+		results = Graph.printAllPaths(r, p);
+
+		return EllustratePath.sortAndMake(results);
+	}, 
+	getPathsToGround: function(){
+		r = graph.getSinkNode();
+		if(_.isNull(r)) return [];
+		
+		r = Node.get(r).path.terminals[0];
+		r = Node.get(r).node;
+
+		n = this.negative_terminal;
+		n = Node.get(n).node;
+		
+		// console.log("PATH FROM", r.id, n.id)
+		results = Graph.printAllPaths(r, n);
+
+		return EllustratePath.sortAndMake(results);
 	}
 }
 
 Validator.RESISTANCE_THRESHOLD = 300;
 function Validator(graph){
 	this.graph = graph;
-	
-	
-
 	// this.ledIDs = _.map(leds, function(led){
 	// 		return led.id;
 	// 	});
@@ -79,6 +109,9 @@ Validator.prototype = {
 			return EllustratePath.toNodesArr(path);
 		});
 		var leds = EllustrateSVG.get({name:"CP:_circuit_x5F_led_1_"});
+		this.diodes = _.map(leds, function(led){
+			return new Diode(led.id);
+		});
 		var total_path_length = _.reduce(solutions, function(memo, el){
 			return memo + el.length;
 		}, 0);
@@ -96,12 +129,14 @@ Validator.prototype = {
 	},
 	validate: function(){
 		graph.enable();
+		bom = this.bom();
+        msgsC = this.checkIfBatteryExists();
+		
         msgsA = this.validateLEDsConnectedToGround();
         msgsB = this.validateOhmThreshold();
-        msgsC = this.checkIfBatteryExists();
-		// console.log(errorsA, errorsB);
-        // return _.flatten([msgsA, errorsB, errorsC]);
-        msgs =  _.flatten([this.bom(), msgsA, msgsB, msgsC]);
+       // console.log(errorsA, errorsB);
+        // return _.flatten([errorsC, msgsA, errorsB, ]);
+        msgs =  _.flatten([bom, msgsC, msgsA, msgsB]);
       
         this.updateSidePanel(msgs);
         graph.disable();
@@ -109,6 +144,7 @@ Validator.prototype = {
 	checkIfBatteryExists: function(){
 		r = graph.getSourceNode();
    		s = graph.getSinkNode();
+   		console.log("BATTERY EXISTS", _.isNull(s) || _.isNull(r), r, s)
  		if(_.isNull(s) || _.isNull(r)) 
 			return [{level: 5, 
 						elements: [], 
@@ -122,47 +158,53 @@ Validator.prototype = {
 	},
 	validateLEDsConnectedToGround: function(){
 		var scope = this;
-		var errors = [];
-	
-		var valid = [];
-		// console.log("PATHS", this.paths)
-		for(var i in this.leds){
-			var led = this.leds[i];
-			var is_connected = false;
-			for(var j in this.paths){
-				var nodes = this.paths[j];
-				var in_path = _.reduce(led, function(memo, terminal){
-					// console.log(terminal, nodes)
-					var inside = nodes.indexOf(terminal) > -1;
-					if(inside)
-						return memo + 1;
-					else
-						return memo;
-				}, 0);
-				// console.log(nodes, led, in_path);
-				is_connected = is_connected || in_path >=2;
-				if(is_connected) break;
-			}
-			valid.push(is_connected);
-		};
-		// console.log(valid);
-
-		errors = _.map(valid, function(v, i, arr){
-			if(!v) return {level: 5, 
-							elements: [scope.ledIDs[i]], 
-							message: "The LED is not connected to power or ground."
-						}
-			else return false;
+		console.log("Checking LEDS: " + this.diodes.length)
+		
+		var powered = _.map(this.diodes, function(diode, i){
+			return diode.getPathsToPower();
 		});
+
+		var grounded = _.map(this.diodes, function(diode, i){
+			return diode.getPathsToGround();
+		});
+
+		var errors = _.map(this.diodes, function(diode, i){
+			var isGrounded = grounded[i].length > 0;
+			var isPowered = grounded[i].length > 0;
+			if(! isGrounded || ! isPowered){
+				return {level: 5, 
+							elements: [diode.id], 
+							message: "The LED is not connected to ground or power."
+						}
+
+			}
+
+			if(! isGrounded){
+				return {level: 5, 
+							elements: [diode.id], 
+							message: "The LED is not connected to ground."
+						}
+			}
+			if(! isPowered){
+				return {level: 5, 
+							elements: [diode.id], 
+							message: "The LED is not connected to power."
+						}
+			}
+
+			return false;
+		});
+		errors = _.compact(errors);
 		if(errors.length == 0){
 			return [{level: 6, 
 							glyph: "check",
 							elements: [], 
 							message: "All LEDs connected to battery ground."
 						}]
+		}else{
+			return errors;
 		}
-		// ERROR LED ID, MESSAGE
-		return _.compact(errors);
+		
 	}, 
 	matchLEDsToPaths: function(){
 		var match = [];
@@ -250,43 +292,12 @@ Validator.prototype = {
 		dom.html("");	
 		
 		// BILL OF MATERIALS
-	
-
-		// ERRORS
-		// if(errors.length == 0){
-    		// dom.append($('<li class="list-group-item list-group-item-success"> All LEDs connected to battery ground. </li>'));
-    		// dom.append($('<li class="list-group-item list-group-item-success"> Resistance looks good! </li>'));
-    		// dom.append($('<li class="list-group-item list-group-item-success"> No overlapping positive/negative paths. </li>'));
-		// } else{
-			_.each(msgs, function(el, i, arr){
-		    	guideDOM = Validator.generateSidePanelNode(el);
-		    	dom.append(guideDOM);
-			});
-		// }
-	
+		_.each(msgs, function(el, i, arr){
+		   	guideDOM = Validator.generateSidePanelNode(el);
+		   	dom.append(guideDOM);
+		});
+		
 	}, 
-	
-	// generateSidePanelNode: function(dom, el){
-	// 	var err_dom = $('<li class="list-group-item list-group-item-danger">'+ el.message +'</li>');
-	// 	err_dom.attr('data-highlight', el.elements.join(','));
- //    	err_dom.hover(
- //    		function(){
-	//     		elements = $(this).attr('data-highlight').split(',');
-	//     		_.each(elements, function(el, i, arr){
-	//     			var el = Node.get(parseInt(el));
-	//     			OhmTool.glow(el, true);
-	//     		});
-	//     	}, 
-	//     	function(){
-	//     		elements = $(this).attr('data-highlight').split(',');
-	//     		_.each(elements, function(el, i, arr){
-	//     			var el = Node.get(parseInt(el));
-	//     			OhmTool.glow(el, false);
-	//     		});
-	//     	}
-	//     );
-	// 	dom.append(err_dom);
-	// }
 }
 
 

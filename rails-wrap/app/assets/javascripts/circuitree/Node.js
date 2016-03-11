@@ -126,7 +126,12 @@ Node.prototype = {
 		this.self.remove();
 	},
 	enable: function(){
+		if(_.isUndefined(this.self.homed)){
+			this.self.homed = true;
+			this.self.position.x -= 145;
+		}
 		this.parent.addChild(this.self);
+		this.self.parent.bringToFront();
 	},
 	getPosition: function(){
 		var pos = this.self.position;

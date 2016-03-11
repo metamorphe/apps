@@ -72,6 +72,7 @@ Graph.prototype = {
 		_.each(this.nodes, function(node){
 			node.enable();
 		});
+
 		paper.view.update();
 	},
 	disable: function(){

@@ -1,3 +1,24 @@
+EllustratePath.sortAndMake = function(results){
+	var color = new paper.Color("red");
+	hue = 0;
+
+	ptgs = _.map(results, function(el, i, arr){
+		myColor = color.clone();
+		myColor.hue = hue;
+		var ptg = new EllustratePath(el, myColor);
+		hue += 20;
+		return ptg;
+	});
+
+	sorted = _.sortBy(ptgs, function(ptg){ return ptg.length;});
+	
+	sorted = _.uniq(ptgs, function(ptg){ 
+		return (ptg.length / 20).toFixed(0);
+	});
+	
+	solutions = sorted;
+	return solutions;
+}
 EllustratePath.toNodesArr = function(path){
 	return _.map(path.str.split('-'), function(el){ return parseInt(el);});
 }

@@ -184,7 +184,7 @@ Zoom.prototype = {
 	},
 	home: function(){
 		if(_.isUndefined(artboard)) return;
-		console.log("HOME");
+		// console.log("HOME");
 		sys.show("Homing the artboard.");
 		if(current_mode == "draw"){
 			var canvasWidth = $('canvas').width(); // bottom part is 100 over
