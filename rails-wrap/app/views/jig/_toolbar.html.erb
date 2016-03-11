@@ -12,14 +12,14 @@ $(function(){
 		lib_on = !lib_on;
 
 		if(lib_on){
-		 $("#big-undo").animate({
+		 $("#big-undo, #circuit-toolbox, #canvas-toolbox").animate({
 		    bottom: "+=200"
 		  }, 500, function() {
 		    // Animation complete.
 		  });
 		}
 		else{
-		 $("#big-undo").animate({
+		 $("#big-undo, #circuit-toolbox, #canvas-toolbox").animate({
 		    bottom: "-=200"
 		  }, 500, function() {
 		    // Animation complete.

@@ -89,6 +89,7 @@ CircuitDesigner.prototype = {
 
 		eSVG = new EllustrateSVG(item[0], scope, CircuitDesigner.ARTBOARD_ADD);
    		scope.update();
+   		$('#shade').fadeOut(1000);
 
 	},
 	json: function(){
