@@ -52,7 +52,13 @@ Node.allChildren = function(nodes, nodeIDs){
 }
 Node.toNodes = function(nodeIDs){
 	return _.map(nodeIDs, function(node){
-		return Node.get(node).node;
+		var n = Node.get(node);
+		if(!n) return n;
+		if(_.isUndefined(n.node)){
+			console.error("Attempted to extract node from", n);
+			return null;
+		}
+		return n.node;
 	});
 }
 Node.toNodeIDs = function(nodes){
@@ -60,8 +66,22 @@ Node.toNodeIDs = function(nodes){
 		return node.id;
 	});
 }
+Node.get = function(id){
+	var n =	paper.project.getItem({id: id});
+	if(_.isNull(n)){
+		console.error("Attempted to Node.get", id);
+	}
+	return n;
+}
+Node.isValid = function(id){
+	return !_.isNull(Node.get(id));
+}
 Node.join = function(nodeIDs){
-	var nodeIDs = nodeIDs;
+	// console.log("JOIN", nodeIDs);
+	var nodeIDs = _.filter(nodeIDs, function(id){
+		return Node.isValid(id);
+	});
+	if(nodeIDs.length == 0) return null;
 	var nodes = Node.toNodes(nodeIDs)
 	
 	var centroid = Node.centroid(nodes);
@@ -100,9 +120,6 @@ Node.join = function(nodeIDs){
 	return {position: centroid, paths: updated_paths, children: children};
 }
 
-Node.get = function(id){
-	return paper.project.getItem({id: id});
-}
 
 Node.prototype = {
 	disable: function(){

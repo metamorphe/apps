@@ -183,26 +183,48 @@ Zoom.prototype = {
 		if(this.level < Zoom.MIN) this.level = Zoom.MIN;
 	},
 	home: function(){
+		console.log("HOME");
 		sys.show("Homing the artboard.");
-		
-		var canvasWidth = $('canvas').width(); // bottom part is 100 over
-		var canvasHeight = $('canvas').height();
+		if(current_mode == "draw"){
+			var canvasWidth = $('canvas').width(); // bottom part is 100 over
+			var canvasHeight = $('canvas').height();
 
-		var zoomFactorW = artboard.bounds.width  / canvasWidth;
-		var zoomFactorH = artboard.bounds.height  / canvasHeight;
-		zoomFactorH += 0.05;
-		zoomFactorW += 0.05;
-		
-		_.each(paper.project.layers, function(el, i, arr){
-			var pos = paper.view.center.clone();
-			el.position = pos;
-		});
+			var zoomFactorW = artboard.bounds.width  / canvasWidth;
+			var zoomFactorH = artboard.bounds.height  / canvasHeight;
+			zoomFactorH += 0.05;
+			zoomFactorW += 0.05;
+			
+			_.each(paper.project.layers, function(el, i, arr){
+				var pos = paper.view.center.clone();
+				el.position = pos;
+			});
 
-		paper.view.zoom = 1.0 / Math.max(zoomFactorW, zoomFactorH);
-	
+			paper.view.zoom = 1.0 / Math.max(zoomFactorW, zoomFactorH);
+		} else{
+			sys.show("Homing the artboard.");
+			var canvasWidth = $('canvas').width(); // bottom part is 100 over
+			var canvasHeight = $('canvas').height();
+			var width_offset = canvasWidth * 0.31;
+			canvasWidth -= width_offset;
+
+			// console.log(width_offset, canvasHeight, canvasWidth);
+			var zoomFactorW = artboard.bounds.width  / canvasWidth;
+			var zoomFactorH = artboard.bounds.height  / canvasHeight;
+			zoomFactorH += 0.05;
+			zoomFactorW += 0.05;
+			
+			_.each(paper.project.layers, function(el, i, arr){
+				var pos = paper.view.center.clone();
+				pos.x -= width_offset/2;
+				el.position = pos;
+			});
+
+			paper.view.zoom = 1.0 / Math.max(zoomFactorW, zoomFactorH);
+		}
 		designer.circuit_layer.resetLegend();
 		paper.view.update();
 	},
+
 	in: function(){
 		this.level += Zoom.STEP;
 		this.checkbounds();

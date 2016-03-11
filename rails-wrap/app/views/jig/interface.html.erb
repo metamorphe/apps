@@ -14,7 +14,7 @@
 
   var modes = {
     // edit: "rgb(207, 244, 255)", 
-    draw: {color: "rgb(92, 184, 92)", dom: '#add-library, #system-messages, #history-bar, #canvas-toolbox, #big-undo, #clear-canvas-and-history,  #circuit-toolbox'}, 
+    draw: {color: "rgb(92, 184, 92)", dom: '#save-actions, #add-library, #system-messages, #history-bar, #canvas-toolbox, #big-undo, #clear-canvas-and-history,  #circuit-toolbox'}, 
     validate: {color:"rgb(66, 139, 202)", dom: '#debug-guide'}, 
     make: {color:"rgb(217, 83, 79)", dom: '#fab-guide'}
   };
@@ -28,44 +28,24 @@
       var mode = GET().mode; //$(this).attr('data-mode');
       $('#interface-container').css("background", modes[mode].color);
       console.log("mode", mode);
+      
       for(var i in modes){
-
         if(i == mode){
           $(modes[i].dom).show(200);
           $(modes[i].dom).show(200);
         }else{
           $(modes[i].dom).hide(200);
         }
-
-        if(["validate", "make"].indexOf(mode) > -1){
-          zoom.home();
-          // var w2 = paper.project.activeLayer.bounds.width;
-          
-
-          // var w = $('body').width();
-          // var stop = w * 0.20;
-          // w -= stop;
-          // var center = w/2;
-
-          // center *= paper.view.zoom;
-          // // console.log(w);
-
-          paper.project.activeLayer.position.x -= 100;
-          // - paper.project.activeLayer.bounds.width;
-        }
-        else{
-          zoom.home();
-        }
       }
+
       if(mode == "validate"){
           graph = new Graph();
-          
-          // graph.disable();
           graph.enable();
           v = new Validator(graph);
           errors = v.validate();
           v.updateSidePanel(errors);
           graph.disable();
+          
       }
       if(mode == "make"){
           graph = new Graph();
@@ -74,52 +54,35 @@
           f = new FabGuide(graph);
           f.updateSidePanel();
           graph.disable();
+          
       }
+     
       current_mode = mode;
-    // });
-    
-    // $('#draw-design').click();
+     
   }
   $(function(){
     attachHandlers();
-    // dim = new DimensionsPreview($("#sandbox"));
-    // dim.dom.css({
-    //   bottom: 0, 
-    //   right: 0, 
-    //   left: "auto", 
-    //   top: "auto"
-    // });
-    // dim.set(0, 0, 0);
-    
+
     sys = new SystemMessageManager($('#system-messages'));
 
     storage = new WebStorage();
     designer = new CircuitDesigner($("#sandbox"));
+    zoom = new Zoom(designer.paper.view.zoom, designer.paper);
+
     hm = new HistoryManager(storage);
     
-    Graph.test();
+    // Graph.test();
     // Graph.printIDs();
-  
 
-    zoom = new Zoom(designer.paper.view.zoom, designer.paper);
+    
     guide = new FabricationGuide($("#fab-guide"));
     debug = new DebugGuide($("#debug-guide"));
 
-   
-
     alerter = new Alerter($('#alerter'));
-    // AUTOSAVE
-    // setInterval(function(){ 
-    //   hm.save();
-    //   sys.log("Design auto-saved!");
-    // }, 10000);
-    // END AUTOSAVE
-
-    // collections.switchTo("Artwork")
-    // dropLogic();
-    // designer.addSVG("/primitives/PrettyCircuit_Bird.svg", paper.view.center);
+   
+   
     modify();
-    
+    zoom.home();
     // zoom.home();
   });
 

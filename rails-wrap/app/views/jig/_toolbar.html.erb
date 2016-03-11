@@ -111,12 +111,12 @@ function calibrationScripts(){
 			</a>
 		</div>
 
-		<div class="btn-group pull-right">
-			<button id="send-to-print" class="pull-right btn btn-norm btn-ellustrator">
+		<div id="save-actions" class="btn-group pull-right">
+			<button id="send-to-print" class="btn btn-norm btn-ellustrator">
 				<span class='glyphicon glyphicon-print'></span>
 				Print
 			</button>
-			<%= button_tag "javascript:void(0)", :id=>"save-json", :class=>"btn btn-norm btn-ellustrator" do %>
+			<%= button_tag :id=>"save-json", :class=>"btn btn-norm btn-ellustrator" do %>
 	      		<span class="glyphicon glyphicon-floppy-disk"></span>
 	      		Save to Server
 	    	<% end %>

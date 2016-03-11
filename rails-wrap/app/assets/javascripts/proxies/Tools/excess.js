@@ -1,3 +1,18 @@
+regenerate: function(){
+		console.log("Regenerating!");
+		this.enable();
+		nodeIDs = Node.toNodeIDs(this.nodes);
+		Node.join(nodeIDs);
+		this.removeNodes(nodeIDs);
+		// END OF DESTRUCTION
+		
+		_.each(this.lines, function(line){
+				line.parent.addChild(line.el);
+		});
+		this.init();
+		paper.view.update();
+	}, 
+
 <nav class="navbar navbar-default shadowed" role="navigation">
 	  <div class="container-fluid">
 	    <!-- Brand and toggle get grouped for better mobile display -->

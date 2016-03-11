@@ -24,21 +24,6 @@ Graph.prototype = {
 			return {el: el, parent: parent}
 		});
 	},
-	
-	regenerate: function(){
-		console.log("Regenerating!");
-		this.enable();
-		nodeIDs = Node.toNodeIDs(this.nodes);
-		Node.join(nodeIDs);
-		this.removeNodes(nodeIDs);
-		// END OF DESTRUCTION
-		
-		_.each(this.lines, function(line){
-				line.parent.addChild(line.el);
-		});
-		this.init();
-		paper.view.update();
-	}, 
 	find: function(id){
 		return _.filter(graph.nodes, function(el, i, arr){ return el.id == id})[0];
 	},
@@ -202,23 +187,24 @@ Graph.prototype = {
 			// console.log(g);
 			// console.log(i.split(","));
 			test = Node.join(g);
-			n = new Node(test.paths, test.position);
-			nodes.push(n);
-			// console.log(g, "-->", n.id);
-			
-			scope.addNode(n);
-			
+			if(!_.isNull(test)){
+				n = new Node(test.paths, test.position);
+				nodes.push(n);
+				// console.log(g, "-->", n.id);
+				
+				scope.addNode(n);
+				
 
-			test.children.push(n.id);
-			_.each(test.children, function(child, i, arr){
-				// console.log("HMM", child, n.id);
-				var x = Node.get(child).node;
-				// console.log(n.id);
-				x.children.push(n.id);
-			});
-			scope.removeNodes(g);
-			n.setChildren(test.children);
-
+				test.children.push(n.id);
+				_.each(test.children, function(child, i, arr){
+					// console.log("HMM", child, n.id);
+					var x = Node.get(child).node;
+					// console.log(n.id);
+					x.children.push(n.id);
+				});
+				scope.removeNodes(g);
+				n.setChildren(test.children);
+			}
 		});
 
 		// console.log("NODE", n.self.id);

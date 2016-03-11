@@ -181,5 +181,6 @@ Validator.prototype = {
 		    	dom.append(err_dom);
 			});
 		}
+	
 	}
 }

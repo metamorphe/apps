@@ -17,7 +17,6 @@ function CircuitDesigner(container){
 	var self = this;
 	this.animation_handler = new AnimationHandler(paper);
 	this.state = {};
-
 }
 
 CircuitDesigner.prototype = {
@@ -43,6 +42,9 @@ CircuitDesigner.prototype = {
 		this.paper.setup(this.canvas[0]);
 		this.height = this.paper.view.size.height;
 		this.width = this.paper.view.size.width;
+
+	    zoom = new Zoom(this.paper.view.zoom, this.paper);
+
 		this.paper.view.zoom = 1;	
 		var scope = this; 
 		
@@ -71,6 +73,8 @@ CircuitDesigner.prototype = {
 		    	item.position = position;
 				eSVG = new EllustrateSVG(item, scope, CircuitDesigner.UNIT_ADD);
 	    		hm.save();
+	    		zoom.home();
+	    		zoom.home();
 	    	}
 		});
 	},
@@ -85,6 +89,7 @@ CircuitDesigner.prototype = {
 
 		eSVG = new EllustrateSVG(item[0], scope, CircuitDesigner.ARTBOARD_ADD);
    		scope.update();
+
 	},
 	json: function(){
 		return paper.project.exportJSON({
