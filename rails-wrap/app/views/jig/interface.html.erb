@@ -40,11 +40,10 @@
 
       if(mode == "validate"){
           graph = new Graph();
-          graph.enable();
+         
           v = new Validator(graph);
-          errors = v.validate();
-          v.updateSidePanel(errors);
-          graph.disable();
+          v.validate();
+          
           
       }
       if(mode == "make"){

@@ -227,7 +227,7 @@ Graph.prototype = {
 
 		nodeCs = _.reject(nodeCs, function(n){ return n.id == nodeID});
 
-		if(nodeID == 70) console.log("NODECs 70:", nodeCs);
+		// if(nodeID == 70) console.log("NODECs 70:", nodeCs);
 
 		inside = _.filter(nodeCs, function(el, i, arr){
 			return nodePath.position.isInside(el.bounds) || el.position.isInside(nodePath.bounds);
@@ -245,7 +245,7 @@ Graph.prototype = {
 		var scope = this;
 		var blobs = ["CGB", "CVB", "CNB", "CGT", "CVT", "CNT", "CNTB", "CVTB", "CGTB"];
 		blobs = EllustrateSVG.match(designer.circuit_layer.layer, { prefix: blobs });
-		console.log("Blob count", blobs.length);
+		// console.log("Blob count", blobs.length);
 		var traces = ["CGP", "CVP", "CNP"];		
 		traces = EllustrateSVG.match(designer.circuit_layer.layer, { prefix: traces });
 		

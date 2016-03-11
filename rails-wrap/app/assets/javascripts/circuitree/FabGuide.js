@@ -185,72 +185,7 @@ FabGuide.prototype = {
 	setGuides: function(guides){
 		var scope = this;
 		_.each(guides, function(el, i, arr){
-				// console.log(el);
-				// var level = el.level == 1 ? "active" : "warning";
-				if(el.level == 1) level = "active";
-				if(el.level == 2) level = "list-group-item";
-				if(el.level == 3) level = "list-group-item-warning";
-				if(el.level == 4) level = "list-group-item-info";
-		    	
-
-		    	var guide_dom = $('<li class="list-group-item '+ level +'"></li>');
-		    	var row = $('<div></div>').addClass("row");
-		    	var col_a = $('<div></div>').addClass('col-xs-2');
-		    	var col_b = $('<div></div>').addClass('col-xs-10');
-		    	if(level == "active"){
-		    		col_a = col_b;
-		    		row.append(col_a);
-		    		col_a.removeClass('col-xs-10').addClass('col-xs-12');
-		    	}else
-			    	row.append([col_a, col_b]);
-		    	guide_dom.append(row);
-
-		    	var icon = "icon-" + el.icon;
-		    	col_a.prepend("<span class='"+ icon +" guide-icon'></span>");
-		    	col_b.html(el.message); 
-
-		    	guide_dom.attr('data-highlight', el.elements.join(','));
-		    	
-		    	if(el.multimeter){	
-			    	guide_dom.attr('data-multimeter', el.multimeter);
-			    	guide_dom.attr('data-probe-a', el.probeA);
-			    	guide_dom.attr('data-probe-b', el.probeB);
-				}		    	
-
-		    	guide_dom.hover(
-		    		function(){
-				    	// MULTIMETER LOGIC
-		    			mm = $(this).attr('data-multimeter');
-			    		if(! _.isUndefined(mm)){
-				    		probeA = parseInt($(this).attr('data-probe-a'));
-				    		probeB = parseInt($(this).attr('data-probe-b'));
-				    		
-			    			posA = graph.find(probeA).getPosition();
-			    			posB = graph.find(probeB).getPosition();
-			    			
-			    			multimeter.show(mm, posA, posB);
-			 	   			
-					    }	
-					    else multimeter.hide();
-
-					    elements = $(this).attr('data-highlight').split(',');
-					    // LIGHT UP THE ELEMENTS
-					    _.each(elements, function(el, i, arr){
-					    	var el = Node.get(parseInt(el));
-					    	OhmTool.glow(el, true);
-			    		});
-			    	}, 
-			    	function(){
-			    		
-
-			    		elements = $(this).attr('data-highlight').split(',');
-			    		_.each(elements, function(el, i, arr){
-			    			var el = Node.get(parseInt(el));
-			    			OhmTool.glow(el, false);
-			    		});
-			    	}
-			    );
-		    	scope.dom.append(guide_dom);
+			Validator.generateSidePanelNode(scope.dom, el);
 		});
 	}
 }

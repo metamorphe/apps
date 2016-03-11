@@ -1,4 +1,6 @@
-
+EllustratePath.toNodesArr = function(path){
+	return _.map(path.str.split('-'), function(el){ return parseInt(el);});
+}
 function EllustratePath(str, color){
 	var scope = this;
 	this.str = str;
