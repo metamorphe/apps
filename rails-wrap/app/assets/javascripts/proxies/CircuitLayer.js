@@ -94,6 +94,14 @@ CircuitLayer.legend = function(parent, pt){
 	gtext.point.y += gtext.bounds.height/3;
 
 
+	var g =  new paper.Path.Rectangle({
+		parent: legend, 
+		rectangle: legend.bounds.expand(15), 
+		fillColor: "white", 
+		radius: 5
+	});
+	g.sendToBack();
+
 	legend.position = pt;
 	legend.position.x -= legend.bounds.width;
 	legend.position.y += 50;
