@@ -126,10 +126,10 @@ Node.prototype = {
 		this.self.remove();
 	},
 	enable: function(){
-		if(_.isUndefined(this.self.homed)){
-			this.self.homed = true;
-			this.self.position.x -= 145;
-		}
+		// if(_.isUndefined(this.self.homed)){
+			// this.self.homed = true;
+			// this.self.position.x -= 145;
+		// }
 		this.parent.addChild(this.self);
 		this.self.parent.bringToFront();
 	},

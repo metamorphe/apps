@@ -21,14 +21,6 @@ Diode.prototype = {
 
 		this.terminals = _.flatten([this.negative_terminal, this.positive_terminal]);
 	}, 
-	whichPath: function(arrOfPathNodeIDArr){
-		var scope = this;
-		console.log(arrOfPathNodeIDArr);
-		inPaths = _.filter(arrOfPathNodeIDArr, function(nodeIDArray, i){
-			return {idx: i, nodes: scope.inPath(nodeIDArray)}
-		});
-		return _.map(inPaths, function(el){ return el.idx});
-	},
 	inPath: function(nodeIDArray){
 		var is_connected = false;	
 		var nodes = nodeIDArray;
@@ -83,23 +75,10 @@ Diode.prototype = {
 	}
 }
 
-Validator.RESISTANCE_THRESHOLD = 300;
+Validator.RESISTANCE_THRESHOLD = 3000;
+Validator.FAB_THRESHOLD = 250;
 function Validator(graph){
 	this.graph = graph;
-	// this.ledIDs = _.map(leds, function(led){
-	// 		return led.id;
-	// 	});
-	// this.leds = _.map(leds, function(el){
-	// 	positive_terminal = EllustrateSVG.match(el, {prefix: ["CVT"]})[0].path;
-	// 	if(!_.isUndefined(positive_terminal)) positive_terminal = positive_terminal.terminals;
-	// 	else positive_terminal = [];
-
-	// 	negative_terminal = EllustrateSVG.match(el, {prefix: ["CGT"]})[0].path; 
-	// 	if(!_.isUndefined(negative_terminal)) negative_terminal = negative_terminal.terminals;
-	// 	else negative_terminal = [];
-	// 	return _.flatten([positive_terminal, negative_terminal]); 
-	// });
-	// console.log("LEDS", this.leds, "PATHS", this.paths);
 }
 
 Validator.prototype = {
@@ -131,7 +110,6 @@ Validator.prototype = {
 		graph.enable();
 		bom = this.bom();
         msgsC = this.checkIfBatteryExists();
-		
         msgsA = this.validateLEDsConnectedToGround();
         msgsB = this.validateOhmThreshold();
        // console.log(errorsA, errorsB);
@@ -170,7 +148,7 @@ Validator.prototype = {
 
 		var errors = _.map(this.diodes, function(diode, i){
 			var isGrounded = grounded[i].length > 0;
-			var isPowered = grounded[i].length > 0;
+			var isPowered = powered[i].length > 0;
 			if(! isGrounded || ! isPowered){
 				return {level: 5, 
 							elements: [diode.id], 
@@ -206,74 +184,39 @@ Validator.prototype = {
 		}
 		
 	}, 
-	matchLEDsToPaths: function(){
-		var match = [];
-		for(var i in this.leds){
-			var led = this.leds[i];
-			var is_connected = false;
-			for(var j in this.paths){
-				var nodes = this.paths[j];
-				var in_path = _.reduce(led, function(memo, terminal){
-					// console.log(terminal, nodes)
-					var inside = nodes.indexOf(terminal) > -1;
-					if(inside)
-						return memo + 1;
-					else
-						return memo;
-				}, 0);
-				// console.log("FB", nodes, led, in_path);
-				is_connected = is_connected || in_path >= 2;
-				if(is_connected){
-					match.push(j);
-					break;
-				}
-			}
-			if(match.length != i+1) match.push(false);
-		};
-		return match;
-	},
 	validateOhmThreshold: function(){
 		var scope = this;
-		var errors = [];
-		// LOOKING AT ONLY THE POSITIVE SIDE
-		var match = this.matchLEDsToPaths();
-
-		// console.log(match);
-		positive_segments = _.map(this.leds, function(led, i){
-			if(! match[i]) return false;
-			var nodes = scope.paths[match[i]];
-			var indices = _.map(led, function(terminal, j){
-				return nodes.indexOf(terminal);
-			});
-			positive_segment = nodes.slice(0, _.min(indices) + 1);
-			// console.log("INDICES", 0, _.min(indices), indices, nodes, led);
-			return positive_segment.join('-');
-		});
-		// console.log(positive_segments);
-		segments = _.map(positive_segments, function(el){
-			// console.log(el);
-			if(! el) return false;
-			return new EllustratePath(el, "#00A8E1");
+		console.log("Checking Ohms: " + this.diodes.length)
+		
+		var powered = _.map(this.diodes, function(diode, i){
+			return diode.getPathsToPower();
 		});
 
-
-		// _.each(segments, function(el){
-		// 	console.log(el.length);
-		// 	paper.project.addChild(el.solution);
-		// });
-
-		errors = _.map(segments, function(el, i, arr){
-			if(! el) return false;
-			ohmage = sr_model.apply(el.solution);
-			// console.log(el.length, ohmage);
-			if(ohmage > Validator.RESISTANCE_THRESHOLD){
-				return {level: 5,
-							elements: [el.solution.id], 
-							message: "You have too much resistance (" + ohmage.toFixed(0) + "Ω) from this line (max= "+ Validator.RESISTANCE_THRESHOLD +"Ω). Try making a shorter path to the red battery terminal."}
+		var errors = _.map(this.diodes, function(diode, i){
+			var isPowered = powered[i].length > 0;
+			
+			if(isPowered){
+				var ep = powered[i][0]; // shortest path to power
+				ohmage = sr_model.apply(ep.solution);
+				// console.log(ohmage);
+				if(ohmage > Validator.RESISTANCE_THRESHOLD){
+					return {level: 5,
+									elements: [ep.solution.id], 
+									message: "You have too much resistance (" + ohmage.toFixed(0) + "Ω) from this line (max= "+ Validator.RESISTANCE_THRESHOLD +"Ω). Try making a shorter path to the red battery terminal."
+								}
+				}
+				
+				if(ohmage > Validator.FAB_THRESHOLD){
+					return {level: 5,
+									elements: [ep.solution.id], 
+									message: "You'll have trouble making this trace. Try making a shorter path to the red battery terminal."
+								}
+				}
+				
 			}
-			else return false;
+			return false;
 		});
-
+		errors = _.compact(errors);
 
 		if(errors.length == 0){
 			return [{level: 6, 
@@ -281,10 +224,9 @@ Validator.prototype = {
 							elements: [], 
 							message: "Resistance looks good!"
 						}]
+		} else{
+			return _.compact(errors);
 		}
-		// CALCULATE HOW MUCH RESISTANCE IS ON THAT PATH
-		// ERROR, SUBPATH, MESSAGE
-		return _.compact(errors);
 	}, 
 	updateSidePanel: function(msgs){
 		var scope = this;
