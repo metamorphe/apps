@@ -56,6 +56,9 @@
       
         <!-- BRUSH SIZE BUTTONS -->
       <!-- <div class="btn-group" role="group" aria-label="pen-tools"> -->
+      <%= button_tag :id => "brush-size-label", :class => "btn touch-btn-num touch-btn-md " do %>
+        4
+        <% end %>
         <%= button_tag :id => "brush-size-increase", :class => "btn touch-btn-30 touch-btn-md btn-ellustrator" do %>
         <span class="icon-brush-size-increase"></span>
         <% end %>
@@ -67,6 +70,47 @@
 
 
 <style>
+#brush-size-label{
+  position: absolute;
+  top: calc(55px - 38px);
+  left: calc(30px + 75px);
+  border: white 1px solid;
+  /*color: black;*/
+ /* background: white;
+  border: #333 solid 1px;*/
+}
+.touch-btn-150{
+  position: absolute;
+  top: calc(55px - 80px);
+  left: calc(30px - 15px);
+  border: white 1px solid;
+}
+.touch-btn-60{
+  /* delete icon */
+  position: absolute;
+  top: calc(55px - 85px);
+  left: calc(30px - 10px);
+  border: white 1px solid;
+}
+.touch-btn-30{
+  /* + icon */
+  position: absolute;
+  top: calc(55px - 70px);
+  left: calc(30px + 45px);
+  border: white 1px solid;
+}
+.touch-btn-120{
+  position: absolute;
+  top: calc(55px - 50px);
+  left: calc(30px - 65px);
+  border: white 1px solid;
+}
+.touch-btn-45{
+  position: absolute;
+  top: calc(55px - 0px);
+  left: calc(30px + 80px);
+  border: white 1px solid;
+}
 .toolbox .btn-group{
   margin-right: 5px;
 }
@@ -167,36 +211,7 @@
   line-height: 1.33;
   border-radius: 40px;
 }
-.touch-btn-150{
-  position: absolute;
-  top: calc(55px - 80px);
-  left: calc(30px - 15px);
-  border: white 1px solid;
-}
-.touch-btn-60{
-  position: absolute;
-  top: calc(55px - 85px);
-  left: calc(30px + 15px);
-  border: white 1px solid;
-}
-.touch-btn-30{
-  position: absolute;
-  top: calc(55px - 50px);
-  left: calc(30px + 65px);
-  border: white 1px solid;
-}
-.touch-btn-120{
-  position: absolute;
-  top: calc(55px - 50px);
-  left: calc(30px - 65px);
-  border: white 1px solid;
-}
-.touch-btn-45{
-  position: absolute;
-  top: calc(55px - 0px);
-  left: calc(30px + 80px);
-  border: white 1px solid;
-}
+
 .btn-ellustrator{
   color: #FFF;
   background: #5d5d5d;
