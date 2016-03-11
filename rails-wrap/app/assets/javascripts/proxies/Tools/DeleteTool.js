@@ -35,7 +35,7 @@ function DeleteTool(paper){
 			var positionOnCanvas = scope.paper.view.viewToProject(new paper.Point(event.center.x, event.center.y));
 		}
 		// START
-		if(["tap"].indexOf(event.type) != -1){
+		if(["mousedown"].indexOf(event.type) != -1){
 			var hit = whatDidIHit(positionOnCanvas);
 			var hitType = hit.type;
 			var hitResult = hit.result;
@@ -46,8 +46,8 @@ function DeleteTool(paper){
 		}
 
 	}
-	this.tool.onTap = function(event){
-		route(event, ["element"], "onTap");
+	this.tool.onMouseDown = function(event){
+		route(event, ["element"], "onMouseDown");
 	}
 }
 
@@ -56,13 +56,13 @@ DeleteTool.prototype = {
 	enable: function(){
 	   var scope = this;
 	   sys.log("Activated the delete tool.");
-	   this.hammertime = Hammer($('canvas')[0]);
-	   this.hammertime.on('tap', scope.tool.onTap);
+	   // this.hammertime = Hammer($('canvas')[0]);
+	   // this.hammertime.on('tap', scope.tool.onTap);
 	},
 	disable: function(){
 	   console.log("Touch Tools Disabled");
 	   var scope  = this;
-	   this.hammertime.off('tap', scope.tool.onTap);
+	   // this.hammertime.off('tap', scope.tool.onTap);
 	   this.selectAll(false);
 	   this.update();
 	},
@@ -76,13 +76,13 @@ DeleteTool.prototype = {
     	designer.circuit_layer.layer.selected = flag;
  	}, 
 	element: {
-		onTap: function(event, hitResult, scope){
-			console.log("pTap");
+		onMouseDown: function(event, hitResult, scope){
+			console.log("onMouseDown");
 
 			var cluster = hitResult.item;
 			while(_.isUndefined(cluster.canvasItem))
 				cluster = cluster.parent;
-			scope.sm.add(cluster, event.srcEvent.shiftKey);
+			scope.sm.add(cluster, event.event.shiftKey);
 			scope.sm.remove();
 			hm.save();
 		}

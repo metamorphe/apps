@@ -27,6 +27,7 @@ function TransformTool2(paper){
 	this.sm = new SelectionManager(paper);
 	this.pinching = false;
 	this.rotating = false;
+	this.dragged = false;
 	var scope = this;
 
 	var whatDidIHit = function(positionOnCanvas){
@@ -46,7 +47,7 @@ function TransformTool2(paper){
 			var positionOnCanvas = scope.paper.view.viewToProject(new paper.Point(event.center.x, event.center.y));
 		}
 		// START
-		if(["rotatestart", "tap", "pinchstart"].indexOf(event.type) != -1){
+		if(["mousedown", "rotatestart", "pinchstart"].indexOf(event.type) != -1){
 			var hit = whatDidIHit(positionOnCanvas);
 			var hitType = hit.type;
 			var hitResult = hit.result;
@@ -75,9 +76,9 @@ function TransformTool2(paper){
 			// scope.canvas_item_type = null;
 		}
 	}
-	this.tool.onTap = function(event){
-		route(event, ["canvas", "element"], "onTap");
-	}
+	// this.tool.onTap = function(event){
+	// 	route(event, ["canvas", "element"], "onTap");
+	// }
 	this.tool.onPinchMove = function(event){
 		scope.pinching = true;
 		route(event, ["canvas", "element"], "onPinchMove");
@@ -104,7 +105,7 @@ function TransformTool2(paper){
 		route(event, ["element"], "onMouseDrag");
 	}
 	this.tool.onMouseDown = function(event){
-		// route(event, ["element", "canvas"], "onMouseDown");
+		route(event, ["element"], "onMouseDown");
 	}
 	this.tool.onMouseUp = function(event){
 		route(event, ["element", "canvas"], "onMouseUp");
@@ -121,7 +122,7 @@ TransformTool2.prototype = {
 	   this.hammertime = Hammer($('canvas')[0]);
 	   this.hammertime.get('rotate').set({ enable: true });
 	   this.hammertime.get('pinch').set({ enable: true });
-	   this.hammertime.on('tap', scope.tool.onTap);
+	   // this.hammertime.on('tap', scope.tool.onTap);
 	   this.hammertime.on('pinchstart', scope.tool.onPinchStart);
 	   this.hammertime.on('pinchend', scope.tool.onPinchEnd);
 	   this.hammertime.on('pinchmove', scope.tool.onPinchMove);
@@ -134,7 +135,7 @@ TransformTool2.prototype = {
 	   this.hammertime = Hammer($('canvas')[0]);
 	   this.hammertime.get('rotate').set({ enable: true });
 	   this.hammertime.get('pinch').set({ enable: true });
-	   this.hammertime.on('tap', scope.tool.onTap);
+	   // this.hammertime.on('tap', scope.tool.onTap);
 	   this.hammertime.on('pinchstart', scope.tool.onPinchStart);
 	   this.hammertime.on('pinchend', scope.tool.onPinchEnd);
 	   this.hammertime.on('pinchmove', scope.tool.onPinchMove);
@@ -145,7 +146,7 @@ TransformTool2.prototype = {
 	disable: function(){
 	   console.log("Touch Tools Disabled");
 	   var scope  = this;
-	   this.hammertime.off('tap', scope.tool.onTap);
+	   // this.hammertime.off('tap', scope.tool.onTap);
 	   this.hammertime.off('pinchstart', scope.tool.onPinchStart);
 	   this.hammertime.off('pinchend', scope.tool.onPinchEnd);
 	   this.hammertime.off('pinchmove', scope.tool.onPinchMove);
@@ -165,18 +166,20 @@ TransformTool2.prototype = {
     	designer.circuit_layer.layer.selected = flag;
  	}, 
 	element: {
-		onTap: function(event, hitResult, scope){
-			// console.log("pTap");
-			var cluster = hitResult.item;
-			while(_.isUndefined(cluster.canvasItem))
-				cluster = cluster.parent;
-			scope.sm.add(cluster, event.srcEvent.shiftKey);
-		},
+		// onTap: function(event, hitResult, scope){
+		// 	// console.log("pTap");
+		// 	var cluster = hitResult.item;
+		// 	while(_.isUndefined(cluster.canvasItem))
+		// 		cluster = cluster.parent;
+		// 	console.log("TAPPED ELEMENT");
+		// 	scope.sm.add(cluster, event.srcEvent.shiftKey);
+		// },
 		onMouseDown: function(event, hitResult, scope){
 			// console.log("mDown");
 			var cluster = hitResult.item;
 			while(_.isUndefined(cluster.canvasItem))
 				cluster = cluster.parent;
+			console.log("DOWN ELEMENT");
 			scope.sm.add(cluster, event.shiftKey);
 		},
 		onPinchStart: function(event, scope){
@@ -211,9 +214,13 @@ TransformTool2.prototype = {
 			// console.log("mousedrag", event.delta);
 
 			scope.sm.translate(event.delta);
+			scope.dragged = true;
 		},
 		onMouseUp: function(event, scope){
-			hm.save();
+			// if(scope.dragged){
+			// 	hm.save();
+			// 	scope.dragged = false;
+			// }
 		}
 	},
 	canvas: {
@@ -286,10 +293,13 @@ TransformTool2.prototype = {
 			// console.log("mousedrag", event.delta);
 
 			scope.sm.translate(event.delta);
-
+			scope.dragged = true;
 		},
 		onMouseUp: function(event, scope){
-			hm.save();
+			// if(scope.dragged){
+			// 	hm.save();
+			// 	scope.dragged = false;
+			// }
 		}
 	},
 	pan:  {
@@ -306,9 +316,13 @@ TransformTool2.prototype = {
 		onMouseDrag: function(event, scope){
 			// TRANSLATE
 			scope.sm.translate(event.delta);
+			scope.dragged = true;
 		},
 		onMouseUp: function(event, scope){
-			hm.save();
+			// if(scope.dragged){
+			// 	hm.save();
+			// 	scope.dragged = false;
+			// }
 		}
 	}
 }
