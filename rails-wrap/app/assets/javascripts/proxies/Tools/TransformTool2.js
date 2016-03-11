@@ -67,7 +67,7 @@ function TransformTool2(paper){
 			var hitType = hit.type;
 			var hitResult = hit.result;
 			scope.canvas_item_type = hitType;
-			
+
 			// console.log("Hit test", scope.canvas_item_type, eventFN);	
 			if(allowableSubEvents.indexOf(scope.canvas_item_type) != -1){
 				scope[scope.canvas_item_type][eventFN](event, scope);
@@ -259,45 +259,11 @@ TransformTool2.prototype = {
 			console.log("Canvas rEnd");
 			scope.rotating = false;
 		},
-		onTap: function(event, hitResult, scope){
-			// console.log("hello!", event, event.point);
-			scope.canvas_item_type = null;
-			var pos = scope.paper.view.viewToProject(new paper.Point(event.center.x, event.center.y));
-			// check for bogus taps 
-			var c  = paper.Path.Circle({
-								radius: HIT_TEST_BOUNDING_RADIUS, 
-								fillColor: "red", 
-								position: pos
-							});
-
-			var paths = EllustrateSVG.match(paper.project, {className: "Path"})
-			var intersections = []; 
-			for(var i in paths){
-				var a = c.getIntersections(paths[i]);
-				if(a.length > 0)
-					intersections.push(a);
-			}
-			intersections = _.flatten(intersections);
-
-			if(intersections.length > 0){
-				_.each(intersections, function(el, i, arr){
-					var cluster = el._curve2.path;
-					while(_.isUndefined(cluster.canvasItem))
-						cluster = cluster.parent;
-					scope.sm.add(cluster, event.srcEvent.shiftKey);
-				});
-			}
-			else{
-				scope.sm.clear();
-			}
-			c.remove();
-		},
 		onMouseDown: function(event, hitResult, scope){
 			console.log("c_mDown");
 			scope.canvas_item_type = null;
-			// var pos = scope.paper.view.viewToProject(new paper.Point(event.point.x, event.point.y));
+
 			var pos = new paper.Point(event.point.x, event.point.y);
-			// check for bogus taps 
 			var c  = paper.Path.Circle({
 								radius: HIT_TEST_BOUNDING_RADIUS, 
 								fillColor: "red", 
@@ -305,14 +271,8 @@ TransformTool2.prototype = {
 							});
 
 			var paths = EllustrateSVG.match(paper.project, {className: "Path"})
-
-			var intersections = []; 
-			for(var i in paths){
-				var a = c.getIntersections(paths[i]);
-				if(a.length > 0)
-					intersections.push(a);
-			}
-			intersections = _.flatten(intersections);
+			var intersections = TracePathTool.getAllIntersections(c, paths);
+	
 			c.remove();
 			paths = [];
 			if(intersections.length > 0){

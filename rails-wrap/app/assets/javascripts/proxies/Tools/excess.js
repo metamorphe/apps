@@ -1,4 +1,135 @@
-regenerate: function(){
+<div id="artwork-toolbox" class="toolbox shadowed">
+   <label class="text-shadowed"> ARTWORK </label>
+   <div class="btn-group" role="group">
+     
+        <%= button_tag :id=>"lock", :class=>"btn btn-md btn-ellustrator" do %>
+          <span class="icon-lock2"></span>
+        <% end %>
+         <%= button_tag :id=>"ghost", :class=>"btn btn-md btn-ellustrator" do %>
+          <span class="icon-ghost"></span>
+        <% end %>
+   </div>
+</div>
+
+
+
+<div id="dev-toolbox" class="toolbox shadowed">
+   <label class="text-shadowed"> DEV TOOLS </label>
+      <div class="btn-group" role="group" aria-label="pen-tools">
+      
+      <%= button_tag :id => "dev-tool-1", :class => "btn btn-ellustrator" do %>
+        <span class="glyphicon glyphicon-backward"></span>
+      <% end %>
+
+      <%= button_tag :id => "dev-tool-2", :class => "btn btn-ellustrator" do %>
+        <span class="glyphicon glyphicon-cog"></span>
+      <% end %>
+
+      <%= button_tag :id => "dev-tool-3", :class => "btn btn-ellustrator" do %>
+         <span class="glyphicon glyphicon-forward"></span>
+      <% end %>   
+      <%= button_tag :id => "dev-tool-4", :class => "btn btn-ellustrator" do %>
+         <span class="glyphicon glyphicon-record"></span>
+      <% end %>
+      </div>
+      <div class='btn-group'>
+      <%= button_tag :id=>"zoom-out", :class=>"btn btn-md btn-ellustrator" do %>
+          <span class="glyphicon glyphicon-zoom-out"></span>
+        <% end %>
+
+          
+        
+        <%= button_tag :id=>"zoom-in", :class=>"btn btn-md btn-ellustrator" do %>
+            <span class="glyphicon glyphicon-zoom-in"></span>
+        <% end %>
+    </div>
+</div>
+   <!-- ZOOM TOOLS -->
+      
+      <% button_tag :id=>"scale", :class=>"btn btn-md btn-ellustrator" do %>
+          <span class="icon-ruler"></span>
+        <% end %>
+     
+      <!-- END ZOOM TOOLS -->
+
+<!-- </div> -->
+ <% button_tag :id => "anchor-tool", :class => "btn btn-lg btn-ellustrator" do %>
+        <span class="icon-pen-tool"></span>
+        <% end %>
+
+      <% button_tag :class => "btn btn-ellustrator" do %>
+        <span class="icon-noun_68342_cc"></span>
+      <% end %>
+      <% button_tag :class => "btn btn-ellustrator" do %>
+        <span class="icon-bezier-select"></span>
+      <% end %>
+      <% button_tag :class => "btn btn-ellustrator" do %>
+        <span class="icon-anchor-select"></span>
+      <% end %>
+
+  <div class="btn-group" role="group" aria-label="pen-tools">
+   <% button_tag :id => "run-tool", :class => "btn btn-primary" do %>
+    <span class="glyphicon glyphicon glyphicon-record"></span>
+    <% end %>
+      <% button_tag :id => "ohm-tool", :class => "btn btn-primary" do %>
+    Ω
+    <% end %>
+     <% button_tag :id => "fab-tool", :class => "btn btn-primary" do %>
+    <span class="icon-inkwell"></span>
+    <% end %>
+    <% button_tag :id => "debug-tool", :class => "btn btn-primary" do %>
+    <span class="icon-debug"></span>
+    <% end %>
+  </div>   
+
+
+#dev-toolbox {
+  position: absolute;
+  top: 110px;
+  left: 220px;
+  /*calc(34% + 98px + 10px);*/
+  width: 270px;
+  z-index: 100000;
+  display: none;
+}
+
+
+onTap: function(event, hitResult, scope){
+			// console.log("hello!", event, event.point);
+			scope.canvas_item_type = null;
+			var pos = scope.paper.view.viewToProject(new paper.Point(event.center.x, event.center.y));
+			// check for bogus taps 
+			var c  = paper.Path.Circle({
+								radius: HIT_TEST_BOUNDING_RADIUS, 
+								fillColor: "red", 
+								position: pos
+							});
+
+			var paths = EllustrateSVG.match(paper.project, {className: "Path"})
+			var intersections = []; 
+			for(var i in paths){
+				var a = c.getIntersections(paths[i]);
+				if(a.length > 0)
+					intersections.push(a);
+			}
+			intersections = _.flatten(intersections);
+
+			if(intersections.length > 0){
+				_.each(intersections, function(el, i, arr){
+					var cluster = el._curve2.path;
+					while(_.isUndefined(cluster.canvasItem))
+						cluster = cluster.parent;
+					scope.sm.add(cluster, event.srcEvent.shiftKey);
+				});
+			}
+			else{
+				scope.sm.clear();
+			}
+			c.remove();
+		},
+
+
+		regenerate: function(){
 		console.log("Regenerating!");
 		this.enable();
 		nodeIDs = Node.toNodeIDs(this.nodes);
