@@ -51,7 +51,8 @@
       
       <!-- REMOVE ITEMS -->
       <%= button_tag :id=>"remove-element", :class=>"btn touch-btn-md touch-btn-60 btn-ellustrator" do %>
-        <span class="icon-delete-path"></span>
+        <span class="glyphicon glyphicon-ban-circle"></span>
+        <!-- <span class="icon-delete-path"></span> -->
       <% end %>
       
         <!-- BRUSH SIZE BUTTONS -->
@@ -60,10 +61,13 @@
         4
         <% end %>
         <%= button_tag :id => "brush-size-increase", :class => "btn touch-btn-30 touch-btn-md btn-ellustrator" do %>
-        <span class="icon-brush-size-increase"></span>
+        <span class="glyphicon glyphicon-plus"></span>
+        <!-- <span class="icon-brush-size-increase"></span> -->
         <% end %>
         <%= button_tag :id => "brush-size-decrease", :class => "btn touch-btn-45 touch-btn-md btn-ellustrator" do %>
-        <span class="icon-brush-size-decrease"></span>
+        <!-- <span class="icon-brush-size-decrease"></span> -->
+         <span class="glyphicon glyphicon-minus"></span>
+        <!-- <span class="icon-brush-size-decrease"></span> -->
         <% end %>
       <!-- </div>  -->
   </div>   
@@ -75,6 +79,7 @@
   top: calc(55px - 38px);
   left: calc(30px + 75px);
   border: white 1px solid;
+  padding: 10px 15px !important;
   /*color: black;*/
  /* background: white;
   border: #333 solid 1px;*/
@@ -205,11 +210,21 @@
   top: -5px;
   font-size: 18pt;
 }
+.touch-btn-md .glyphicon{
+  top: 0px;
+
+}
+.touch-btn-md {
+  padding: 12px 15px !important;
+}
 .touch-btn-md{
-  padding: 10px 16px;
-  font-size: 18px;
+  /*width: 40px;*/
+  /*height: 40px;*/
+  padding: 10px 15px;
+  /*padding: 0px 0px;*/
+  font-size: 16px;
   line-height: 1.33;
-  border-radius: 40px;
+  border-radius: 90px;
 }
 
 .btn-ellustrator{
