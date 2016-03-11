@@ -47,22 +47,23 @@ Collection.prototype = {
       // });
 
       // Tablet click to add function
-      // img.click(function(){
-      //   console.log("Adding element", "/primitives/" + el.filename);
-      //   var position = paper.view.center.clone();
-      //   position.y -= 100;
-      //   designer.addSVG("/primitives/" + el.filename, position);
-      // });
-
-      var hammertime = new Hammer(img[0]);
-      hammertime.on('tap mousedown', function(ev) {
-          console.log(ev);
-          console.log("Adding element", "/primitives/" + el.filename);
-          var position = paper.view.center.clone();
-          position.y -= 100;
-          designer.addSVG("/primitives/" + el.filename, position);
-          $('#transform-tool').click();
+      dom.click(function(){
+        console.log("Adding element", "/primitives/" + el.filename);
+        var position = paper.view.center.clone();
+        position.y -= 100;
+        designer.addSVG("/primitives/" + el.filename, position);
+         $('#transform-tool').click();
       });
+
+      // var hammertime = new Hammer();
+      // hammertime.on('tap mousedown', function(ev) {
+      //     console.log(ev);
+      //     console.log("Adding element", "/primitives/" + el.filename);
+      //     var position = paper.view.center.clone();
+      //     position.y -= 100;
+      //     designer.addSVG("/primitives/" + el.filename, position);
+      //     $('#transform-tool').click();
+      // });
 
       dom.find('.img-container').append(img);
       return dom;
