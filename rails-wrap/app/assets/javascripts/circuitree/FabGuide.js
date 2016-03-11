@@ -79,32 +79,40 @@ FabGuide.prototype = {
 
 			led_terminals = scope.leds[i];
 			// console.log("HGO", scope.ledIDs, scope.leds, led_terminals);
+			var guide = [];
+			if(i == 0){
+				guide.push(
+					[{level: 1, 
+						icon: "",
+						elements: [], 
+						message: "<b>STEP #" + 1 + ": Attach battery </b>"},
+					{level: 2, 
+						icon: "pen",
+						elements: [el.solution.id], 
+						message: "Draw all the traces coming out of your battery with your silver ink pen."},
+					{level: 2, 
+						icon: "place",
+						elements: [scope.battery.id], 
+						message: "Add the battery."},
+					{level: 3, 
+						icon: "multimeter",
+						multimeter: "voltage", 
+						probeA: led_terminals[0], probeB: led_terminals[1], elements: [el.solution.id], 
+						message: "<b class='check'>Power Check</b>: For all paths, position your probes on the dots. Is the reading approximately <b>3.3 V</b>? (YES | NO) "},
+					{level: 4,
+						icon: "", 
+						elements: [scope.battery.id], 
+						message: "Press the battery down with more pressure."}
+					]
+				);
+			}
 
-			var guide = [
+			guide.push(
+				[
 				{level: 1, 
 					icon: "",
 					elements: [], 
-					message: "<b>STEP #" + 0 + " </b>"},
-				{level: 2, 
-					icon: "pen",
-					elements: [el.solution.id], 
-					message: "Draw all the traces coming out of your battery with your silver ink pen."},
-				{level: 2, 
-					icon: "place",
-					elements: [scope.battery.id], 
-					message: "Add the battery."},
-				{level: 3, 
-					icon: "multimeter",
-					multimeter: "voltage", 
-					probeA: led_terminals[0], probeB: led_terminals[1], elements: [el.solution.id], message: "Power Check: For all paths, position your probes on the dots. Is the reading approximately <b>3.3 V</b>? (YES | NO) "},
-				{level: 4,
-					icon: "", 
-					elements: [scope.battery.id], 
-					message: "Press the battery down with more pressure."},
-				{level: 1, 
-					icon: "",
-					elements: [], 
-					message: "<b>STEP #" + (i+ 1) + " </b>"},
+					message: "<b>STEP #" + (i+ 2) + ": Draw branch </b>"},
 				{level: 2, 
 					icon: "pen",
 					elements: [el.solution.id], 
@@ -120,7 +128,7 @@ FabGuide.prototype = {
 					probeA: el.nodes[0], 
 					probeB: led_terminals[0],  
 					elements: [el.solution.id], 
-					message: "Resistance Check: Position your probes on the dots. Is the reading less than <b>" + ohmage_upperbound + " Ω</b>? (YES | NO )"},
+					message: "<b class='check'>Resistance Check</b>: Position your probes on the dots. Is the reading less than <b>" + ohmage_upperbound + " Ω</b>? (YES | NO )"},
 				{level: 4,
 					icon: "eye", 
 					elements: [el.solution.id], 
@@ -131,7 +139,7 @@ FabGuide.prototype = {
 					probeA: el.nodes[0], 
 					probeB: led_terminals[0],  
 					elements: [el.solution.id], 
-					message: "Resistance Check: Position your probes on the dots. Is the reading less than <b>" + ohmage_upperbound + " Ω</b>? (YES | NO )"},
+					message: "<b class='check'>Resistance Check</b>: Position your probes on the dots. Is the reading less than <b>" + ohmage_upperbound + " Ω</b>? (YES | NO )"},
 				{level: 4,
 					icon: "eye", 
 					elements: [el.solution.id], 
@@ -148,15 +156,12 @@ FabGuide.prototype = {
 				{level: 4,
 					icon: "eye", 
 					elements: [scope.ledIDs[scope.match[i]]], 
-					message: "Press the LED(s) down with more pressure."},
-				{level: 2, 
-					icon: "place",
-					elements: [scope.battery.id], 
-					message: "Remove the battery."}	
-			]
+					message: "Press the LED(s) down with more pressure."}
+				]
+			);
 			// LEAVE BATTERY ON IF ITS THE LAST ONE
-			if(arr.length - 1 == i) guide = guide.slice(0, guide.length - 1);
-			return guide;
+			// if(arr.length - 1 == i) guide = guide.slice(0, guide.length - 1);
+			return _.flatten(guide);
 		});
 		guides = _.flatten(guides);
 		this.setGuides(guides);	
