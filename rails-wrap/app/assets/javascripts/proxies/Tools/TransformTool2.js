@@ -32,6 +32,7 @@ function TransformTool2(paper){
 
 	var whatDidIHit = function(positionOnCanvas){
 		hitResult = scope.paper.project.hitTest(positionOnCanvas, hitOptions);	
+		console.log(hitResult.item.name);
 		if(_.isNull(hitResult)) return {type: "canvas", result: hitResult}
 		else if(hitResult.item.name == "NCB: artboard") return {type: "canvas", result: hitResult}
 		else{ return {type: "element", result: hitResult} }
@@ -49,6 +50,7 @@ function TransformTool2(paper){
 		// START
 		if(["mousedown", "rotatestart", "pinchstart"].indexOf(event.type) != -1){
 			var hit = whatDidIHit(positionOnCanvas);
+			// console.log("HIT", hit);
 			var hitType = hit.type;
 			var hitResult = hit.result;
 			scope.canvas_item_type = hitType;
@@ -60,6 +62,13 @@ function TransformTool2(paper){
 		// DRAG	
 		else if(["rotatemove", "mousedrag", "pinchmove"].indexOf(event.type) != -1) {
 			// Route accordingly...		
+			var hit = whatDidIHit(positionOnCanvas);
+			// console.log("HIT", hit);
+			var hitType = hit.type;
+			var hitResult = hit.result;
+			scope.canvas_item_type = hitType;
+			
+			// console.log("Hit test", scope.canvas_item_type, eventFN);	
 			if(allowableSubEvents.indexOf(scope.canvas_item_type) != -1){
 				scope[scope.canvas_item_type][eventFN](event, scope);
 			}
@@ -102,10 +111,10 @@ function TransformTool2(paper){
 		route(event, ["canvas", "element"], "onRotateEnd");
 	}
 	this.tool.onMouseDrag = function(event){
-		route(event, ["element"], "onMouseDrag");
+		route(event, ["element", "canvas"], "onMouseDrag");
 	}
 	this.tool.onMouseDown = function(event){
-		route(event, ["element"], "onMouseDown");
+		route(event, ["element", "canvas"], "onMouseDown");
 	}
 	this.tool.onMouseUp = function(event){
 		route(event, ["element", "canvas"], "onMouseUp");
@@ -284,13 +293,52 @@ TransformTool2.prototype = {
 			c.remove();
 		},
 		onMouseDown: function(event, hitResult, scope){
-			// console.log("c_mDown");
-			scope.sm.clear();
+			console.log("c_mDown");
+			scope.canvas_item_type = null;
+			// var pos = scope.paper.view.viewToProject(new paper.Point(event.point.x, event.point.y));
+			var pos = new paper.Point(event.point.x, event.point.y);
+			// check for bogus taps 
+			var c  = paper.Path.Circle({
+								radius: HIT_TEST_BOUNDING_RADIUS, 
+								fillColor: "red", 
+								position: pos
+							});
+
+			var paths = EllustrateSVG.match(paper.project, {className: "Path"})
+
+			var intersections = []; 
+			for(var i in paths){
+				var a = c.getIntersections(paths[i]);
+				if(a.length > 0)
+					intersections.push(a);
+			}
+			intersections = _.flatten(intersections);
+			c.remove();
+			paths = [];
+			if(intersections.length > 0){
+				_.each(intersections, function(el, i, arr){
+					var cluster = el._curve2.path;
+					while(_.isUndefined(cluster.canvasItem))
+						cluster = cluster.parent;
+					paths.push(cluster.id);
+				});
+				paths = _.uniq(paths);
+				// console.log(paths[0])
+				if(paths.length > 0)
+					scope.sm.add(Node.get(paths[0]), false);
+				else
+					scope.sm.clear();
+			}
+			else{
+				scope.sm.clear();
+			}
+			// 
 		},
 		onMouseDrag: function(event, scope){
+			console.log("mousedrag canvas", event.delta);
 			if(scope.pinching || scope.rotating) return;
 
-			// console.log("mousedrag", event.delta);
+			
 
 			scope.sm.translate(event.delta);
 			scope.dragged = true;
