@@ -9,6 +9,20 @@
     font-weight: normal;
     font-style: normal;
 }
+[class^='sm-icon-']:before{
+  display: inline-block;
+   font-family: 'Glyphter';
+   font-style: normal;
+   font-weight: normal;
+   line-height: 1;
+   font-size: 9pt;
+   padding-top: 0px;
+   padding-bottom: 0px;
+   position: relative;
+   top: 2px;
+   -webkit-font-smoothing: antialiased;
+   -moz-osx-font-smoothing: grayscale
+}
 /*[class^='icon-']:before{
   display: inline-block;
    font-family: 'Glyphter';
@@ -34,6 +48,7 @@
 .icon-primary-cursor:before{content:'\0049';}
 .icon-pen-tool:before{content:'\004a';}
 .icon-debug:before{content:'\004b';}
+.sm-icon-debug:before{content:'\004b';}
 .icon-inkwell:before{content:'\004c';}
 .icon-lock2:before{content:'\004d';}
 .icon-pan:before{content:'\004e';}

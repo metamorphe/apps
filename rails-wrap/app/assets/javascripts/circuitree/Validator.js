@@ -259,7 +259,8 @@ Validator.prototype = {
     		// dom.append($('<li class="list-group-item list-group-item-success"> No overlapping positive/negative paths. </li>'));
 		// } else{
 			_.each(msgs, function(el, i, arr){
-		    	Validator.generateSidePanelNode(dom, el);
+		    	guideDOM = Validator.generateSidePanelNode(el);
+		    	dom.append(guideDOM);
 			});
 		// }
 	
@@ -289,7 +290,7 @@ Validator.prototype = {
 }
 
 
-Validator.generateSidePanelNode =  function(dom, el){
+Validator.generateSidePanelNode =  function(el){
 				if(el.level == 1) level = "active";
 				if(el.level == 2) level = "list-group-item";
 				if(el.level == 3) level = "list-group-item-warning";
@@ -317,9 +318,35 @@ Validator.generateSidePanelNode =  function(dom, el){
 			    	var glyph = "glyphicon glyphicon-" + el.glyph;
 			    	col_a.prepend("<span class='"+ glyph +" guide-icon'></span>");
 			    }
-
-			    col_b.html(el.message); 
-
+			    if(el.debug){
+			    	var btnGroup = DOM.tag("div").addClass('btn-group');
+			    	// var yesButton = DOM.tag("button").addClass('btn btn-sm btn-success').appendTo(btnGroup);
+			    	// var yes = DOM.tag("span").addClass('glyphicon glyphicon-ok').appendTo(yesButton);
+			    	var noButton = DOM.tag("button").addClass('btn btn-sm btn-info').appendTo(btnGroup);
+			    	var no = DOM.tag("span").addClass('sm-icon-debug').appendTo(noButton);
+			    	noButton.click(function(){
+			    		var elems = _.map(el.debug, function(g){
+			    			return Validator.generateSidePanelNode(g);
+			    		});
+			    		// console.log(el.debug);
+			    		elems = _.each(elems, function(e){
+			    			var yesButton = DOM.tag("button").addClass('btn btn-sm btn-success').appendTo(btnGroup);
+			    			var yes = DOM.tag("span").addClass('glyphicon glyphicon-ok').appendTo(yesButton);
+			    			yesButton.click(function(){
+			    				$(this).parent().parent().parent().remove();
+			    			});
+			    			e.find('.col-xs-10').append(yesButton);
+			    		});
+			    		$(this).parent().parent().parent().parent().after(elems);
+			    		$(this).unbind('click');
+			    		$(this).remove();
+			 
+			    	
+			    	});
+			    }
+			    var msg = DOM.tag("p").html(el.message);
+			    col_b.append([msg, btnGroup]); 
+			    // console.log("ELEMENT", el);
 		    	guide_dom.attr('data-highlight', el.elements.join(','));
 		    	
 		    	if(el.multimeter){	
@@ -362,5 +389,5 @@ Validator.generateSidePanelNode =  function(dom, el){
 			    		});
 			    	}
 			    );
-		    	dom.append(guide_dom);
+		    	return guide_dom;
     }

@@ -48,7 +48,7 @@ function Multimeter(dom){
 
 Multimeter.prototype = {
 	show: function(mode, probeA, probeB){
-		console.log('SHOWING Multimeter', mode);
+		// console.log('SHOWING Multimeter', mode);
 		var modeImage = Multimeter.modes[mode].image;
 		this.dom.find('img').attr('src', modeImage);
 

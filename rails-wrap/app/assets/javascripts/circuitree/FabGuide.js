@@ -98,7 +98,7 @@ FabGuide.prototype = {
 						icon: "multimeter",
 						multimeter: "voltage", 
 						probeA: led_terminals[0], probeB: led_terminals[1], elements: [el.solution.id], 
-						message: "<b class='check'>Power Check</b>: For all paths, position your probes on the dots. Is the reading approximately <b>3.3 V</b>? (YES | NO) ",
+						message: "<b class='check'>Power Check</b>: For all paths, position your probes on the dots. Is the reading approximately <b>3.3 V</b>?  ",
 						debug: [
 							{level: 4,
 								icon: "", 
@@ -133,7 +133,7 @@ FabGuide.prototype = {
 					probeA: el.nodes[0], 
 					probeB: led_terminals[0],  
 					elements: [el.solution.id], 
-					message: "<b class='check'>Resistance Check</b>: Position your probes on the dots. Is the reading less than <b>" + ohmage_upperbound + " Ω</b>? (YES | NO )",
+					message: "<b class='check'>Resistance Check</b>: Position your probes on the dots. Is the reading less than <b>" + ohmage_upperbound + " Ω</b>? ",
 					debug: [
 							{level: 4,
 								icon: "eye", 
@@ -148,7 +148,7 @@ FabGuide.prototype = {
 					probeA: el.nodes[0], 
 					probeB: led_terminals[0],  
 					elements: [el.solution.id], 
-					message: "<b class='check'>Resistance Check</b>: Position your probes on the dots. Is the reading less than <b>" + ohmage_upperbound + " Ω</b>? (YES | NO )",
+					message: "<b class='check'>Resistance Check</b>: Position your probes on the dots. Is the reading less than <b>" + ohmage_upperbound + " Ω</b>? ",
 					debug: [
 							{level: 4,
 								icon: "eye", 
@@ -185,7 +185,8 @@ FabGuide.prototype = {
 	setGuides: function(guides){
 		var scope = this;
 		_.each(guides, function(el, i, arr){
-			Validator.generateSidePanelNode(scope.dom, el);
+			guides = Validator.generateSidePanelNode(el);
+			scope.dom.append(guides)
 		});
 	}
 }
