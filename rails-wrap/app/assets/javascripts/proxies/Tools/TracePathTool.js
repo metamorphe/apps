@@ -1,4 +1,4 @@
-TracePathTool.SHORT_MESSAGE = "You are shorting your circuit. Avoid crossing any paths or connecting to terminals that aren't the same color (polarity).";
+TracePathTool.SHORT_MESSAGE = "Avoid crossing any paths or connecting to terminals that aren't the same color (polarity).";
 TracePathTool.MAX_BRUSH_SIZE = 10;
 TracePathTool.BRUSH_SIZE = 4;
 TracePathTool.MIN_BRUSH_SIZE = 1;
