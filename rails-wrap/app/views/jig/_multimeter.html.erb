@@ -10,17 +10,20 @@ Multimeter.modes = {
 function Multimeter(dom){
 	this.dom = dom;
 	this.probes = {
-		a: new paper.Path.Circle({
-			position: paper.view.center.clone(), 
+		a: new paper.Path.RegularPolygon({
+			sides: 3, 
+			center: paper.view.center.clone(), 
 			fillColor: "red", 
-			radius: 3, 
+			radius: 20, 
 			terminal_helper: true
 		}), 
-		b: new paper.Path.Circle({
-			position: paper.view.center.clone(), 
+		b: new paper.Path.RegularPolygon({
+			sides: 3, 
+			center: paper.view.center.clone(), 
 			fillColor: "black", 
-			radius: 3, 
-			terminal_helper: true
+			radius: 20, 
+			terminal_helper: true, 
+			rotation: 180
 		})
 	}
 	this.hide();
@@ -33,6 +36,12 @@ Multimeter.prototype = {
 		this.dom.find('img').attr('src', modeImage);
 		this.probes.a.position = probeA;
 		this.probes.b.position = probeB;
+		this.probes.a.position.x -= 145;
+
+		this.probes.a.position.y += 20;
+		this.probes.b.position.y -= 20;
+		this.probes.b.position.x -= 145;
+		// this.probes.b.rotation = 90;
 		this.dom.fadeIn();
 		paper.project.activeLayer.addChildren([this.probes.a, this.probes.b]);
 		paper.view.update();

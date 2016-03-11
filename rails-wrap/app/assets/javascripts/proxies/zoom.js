@@ -226,6 +226,9 @@ Zoom.prototype = {
 				pos.x -= 145;
 				el.position = pos;
 			});
+			// var pos = paper.view.center.clone();
+			// pos.x -= 145;
+			// paper.project.activeLayer.position = pos;
 
 		}
 		designer.circuit_layer.resetLegend();
