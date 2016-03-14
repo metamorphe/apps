@@ -273,10 +273,24 @@ Validator.generateSidePanelNode =  function(el){
 			    	var yes = DOM.tag("span").addClass('glyphicon glyphicon-ok').appendTo(yesButton);
 			    	var noButton = DOM.tag("button").addClass('btn btn-sm btn-info').appendTo(btnGroup);
 			    	var no = DOM.tag("span").addClass('sm-icon-debug').appendTo(noButton);
-			    	yesButton.click(function(){
-			    		$(this).parent().parent().parent().parent().addClass('list-group-item-success').removeClass('list-group-item-warning');
-			    	});
-			    	noButton.click(function(){
+			    	var check = DOM.tag("span").addClass('glyphicon glyphicon-ok');
+		    		
+
+			    	var checkBehavior = function(){
+			    		$(this).closest('.row').children('.col-xs-10').append(btnGroup);
+			    		$(this).closest(".list-group-item").addClass('list-group-item-warning');
+		    			$(this).remove();
+		    			yesButton.click(yesBehavior);
+				    	noButton.click(noBehavior);
+			    	}
+			    	var yesBehavior = function(){
+			    		$(this).closest(".list-group-item").removeClass('list-group-item-warning');
+			    		
+				    	check.click(checkBehavior);
+			    		$(this).closest('.row').children('.col-xs-2').append(check);
+			    		$(this).parent().remove();
+			    	}
+			    	var noBehavior = function(){
 			    		var elems = _.map(el.debug, function(g){
 			    			return Validator.generateSidePanelNode(g);
 			    		});
@@ -294,7 +308,10 @@ Validator.generateSidePanelNode =  function(el){
 			    		$(this).remove();
 			 
 			    	
-			    	});
+			    	}
+			    	check.click(checkBehavior);
+			    	yesButton.click(yesBehavior);
+			    	noButton.click(noBehavior);
 			    }
 			    var msg = DOM.tag("p").html(el.message);
 			    col_b.append([msg, btnGroup]); 
