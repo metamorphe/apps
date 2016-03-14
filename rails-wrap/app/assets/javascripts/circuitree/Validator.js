@@ -83,10 +83,6 @@ function Validator(graph){
 
 Validator.prototype = {
 	bom: function(){
-		var solutions = graph.getPathsToGround();
-		this.paths = _.map(solutions, function(path){
-			return EllustratePath.toNodesArr(path);
-		});
 		var leds = EllustrateSVG.get({name:"CP:_circuit_x5F_led_1_"});
 		this.diodes = _.map(leds, function(led){
 			return new Diode(led.id);
@@ -273,10 +269,13 @@ Validator.generateSidePanelNode =  function(el){
 			    }
 			    if(el.debug){
 			    	var btnGroup = DOM.tag("div").addClass('btn-group');
-			    	// var yesButton = DOM.tag("button").addClass('btn btn-sm btn-success').appendTo(btnGroup);
-			    	// var yes = DOM.tag("span").addClass('glyphicon glyphicon-ok').appendTo(yesButton);
+			    	var yesButton = DOM.tag("button").addClass('btn btn-sm btn-success').appendTo(btnGroup);
+			    	var yes = DOM.tag("span").addClass('glyphicon glyphicon-ok').appendTo(yesButton);
 			    	var noButton = DOM.tag("button").addClass('btn btn-sm btn-info').appendTo(btnGroup);
 			    	var no = DOM.tag("span").addClass('sm-icon-debug').appendTo(noButton);
+			    	yesButton.click(function(){
+			    		$(this).parent().parent().parent().parent().addClass('list-group-item-success').removeClass('list-group-item-warning');
+			    	});
 			    	noButton.click(function(){
 			    		var elems = _.map(el.debug, function(g){
 			    			return Validator.generateSidePanelNode(g);

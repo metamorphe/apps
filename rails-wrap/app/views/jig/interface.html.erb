@@ -16,7 +16,7 @@
     // edit: "rgb(207, 244, 255)", 
     draw: {color: "rgb(92, 184, 92)", dom: '#save-actions, #add-library, #system-messages, #history-bar, #canvas-toolbox, #big-undo, #clear-canvas-and-history,  #circuit-toolbox'}, 
     validate: {color:"rgb(66, 139, 202)", dom: '#debug-guide'}, 
-    make: {color:"rgb(217, 83, 79)", dom: '#fab-guide'}
+    make: {color:"rgb(145, 61, 136)", dom: '#fab-guide'}
   };
 
   var current_mode = "draw";
@@ -48,12 +48,8 @@
       }
       if(mode == "make"){
           graph = new Graph();
-          graph.enable();
-          // graph.disable();
           f = new FabGuide(graph);
-          f.updateSidePanel();
-          graph.disable();
-          
+          f.fabricate();          
       }
      
       current_mode = mode;

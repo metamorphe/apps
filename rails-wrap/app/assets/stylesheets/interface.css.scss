@@ -1,3 +1,20 @@
+$mira: #913D88;
+.btn-mira{
+  color: white;
+  background-color: $mira;
+  border-color: $mira;
+}
+.btn-mira:hover{
+  color: white;
+  background-color: darken( $mira, 10% );
+  border-color: $mira;
+}
+.btn-mira:active{
+  color: white;
+  background-color: darken( $mira, 10% );
+  border-color: $mira;
+}
+
 *{
   font-family: "museo-sans",sans-serif;
 }
