@@ -11,6 +11,7 @@
 //= require circuitree/PaperSetup
 //= require circuitree/circuit_designer
 //= require proxies/zoom
+//= require proxies/jig_exporter
 //= require proxies/Tools/Toolbox
 //= require proxies/Tools/TracePathTool
 //= require proxies/Tools/SelectionManager

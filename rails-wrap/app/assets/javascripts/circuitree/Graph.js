@@ -236,6 +236,21 @@ Graph.prototype = {
 				var offset = path.getOffsetOf(pt);
 				return {path: path.id, offset: offset, source: its._curve.path.id}
 			});
+			if(intersects.length == 0){
+				var near = blob.position.clone();
+				near.y -= 5;
+				near.x += 5;
+				b = TracePathTool.readPolarity(blob);
+				var path = new paper.Path({
+					blob: blob.id,
+					name: "T"+b+"P: temporary",
+					segments: [blob.position.clone(), near], 
+					strokeColor: "yellow", 
+					strokeWidth: 2,
+					terminal_helper: true
+				});
+				blob.paths.push(path);
+			}	
 			return p_offsets;
 		});
 
@@ -325,21 +340,7 @@ Graph.prototype = {
 		});
 
 		
-			if(intersects.length == 0){
-				var near = blob.position.clone();
-				near.y -= 5;
-				near.x += 5;
-				b = TracePathTool.readPolarity(blob);
-				var path = new paper.Path({
-					blob: blob.id,
-					name: "T"+b+"P: temporary",
-					segments: [blob.position.clone(), near], 
-					strokeColor: "yellow", 
-					strokeWidth: 2,
-					terminal_helper: true
-				});
-				blob.paths.push(path);
-			}	
+			
 		
 		
 	},

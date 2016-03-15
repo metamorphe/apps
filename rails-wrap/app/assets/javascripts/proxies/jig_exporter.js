@@ -18,14 +18,13 @@ JigExporter.export = function(paper, canvas, mode, downloadFlag){
 	var exp;
 	
 
-	var filename = $('#design-name b').html().trim().replace(/ /g, "_").toLowerCase();
+	var filename = design.name.trim().replace(/ /g, "_").toLowerCase();
  
 
 	if(_.isUndefined(filename)) filename = "export";
 	if(filename == "") filename = "export"; 
 	filename = filename.split('.')[0];
-
-
+	
 	if(_.isUndefined(mode))
 		mode = JigExporter.EXPORT_DEFAULT;
 

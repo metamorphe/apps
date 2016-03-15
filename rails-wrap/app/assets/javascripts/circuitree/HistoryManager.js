@@ -65,7 +65,7 @@ HistoryManager.prototype = {
 		paper.view.update();
 		var json  =  designer.json();
 		
-		var name = $("#design-name b").html().trim();
+		var name = design.name.trim();
 		var data = {
 			json: json, 
 			name: name
