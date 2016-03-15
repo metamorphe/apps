@@ -80,10 +80,13 @@ FabGuide.prototype = {
 			p_ohmage_upperbound = p_ohmage_upperbound.toFixed(0);
 			n_ohmage_upperbound = n_ohmage_upperbound.toFixed(0);
 
+			var sourceNode = Node.get(graph.getSourceNode()).sourceNode;
+			var sinkNode = Node.get(graph.getSinkNode()).sourceNode;
 		// 	led_terminals = scope.leds[i];
 		// 	// console.log("HGO", scope.ledIDs, scope.leds, led_terminals);
 			var guide = [];
 			if(i == 0){
+				alltracesoutofbattery = _.flatten(_.map(ptgs, function(temp){ return [temp.powered.mini_solution.id, temp.grounded.mini_solution.id]}));
 				guide.push(
 					[{level: 1, 
 						icon: "",
@@ -91,7 +94,7 @@ FabGuide.prototype = {
 						message: "<b>STEP #" + 1 + ": ATTACH BATTERY </b>"},
 					{level: 2, 
 						icon: "pen",
-						elements: [el.powered.solution.id, el.grounded.solution.id], 
+						elements: alltracesoutofbattery, 
 						message: "Draw all the traces coming out of your battery with your silver ink pen."},
 					{level: 2, 
 						icon: "place",
@@ -100,7 +103,7 @@ FabGuide.prototype = {
 					{level: 3, 
 						icon: "multimeter",
 						multimeter: "voltage", 
-						probeA: el.diode.positive_terminal, probeB: el.diode.negative_terminal, elements: [el.powered.solution.id, el.grounded.solution.id], 
+						probeA: sourceNode, probeB: sinkNode, elements: alltracesoutofbattery, 
 						message: "<b class='check'>Power Check</b>: For all paths, position your probes on the dots. Is the reading approximately <b>3.3 V</b>?  ",
 						debug: [
 							{level: 4,

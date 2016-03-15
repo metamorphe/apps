@@ -30,13 +30,31 @@ function EllustratePath(str, color){
 	this.length = 0;
 	this.paths = [];
 	this.color = color;
-	this.solution = new paper.Group({
-		terminal_helper: true, 
-		ellustrate_path: true
-	});
+
+
+	scope.solution = new paper.Path({
+						ellustrate_path: true,
+						terminal_helper: true,
+						strokeColor: "purple", 
+						strokeWidth: 5, 
+						closed: false
+					});
+	scope.mini_solution = new paper.Path({
+						ellustrate_path: true,
+						terminal_helper: true,
+						strokeColor: "purple", 
+						strokeWidth: 5, 
+						closed: false
+					});
 	scope.init();
+	this.generate_small();
 }
 EllustratePath.prototype = {
+	generate_small: function(){
+		for(var i = 0; i < 50 ; i++)
+			this.mini_solution.add(this.solution.getPointAt(i));
+		this.mini_solution.opacity = 0;
+	},
 	init: function(){
 		var scope = this;
 		var index = 0;
@@ -54,16 +72,39 @@ EllustratePath.prototype = {
 			if(path.length > 0){
 				path = path[0];
 				var p = path.clone();
-				p.terminal_helper = true;
-				p.style.strokeColor = "#C0C0C0";//scope.color;
-				this.length += p.length;
-				scope.solution.addChild(p);
+				
+				var forward = false;
+				
+				if(scope.solution.length > 0){
+					end = scope.solution.getPointAt(scope.solution.length);
+					p_start = p.getPointAt(0);
+					p_end = p.getPointAt(p.length);
+
+					s_dis = p_start.getDistance(end);
+					e_dis = p_end.getDistance(end);
+
+					forward = s_dis < e_dis;
+				} 
+
+				if(forward)			
+					for(var i = 0; i < p.length ; i++)
+						scope.solution.add(p.getPointAt(i));
+				else
+					for(var i = p.length; i >= 0; i--)
+							scope.solution.add(p.getPointAt(i));	
+				this.solution.opacity = 0;
+				
+				// p.terminal_helper = true;
+				// p.style.strokeColor = "#C0C0C0";//scope.color;
+				// this.length += p.length;
+				// scope.solution.addChild(p);
 			}
 			index++;
 		}
 		// this.solution.position.x += -200 + scope.color.hue * 5;//20;
 		// this.solution.position.y += 200;
 		// this.solution.remove();
+		this.length = this.solution.length;
 		this.solution.opacity = 0;
 		paper.view.update();
 	},	
