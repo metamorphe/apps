@@ -28,7 +28,10 @@
 			</address>
 			
 		</p>
-		<%= link_to  jig_interface_path(6, {mode: "draw"}), :class => "btn btn-primary btn-lg" do %>
+		<% link_to  jig_interface_path(6, {mode: "draw"}), :class => "btn btn-primary btn-lg" do %>
+			<span class="glyphicon glyphicon-edit"> </span> Design
+		<% end %>
+		<%= link_to  new_design_path(), :class => "btn btn-primary btn-lg" do %>
 			<span class="glyphicon glyphicon-edit"> </span> Design
 		<% end %>
 		</p>
