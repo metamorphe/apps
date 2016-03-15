@@ -151,7 +151,8 @@ Node.prototype = {
 		this.children = children;
 	},
 	getChildren: function(){
-		return this.children;
+		scope = this;
+		return _.reject(this.children, function(el){ return scope.id == el});
 	}, 
 	colorize: function(color){
 		if(TracePathTool.isPath(this.self)) this.self.style.strokeColor = color;
