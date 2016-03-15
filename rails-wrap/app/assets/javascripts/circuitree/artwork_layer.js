@@ -44,11 +44,37 @@ ArtworkLayer.prototype = {
 	}, 
 	print_mode: function(mode){
 		if(mode){
-			this.layer.opacity = 1; 
-			this.layer.style = {
-				fillColor: "black", 
-				shadowBlur: 0
-			}
+
+			_.each(EllustrateSVG.match(this.layer, {prefix: "ART"}), function(child){
+				
+				if(!_.isUndefined(child.name)){
+					child.opacity = 1; 
+					child.style = {
+						fillColor: "black", 
+						shadowBlur: 0
+					}			
+				}
+
+			});
+			_.each(EllustrateSVG.match(this.layer, {prefix: "NCB"}), function(child){
+				
+				if(!_.isUndefined(child.name)){
+					child.opacity = 1; 
+					child.style = {
+						fillColor: "white", 
+						strokeColor: "black", 
+						strokeWidth: 1,
+						shadowBlur: 0
+					}		
+					if(child.content == "A4"){
+						child.content = design.name;
+						w = child.bounds.width;
+						child.position.x -= w;
+					}
+					// console.log(child.content);
+				}
+				
+			});
 		}
 		else{
 			this.layer.style = {
