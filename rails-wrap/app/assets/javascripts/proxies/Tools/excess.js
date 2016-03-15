@@ -13,37 +13,6 @@
 
 
 
-<div id="dev-toolbox" class="toolbox shadowed">
-   <label class="text-shadowed"> DEV TOOLS </label>
-      <div class="btn-group" role="group" aria-label="pen-tools">
-      
-      <%= button_tag :id => "dev-tool-1", :class => "btn btn-ellustrator" do %>
-        <span class="glyphicon glyphicon-backward"></span>
-      <% end %>
-
-      <%= button_tag :id => "dev-tool-2", :class => "btn btn-ellustrator" do %>
-        <span class="glyphicon glyphicon-cog"></span>
-      <% end %>
-
-      <%= button_tag :id => "dev-tool-3", :class => "btn btn-ellustrator" do %>
-         <span class="glyphicon glyphicon-forward"></span>
-      <% end %>   
-      <%= button_tag :id => "dev-tool-4", :class => "btn btn-ellustrator" do %>
-         <span class="glyphicon glyphicon-record"></span>
-      <% end %>
-      </div>
-      <div class='btn-group'>
-      <%= button_tag :id=>"zoom-out", :class=>"btn btn-md btn-ellustrator" do %>
-          <span class="glyphicon glyphicon-zoom-out"></span>
-        <% end %>
-
-          
-        
-        <%= button_tag :id=>"zoom-in", :class=>"btn btn-md btn-ellustrator" do %>
-            <span class="glyphicon glyphicon-zoom-in"></span>
-        <% end %>
-    </div>
-</div>
    <!-- ZOOM TOOLS -->
       
       <% button_tag :id=>"scale", :class=>"btn btn-md btn-ellustrator" do %>
@@ -83,15 +52,6 @@
   </div>   
 
 
-#dev-toolbox {
-  position: absolute;
-  top: 110px;
-  left: 220px;
-  /*calc(34% + 98px + 10px);*/
-  width: 270px;
-  z-index: 100000;
-  display: none;
-}
 
 
 onTap: function(event, hitResult, scope){

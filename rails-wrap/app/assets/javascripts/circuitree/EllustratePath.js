@@ -10,7 +10,10 @@ EllustratePath.sortAndMake = function(results){
 		return ptg;
 	});
 
-	sorted = _.sortBy(ptgs, function(ptg){ return ptg.length;});
+	sorted = _.sortBy(ptgs, function(ptg){ 
+		console.log(ptg.length);
+		return ptg.length;});
+
 	
 	sorted = _.uniq(ptgs, function(ptg){ 
 		return (ptg.length / 20).toFixed(0);
