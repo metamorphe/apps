@@ -1,3 +1,7 @@
+Node.touch = function(id){
+	var n = Node.get(id);
+	n.selected = !n.selected;
+}
 function Node(paths, position){
 	var scope = this;
 	this.className = "Node";
@@ -6,11 +10,12 @@ function Node(paths, position){
 	// console.log("I am here");
 	this.parent = paths[0].parent;
 	var c_int = new paper.Path.Circle({
-					parent: paths[0].parent, 
+					parent: paths[0].parent,
+					// parent: paper.project.layers 
 					paths: paths,
 					name: "TMT: temp", //"C"+ polarity +"T: terminal from fragmentation",
 					position: position,
-					radius:  paths[0].style.strokeWidth, 
+					radius:  paths[0].style.strokeWidth * 3, 
 					fillColor:  "#00A8E1", 
 					polarity:  paths[0].polarity,
 					terminal_helper: true,

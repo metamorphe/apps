@@ -9,15 +9,31 @@ function Graph(){
 	this.breakUpSelfIntersections();
 	this.breakUpIntersections();
 	this.generateBlobPaths();
+	// this.colorPaths();
 	this.init();
-
+	
 }
 
 
 var intersectionNodes = [];
 Graph.prototype = {
+	colorPaths: function(){
+		var hue = 0;
+
+		var traces = ["CGP", "CVP", "CNP", "TGP", "TVP", "TNP"];
+		traces = EllustrateSVG.match(paper.project, { prefix: traces });
+
+		for(var i in traces){
+			var trace = traces[i];
+			c = new paper.Color("red");
+			c.hue = hue;
+			trace.strokeColor = c;
+			hue += 20;
+		}
+	},
 	init: function(){
 		this.processEnds();
+		this.blobConsolidation();
 		this.lines = $.map(paper.project.getItems({blob_line: true}), function(el, i){
 			parent = el.parent;
 			el.remove();
@@ -27,50 +43,10 @@ Graph.prototype = {
 	find: function(id){
 		return _.filter(graph.nodes, function(el, i, arr){ return el.id == id})[0];
 	},
-	getPathsToGround: function(){
-		r = graph.getSourceNode();
-		s = graph.getSinkNode();
-		if(_.isNull(s) || _.isNull(r)) return [];
-		
-		s = Node.get(s).path.terminals[0];
-		r = Node.get(r).path.terminals[0];
-
-		// console.log(r, s);
-		r = paper.project.getItem({id: r}).node;
-		s = paper.project.getItem({id: s}).node;
-
-		results = Graph.printAllPaths(r, s);
-		// console.log("RESULTS:", results);
-
-
-		var color = new paper.Color("red");
-		hue = 0;
-
-		ptgs = _.map(results, function(el, i, arr){
-			myColor = color.clone();
-			myColor.hue = hue;
-			var ptg = new EllustratePath(el, myColor);
-			hue += 20;
-			return ptg;
-		});
-
-		sorted = _.sortBy(ptgs, function(ptg){ return ptg.length;});
-		// console.log("SOLUTIONS", sorted.length);
-
-		sorted = _.uniq(ptgs, function(ptg){ 
-			return (ptg.length / 20).toFixed(0);
-		});
-		// console.log("THRESHOLD SOLUTIONS", sorted.length);
-		// _.each(sorted, function(el){
-		// 	paper.project.addChild(el.solution);
-		// 	paper.project.addChild(el.solution);
-		// });
-		solutions = sorted;
-		return solutions;
-	}, 
 	enable: function(){
 		_.each(this.nodes, function(node){
 			node.enable();
+			// node.self.position.x -= 145/6;
 		});
 
 		paper.view.update();
@@ -84,7 +60,7 @@ Graph.prototype = {
 	processEnds: function(){
 		var scope = this;
 
-		var traces = ["CGP", "CVP", "CNP", "TMP"];
+		var traces = ["CGP", "CVP", "CNP", "TGP", "TVP", "TNP"];
 		traces = EllustrateSVG.match(paper.project, { prefix: traces });
 		
 		var nodes = [];
@@ -250,38 +226,154 @@ Graph.prototype = {
 		var traces = ["CGP", "CVP", "CNP"];		
 		traces = EllustrateSVG.match(designer.circuit_layer.layer, { prefix: traces });
 		
-		_.each(blobs, function(blob, i, arr){
+		// PATH SPLITTING IN BLOBS
+		var path_processing = _.map(blobs, function(blob, i, arr){
+			blob.paths = [];
 			intersects = TracePathTool.getAllIntersections(blob, traces);
-			// console.log(blob.id, intersects);
-			_.each(intersects, function(its){
-				// var point = its.point;
-				var near = its._curve2.path.getNearestPoint(blob.position);
-				var path = new paper.Path({
-					blob: blob.id,
-					name: "TMP: temporary",
-					segments: [blob.position.clone(), near], 
-					strokeColor: "yellow", 
-					strokeWidth: 2,
-					terminal_helper: true, 
-					blob_line: true
-				});
-				blob.path = path;
+			p_offsets = _.map(intersects, function(its){
+				var path = its._curve2.path;
+				var pt = path.getNearestPoint(its.point);
+				var offset = path.getOffsetOf(pt);
+				return {path: path.id, offset: offset, source: its._curve.path.id}
 			});
+			return p_offsets;
+		});
+
+		p_offsets = _.flatten(path_processing);
+		p_offsets = _.groupBy(p_offsets, function(el){ return el.path; });
+
+		// console.log("HMM", p_offsets);
+		created = _.map(p_offsets, function(value, pathID){
+			var pathID = parseInt(pathID);
+			var offsets = _.map(value, function(el){ return el.offset; });
+			var sources = _.map(value, function(el){ return el.source; });
+			var newPaths = scope.splitPathAtOffsets(Node.get(pathID), offsets);
+			sources = _.sortBy(sources, function(el, i){ return offsets[i]; });
+			return { newPaths: _.flatten([pathID, newPaths]), sources: _.flatten([sources[0], sources]) }
+		});
+		created = _.flatten(created);
+		var hue = 0;
+
+		var bound_check = function(position, blob){
+			var c = new paper.Path.Circle({
+				radius: 5, 
+				position: position, 
+				strokeColor: "red", 
+				strokeWidth: 1
+			});
+			ixts = _.map(blobs, function(el, i){
+				if(c.intersects(el))
+					return el.id;
+			});
+			
+			c.remove();
+			return _.compact(ixts);
+		} 
+
+
+		var createBlobPath = function(sourceBlob, pos){
+			
+			b = TracePathTool.readPolarity(sourceBlob);
+			var center = sourceBlob.position.clone();
+			var newPath = new paper.Path({
+				blob: sourceBlob.id,
+				name: "T"+ b +"P: temporary",
+				segments: [center, pos], 
+				strokeColor: "yellow", 
+				strokeWidth: 2,
+				terminal_helper: true, 
+				blob_line: true
+			});
+			return newPath;
+		}
+		var pathify = function(sourceBlob, path){
+			var start = path.getPointAt(0);
+			var end = path.getPointAt(path.length);
+
+			var ixts_start = bound_check(start, sourceBlob)
+			var ixts_end = bound_check(end, sourceBlob)
+			// console.log(path.id, ixts_start, ixts_end);
+			_.each(ixts_start, function(el){
+				var sourceBlob = Node.get(el);
+				newPath = createBlobPath(sourceBlob, start);
+				sourceBlob.paths.push(newPath);
+			});
+				
+			_.each(ixts_end, function(el){
+				var sourceBlob = Node.get(el);
+				newPath = createBlobPath(sourceBlob, end);
+				sourceBlob.paths.push(newPath);
+			});
+			
+			
+		}
+		_.each(created, function(path_created, i){
+				groups = _.groupBy(path_created.newPaths, function(el, j){
+					return path_created.sources[j];
+				});
+				_.each(groups, function(group, j){
+					var source = Node.get(parseInt(j));
+					for(var i in group){
+						var path = Node.get(group[i]);
+						if(source.contains(path.getPointAt(path.length/2))){
+							path.remove();							
+						}else{
+							pathify(source, path);
+						}
+					}	
+				});	
+		});
+
+		
 			if(intersects.length == 0){
 				var near = blob.position.clone();
-				near.y -= 1;
-				near.x += 1;
-
+				near.y -= 5;
+				near.x += 5;
+				b = TracePathTool.readPolarity(blob);
 				var path = new paper.Path({
 					blob: blob.id,
-					name: "TMP: temporary",
+					name: "T"+b+"P: temporary",
 					segments: [blob.position.clone(), near], 
 					strokeColor: "yellow", 
 					strokeWidth: 2,
 					terminal_helper: true
 				});
-				blob.path = path;
+				blob.paths.push(path);
 			}	
+		
+		
+	},
+	blobConsolidation: function(){
+		var scope = this;
+		var blobs = ["CGB", "CVB", "CNB", "CGT", "CVT", "CNT", "CNTB", "CVTB", "CGTB"];
+		blobs = EllustrateSVG.match(designer.circuit_layer.layer, { prefix: blobs });
+		
+		_.each(blobs, function(blob){
+			g = _.map(blob.paths, function(p){
+				return p.terminals[0];
+			});
+			console.log(blob.id, g);
+			newNode = Node.join(g);
+			if(!_.isNull(newNode)){
+				n = new Node(newNode.paths, newNode.position);
+				blob.sourceNode = n.id;
+				// nodes.push(n);
+				// console.log(g, "-->", n.id);
+				
+				scope.addNode(n);
+				
+
+				newNode.children.push(n.id);
+				_.each(newNode.children, function(child, i, arr){
+					// console.log("HMM", child, n.id);
+					var x = Node.get(child).node;
+					// console.log(n.id);
+					x.children.push(n.id);
+				});
+				scope.removeNodes(g);
+				n.setChildren(newNode.children);
+			}
+			
 		});
 	},
 	breakUpIntersections: function(){
@@ -326,7 +418,7 @@ Graph.prototype = {
 		_.each(cuts, function(el, pathID, arr){
 			var pathID = parseInt(pathID);
 			var offsets = _.sortBy(_.pluck(el, "offset"));
-			// console.log(pathID, offsets)
+			console.log(pathID, offsets)
 			scope.splitPathAtOffsets(Node.get(pathID), offsets);
 			
 		});
@@ -338,13 +430,14 @@ Graph.prototype = {
 		return offset > EPSILON && path.length - offset > EPSILON;
 	}, 
 	splitPathAtOffsets: function(path, offsets){
+		// console.log("Splitting", path.id, "@", offsets, path.length);
 		var scope = this;
 		offsets = _.sortBy(offsets);
 		offsets = _.filter(offsets, function(e){
 			return scope.isValidSplitLocation(path, e);
 		});
 		offsets = _.uniq(offsets);
-		// console.log('Slicing', path.id, "@", offsets, path.length);
+		console.log('Slicing', path.id, "@", offsets, path.length);
 
 		var cut = 0;
 		var newPath = path;
@@ -357,7 +450,7 @@ Graph.prototype = {
 			cut += (offset - cut);
 		});
 		// console.log("Created:", created);
-		return;
+		return created;
 	},
 	breakUpSelfIntersections: function(){
 		var scope = this;

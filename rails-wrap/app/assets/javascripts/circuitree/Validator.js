@@ -6,18 +6,26 @@ function Diode(id){
 	this.terminals;
 	this.init();
 }
-
+var debug;
+Diode.makeDiodes = function(){
+	var leds = EllustrateSVG.get({name:"CP:_circuit_x5F_led_1_"});
+	var diodes = _.map(leds, function(led){
+		return new Diode(led.id);
+	});
+	return diodes;
+}
 Diode.prototype = {
 	init: function(){
-		this.positive_terminal = EllustrateSVG.match(this.item, {prefix: ["CVT"]})[0].path;
+		this.positive_terminal = EllustrateSVG.match(this.item, {prefix: ["CVT"]})[0].sourceNode;
+		// .sourceNode;
+		// console.log("PT", this.positive_terminal.sourceNode);
+		// if(!_.isUndefined(this.positive_terminal)) this.positive_terminal = this.positive_terminal.terminals[0];
+		// else this.positive_terminal = [];
 
-		if(!_.isUndefined(this.positive_terminal)) this.positive_terminal = this.positive_terminal.terminals[0];
-		else this.positive_terminal = [];
+		this.negative_terminal = EllustrateSVG.match(this.item, {prefix: ["CGT"]})[0].sourceNode; 
 
-		this.negative_terminal = EllustrateSVG.match(this.item, {prefix: ["CGT"]})[0].path; 
-
-		if(!_.isUndefined(this.negative_terminal)) this.negative_terminal = this.negative_terminal.terminals[0];
-		else this.negative_terminal = [];
+		// if(!_.isUndefined(this.negative_terminal)) this.negative_terminal = this.negative_terminal.terminals[0];
+		// else this.negative_terminal = [];
 
 		this.terminals = _.flatten([this.negative_terminal, this.positive_terminal]);
 	}, 
@@ -47,29 +55,91 @@ Diode.prototype = {
 		r = graph.getSourceNode();
 		if(_.isNull(r)) return [];
 		
-		r = Node.get(r).path.terminals[0];
+		r = Node.get(r).sourceNode;
 		r = Node.get(r).node;
 
 		p = this.positive_terminal;
 		p = Node.get(p).node;
 		
-		// console.log("PATH FROM", r.id, p.id)
 		results = Graph.printAllPaths(r, p);
+		console.log(results);
+		// _.each(results, function(r){
+			// path = new EllustratePath(r, "black");
+			// nodeIDs = EllustratePath.toNodesArr(path);
+			// nodes = Node.toNodes(nodeIDs);
+			// de = _.map(nodes, function(el){ 
+				// var path_polarity = _.map(el.paths, function(subpath){
+				// 	return TracePathTool.readPolarity(subpath);
+				// });	
+				// var avg_polarity = "N";
+				// if(_.contains(path_polarity, "G")) avg_polarity = "G";
+				// if(_.contains(path_polarity, "V")) avg_polarity = "V";
+				// return path_polarity.join(',');
+				// console.log("Path polarity", path_polarity.join(','), avg_polarity)
+				// var path_polarity = TracePathTool.readPolarity(el.paths[0]);
+				// console.log("CHILD", avg_polarity, "REJECT", !_.contains([polarity, "N"], avg_polarity));
+				// return !_.contains([polarity, "N"], avg_polarity);
+				// return false;
+			// });
 
-		return EllustratePath.sortAndMake(results);
+		// 	console.log("Nodes", de);
+		// });
+		// console.log("LOOKING FOR POSITIVE PATH FROM", r.id, p.id, results)
+		// // console.log("PATH FROM", r.id, p.id, results)
+		debug = EllustratePath.sortAndMake(results);
+		return debug ;
+		// return [];
+	}, 
+	getAllPathsToPower: function(){
+		r = graph.getSourceNode();
+		if(_.isNull(r)) return [];
+		
+		r = Node.get(r).sourceNode;
+		r = Node.get(r).node;
+
+		p = this.positive_terminal;
+		p = Node.get(p).node;
+		
+		results = Graph.printAllPaths(r, p);
+		_.each(results, function(r){
+			path = new EllustratePath(r, "black");
+			nodeIDs = EllustratePath.toNodesArr(path);
+			nodes = Node.toNodes(nodeIDs);
+			de = _.map(nodes, function(el){ 
+				var path_polarity = _.map(el.paths, function(subpath){
+					return TracePathTool.readPolarity(subpath);
+				});	
+				// var avg_polarity = "N";
+				// if(_.contains(path_polarity, "G")) avg_polarity = "G";
+				// if(_.contains(path_polarity, "V")) avg_polarity = "V";
+				return path_polarity.join(',');
+				// console.log("Path polarity", path_polarity.join(','), avg_polarity)
+				// var path_polarity = TracePathTool.readPolarity(el.paths[0]);
+				// console.log("CHILD", avg_polarity, "REJECT", !_.contains([polarity, "N"], avg_polarity));
+				// return !_.contains([polarity, "N"], avg_polarity);
+				// return false;
+			});
+
+			console.log("Nodes", de);
+		});
+		console.log("LOOKING FOR POSITIVE PATH FROM", r.id, p.id, results)
+		// console.log("PATH FROM", r.id, p.id, results)
+		// debug = EllustratePath.sortAndMake(results);
+		return results;
 	}, 
 	getPathsToGround: function(){
 		r = graph.getSinkNode();
 		if(_.isNull(r)) return [];
 		
-		r = Node.get(r).path.terminals[0];
+		r = Node.get(r).sourceNode;
 		r = Node.get(r).node;
 
 		n = this.negative_terminal;
 		n = Node.get(n).node;
 		
-		// console.log("PATH FROM", r.id, n.id)
+		// console.log("LOOKING FOR GROUND PATH FROM", r.id, n.id)
 		results = Graph.printAllPaths(r, n);
+		
 
 		return EllustratePath.sortAndMake(results);
 	}
@@ -141,11 +211,13 @@ Validator.prototype = {
 		var grounded = _.map(this.diodes, function(diode, i){
 			return diode.getPathsToGround();
 		});
-
+	
+		
 		var errors = _.map(this.diodes, function(diode, i){
 			var isGrounded = grounded[i].length > 0;
 			var isPowered = powered[i].length > 0;
-			if(! isGrounded || ! isPowered){
+			console.log(diode.id, "POWERED?", isPowered, "GROUNDED?", isGrounded);
+			if(!isGrounded && !isPowered){
 				return {level: 5, 
 							elements: [diode.id], 
 							message: "The LED is not connected to ground or power."
@@ -178,7 +250,7 @@ Validator.prototype = {
 		}else{
 			return errors;
 		}
-		
+		return [];
 	}, 
 	validateOhmThreshold: function(){
 		var scope = this;

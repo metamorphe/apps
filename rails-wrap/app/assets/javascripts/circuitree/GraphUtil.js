@@ -1,3 +1,14 @@
+Graph.getPathsFromID = function(source, sink){
+	
+	s = Node.get(source).node;
+	d = Node.get(sink).node;
+
+	
+	results = Graph.printAllPaths(s, d);
+	console.log("PATH FROM", s.id, d.id, results)
+	debug = EllustratePath.sortAndMake(results);
+	return debug ;
+}
 var GETN = function(id){
 	return paper.project.getItem({id: id});
 }
@@ -28,8 +39,8 @@ Graph.printAdjacencyList = function(){
 		s = graph.getSinkNode();
 
 		if(!_.isNull(s) && !_.isNull(r)){
-			s = Node.get(s).path.terminals[0];
-			r = Node.get(r).path.terminals[0];
+			s = Node.get(s).sourceNode;
+			r = Node.get(r).sourceNode;
 		
 			r = paper.project.getItem({id: r}).node;
 			s = paper.project.getItem({id: s}).node;
@@ -47,7 +58,7 @@ Graph.printAdjacencyList = function(){
 }
 
 Graph.printIDs = function(){
-	var conductiveTraces = ["CGP", "CVP", "CNP", "TMP"];
+	var conductiveTraces = ["CGP", "CVP", "CNP", "TVP", "TNP", "TGP"];
 	conductiveTracesA = EllustrateSVG.match(paper.project, { prefix: conductiveTraces });
 	
 	traces = _.map(conductiveTracesA, function(el, i, arr){
@@ -71,13 +82,13 @@ Graph.printIDs = function(){
 						point: el.self.bounds.center.clone(),
 						content: el.id,
 						fontFamily: 'Arial',  
-						fontSize: 8, 
+						fontSize: 20, 
 						fillColor: el.color,
 						terminal_helper: true
 				});
 		// console.log(gtext);
 		inside = _.each(texts, function(el, i, arr){
-			while(gtext.position.isInside(el.bounds.expand(10))){
+			while(gtext.position.isInside(el.bounds.expand(20))){
 				var rand = Math.random() * 4;
 				if(rand > 3)
 					gtext.position.x += 10;
@@ -118,9 +129,25 @@ Graph.printAllPathsUtil = function(u, d, level, results, head){
 		pr.push(head);	
 		return;
 	}else{
-
+		var polarity = TracePathTool.readPolarity(u.paths[0]);
+		// console.log('PATH', polarity);
 		var children = _.map(u.getChildren(), function(el){ return GETN(el).node; });
 		children = _.reject(children, function(el){ return el.visited});
+		
+		children = _.reject(children, function(el){ 
+			var path_polarity = _.map(el.paths, function(subpath){
+				return TracePathTool.readPolarity(subpath);
+			});	
+			var avg_polarity = "N";
+			if(_.contains(path_polarity, "G")) avg_polarity = "G";
+			if(_.contains(path_polarity, "V")) avg_polarity = "V";
+			
+			// console.log("Path polarity", path_polarity.join(','), avg_polarity)
+			// var path_polarity = TracePathTool.readPolarity(el.paths[0]);
+			// console.log("CHILD", avg_polarity, "REJECT", !_.contains([polarity, "N"], avg_polarity));
+			// return !_.contains([polarity, "N"], avg_polarity);
+			return false;
+		});
 
 		for(var i in children){
 			var child = children[i];

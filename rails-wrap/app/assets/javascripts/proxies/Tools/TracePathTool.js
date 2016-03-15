@@ -510,5 +510,6 @@ TracePathTool.detectPolarity = function(trace){
 	if(compare.equals(CircuitLayer.NEGATIVE)) return "G";
 }
 TracePathTool.readPolarity = function(trace){
+	// console.log(trace.name);
 	return trace.name.split(":")[0][1];
 }
