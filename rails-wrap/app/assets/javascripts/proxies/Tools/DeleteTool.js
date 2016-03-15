@@ -35,7 +35,7 @@ function DeleteTool(paper){
 			var positionOnCanvas = scope.paper.view.viewToProject(new paper.Point(event.center.x, event.center.y));
 		}
 		// START
-		if(["mousedown"].indexOf(event.type) != -1){
+		if(["mousedown", "mousedrag"].indexOf(event.type) != -1){
 			var hit = whatDidIHit(positionOnCanvas);
 			var hitType = hit.type;
 			var hitResult = hit.result;
@@ -46,8 +46,12 @@ function DeleteTool(paper){
 		}
 
 	}
+	
 	this.tool.onMouseDown = function(event){
 		route(event, ["element"], "onMouseDown");
+	}
+	this.tool.onMouseDrag = function(event){
+		route(event, ["element"], "onMouseDrag")
 	}
 }
 
@@ -76,6 +80,14 @@ DeleteTool.prototype = {
     	designer.circuit_layer.layer.selected = flag;
  	}, 
 	element: {
+		onMouseDrag: function(event, hitResult, scope){
+			var cluster = hitResult.item;
+			while(_.isUndefined(cluster.canvasItem))
+				cluster = cluster.parent;
+			scope.sm.add(cluster, event.event.shiftKey);
+			scope.sm.remove();
+			hm.save();
+		},
 		onMouseDown: function(event, hitResult, scope){
 			console.log("onMouseDown");
 

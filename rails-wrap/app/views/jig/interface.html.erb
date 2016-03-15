@@ -26,6 +26,8 @@
       // id = id[id.length - 1];
       
       var mode = GET().mode; //$(this).attr('data-mode');
+      var dev = GET().dev; //$(this).attr('data-mode');
+      if(_.isUndefined(dev)) $('#dev-toolbox').remove();
       $('#interface-container').css("background", modes[mode].color);
       console.log("mode", mode);
       
