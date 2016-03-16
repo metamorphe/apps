@@ -39,23 +39,28 @@
           $(modes[i].dom).hide(200);
         }
       }
-
+      // if(mode == "draw"){
+        // $('#shade').fadeOut(1000);
+      // }
       if(mode == "validate"){
-        var val = function(){
+        // var val = function(){
           graph = new Graph();
          
           v = new Validator(graph);
           v.validate();
-        }
-        $('#shade').delay(1000, val);  
+          // $('#shade').hide();
+        // }
+        // $('#shade').delay(10, val);  
       }
       if(mode == "make"){
-        var fab = function(){
+        // var fab = function(){
           graph = new Graph();
           f = new FabGuide(graph);
           f.fabricate();
-        }
-        $('#shade').delay(1000, fab);         
+          // $('#shade').fadeOut(1000);
+          // $('#shade').hide();
+        // }
+        // $('#shade').delay(1000, fab);         
       }
      
       current_mode = mode;
