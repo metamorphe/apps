@@ -151,8 +151,8 @@ CircuitLayer.prototype = {
 	},
 	print_view: function(){
 		this.legend.remove();
-		CircuitLayer.select_and_color_and_code(this.layer, ["CNP", "CGP", "CVP"], { strokeColor: "#777", shadowBlur: 0, dashArray:[10, 1]});
-		CircuitLayer.select_and_color_and_code(this.layer, ["CNT", "CGT", "CVT", "CVTB", "CGTB"], { fillColor: "#777", shadowBlur: 0, dashArray: [10, 1]});
+		CircuitLayer.select_and_color_and_code(this.layer, ["CNP", "CGP", "CVP"], { strokeColor: "#ED1E79", shadowBlur: 0, dashArray:[10, 1]});
+		CircuitLayer.select_and_color_and_code(this.layer, ["CNT", "CGT", "CVT", "CVTB", "CGTB"], { fillColor: "#ED1E79", shadowBlur: 0, dashArray: [10, 1]});
 
 		paper.view.update();
 	},
