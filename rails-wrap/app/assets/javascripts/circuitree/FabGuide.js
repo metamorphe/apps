@@ -19,7 +19,7 @@ function FabGuide(graph){
 	// this.paths = _.map(this.ptgs, function(path){
 	// 	return _.map(path.str.split('-'), function(el){ return parseInt(el);});
 	// });
-	this.battery = paper.project.getItems({name: "CP:_Battery_1_"})[0];
+	this.battery = paper.project.getItems({name: "CP:_Battery"})[0];
 
 	// var leds = paper.project.getItems({name:"CP:_circuit_x5F_led_1_"});
 	// this.ledIDs = _.map(leds, function(led){
