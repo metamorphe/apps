@@ -41,17 +41,21 @@
       }
 
       if(mode == "validate"){
+        var val = function(){
           graph = new Graph();
          
           v = new Validator(graph);
           v.validate();
-          
-          
+        }
+        $('#shade').delay(1000, val);  
       }
       if(mode == "make"){
+        var fab = function(){
           graph = new Graph();
           f = new FabGuide(graph);
-          f.fabricate();          
+          f.fabricate();
+        }
+        $('#shade').delay(1000, fab);         
       }
      
       current_mode = mode;

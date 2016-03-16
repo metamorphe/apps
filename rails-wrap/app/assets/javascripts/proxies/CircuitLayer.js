@@ -103,8 +103,10 @@ CircuitLayer.legend = function(parent, pt){
 	g.sendToBack();
 
 	legend.position = pt;
-	legend.position.x -= legend.bounds.width;
-	legend.position.y += 50;
+	legend.position.x -= legend.bounds.width + 50;
+	legend.position.y += 100;
+	legend.scaling.x = paper.view.zoom;
+	legend.scaling.y =  paper.view.zoom;
 	return legend;
 }
 function CircuitLayer(paper, parent, material){
@@ -177,9 +179,12 @@ CircuitLayer.prototype = {
 		paper.view.update();
 	},
 	resetLegend: function(){
-		this.legend.position = paper.view.bounds.topRight.clone();
-		this.legend.position.x -= legend.bounds.width;
-		this.legend.position.y += 50;
+		
+		this.legend.position = artboard.bounds.topRight.clone();
+		this.legend.position.x -= legend.bounds.width + 50;
+		this.legend.position.y += 100;
+		// this.legend.scaling.x /= paper.view.zoom;
+		// this.legend.scaling.y /= paper.view.zoom;
 	},
 	circuit_view: function(){
 		this.addLegend();
