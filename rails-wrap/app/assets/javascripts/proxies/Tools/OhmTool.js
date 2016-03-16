@@ -176,7 +176,7 @@ OhmTool.glow = function(path, isOn){
 		console.log("Glow path is null");
 		return;
 	}
-	if(["CP:_circuit_x5F_led_1_", "CP:_Battery_1_"].indexOf(path.name) > -1){
+	if(["CP:_circuit_x5F_led_1_", "CP:_Battery"].indexOf(path.name) > -1){
 		if(isOn){
 			path.style = {
 				shadowColor: "blue",

@@ -9,6 +9,7 @@ function Graph(){
 	this.breakUpSelfIntersections();
 	this.breakUpIntersections();
 	this.generateBlobPaths();
+
 	// this.colorPaths();
 	this.init();
 	
@@ -21,6 +22,7 @@ Graph.prototype = {
 		var hue = 0;
 
 		var traces = ["CGP", "CVP", "CNP", "TGP", "TVP", "TNP"];
+
 		traces = EllustrateSVG.match(paper.project, { prefix: traces });
 
 		for(var i in traces){
@@ -39,6 +41,7 @@ Graph.prototype = {
 			el.remove();
 			return {el: el, parent: parent}
 		});
+
 	},
 	find: function(id){
 		return _.filter(graph.nodes, function(el, i, arr){ return el.id == id})[0];
@@ -64,8 +67,12 @@ Graph.prototype = {
 		traces = EllustrateSVG.match(paper.project, { prefix: traces });
 		
 		var nodes = [];
+
 		// add nodes to the ends
 		_.each(traces, function(trace, i, arr){
+				// console.log("finished", i, arr.length);
+				// console.log(trace);
+			if(trace.length != 0){
 				var start = trace.getPointAt(0).clone();
 				var end = trace.getPointAt(trace.length).clone();
 				
@@ -77,7 +84,8 @@ Graph.prototype = {
 				n = new Node([trace], end);
 				nodes.push(n);
 				scope.addNode(n);
-				// console.log("NODE", n.self.id);
+				console.log("NODE", n.self.id);
+			}
 		});
 
 		
