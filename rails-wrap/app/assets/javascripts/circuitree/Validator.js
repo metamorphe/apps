@@ -60,7 +60,7 @@ Diode.prototype = {
 		p = Node.get(p).node;
 		
 		results = Graph.printAllPaths(r, p);
-		console.log(results);
+		// console.log(results);
 		// _.each(results, function(r){
 			// path = new EllustratePath(r, "black");
 			// nodeIDs = EllustratePath.toNodesArr(path);

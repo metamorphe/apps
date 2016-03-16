@@ -84,7 +84,7 @@ Graph.prototype = {
 				n = new Node([trace], end);
 				nodes.push(n);
 				scope.addNode(n);
-				console.log("NODE", n.self.id);
+				// console.log("NODE", n.self.id);
 			}
 		});
 
@@ -361,7 +361,7 @@ Graph.prototype = {
 			g = _.map(blob.paths, function(p){
 				return p.terminals[0];
 			});
-			console.log(blob.id, g);
+			// console.log(blob.id, g);
 			newNode = Node.join(g);
 			if(!_.isNull(newNode)){
 				n = new Node(newNode.paths, newNode.position);
@@ -446,7 +446,7 @@ Graph.prototype = {
 			return scope.isValidSplitLocation(path, e);
 		});
 		offsets = _.uniq(offsets);
-		console.log('Slicing', path.id, "@", offsets, path.length);
+		// console.log('Slicing', path.id, "@", offsets, path.length);
 
 		var cut = 0;
 		var newPath = path;

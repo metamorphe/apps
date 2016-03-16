@@ -4,9 +4,9 @@ function HistoryManager(storage){
 	this.storage = storage;
 	this.current_save = this.getHead();
 	// If there is no save history
-	// console.log("HISTORY ITEMS" + this.getHistory().length);
+	console.log("HISTORY ITEMS" + this.getHistory().length);
 	if(this.getHead() == Number.NEGATIVE_INFINITY){
-		// console.log("No history in cache");
+		console.log("No history in cache");
 		resp = $.getJSON(design.json.url, function(resp){
        		designer.loadJSON(resp);
     	});
@@ -28,8 +28,8 @@ HistoryManager.prototype = {
 		var scope = this;
 		resp = $.getJSON("/blank.json", function(resp){
        		designer.loadJSON(resp, CircuitDesigner.BLANK_CANVAS);
-    		scope.server_save();
-			scope.save();
+  //   		scope.server_save();
+			// scope.save();
 			scope.current_save = scope.getHead();
 			zoom.home();
     	});

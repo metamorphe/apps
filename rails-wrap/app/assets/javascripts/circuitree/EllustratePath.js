@@ -11,7 +11,7 @@ EllustratePath.sortAndMake = function(results){
 	});
 
 	sorted = _.sortBy(ptgs, function(ptg){ 
-		console.log(ptg.length);
+		// console.log(ptg.length);
 		return ptg.length;});
 
 	
