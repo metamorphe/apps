@@ -72,6 +72,7 @@ TracePathTool.prototype = {
  	}, 
  	canvas:{
  		onMouseDown: function(event, hitResult, scope){
+ 			$('#canvas-check').addClass('btn-primary');
 	  		console.log("canvas down");
 			trace = new paper.Path({
 				strokeColor: CircuitLayer.NEUTRAL,
@@ -92,7 +93,10 @@ TracePathTool.prototype = {
 			scope.intersects = new paper.Group();
 		}, 
 		onMouseDrag: function(event, scope){
+			$('#canvas-check').addClass('btn-primary');
+			$('#pad-check').removeClass('btn-primary');
 			// console.log("canvas drag");
+
 			var trace_scope = trace;
 			if(_.isNull(trace)) return;
 			// console.log("canvas drag pt added");
@@ -133,6 +137,7 @@ TracePathTool.prototype = {
 
 		}, 
 		onMouseUp: function(event, scope){
+			$('#canvas-check').removeClass('btn-primary');
 			if(_.isNull(trace)) return;
 			
 		
@@ -167,6 +172,7 @@ TracePathTool.prototype = {
  	},
 	trace: {
 		onMouseDown: function(event, hitResult, scope){
+			$('#pad-check').addClass('btn-primary');
 	  		var path = hitResult.item;
 			start_terminal = path;
 
@@ -189,6 +195,8 @@ TracePathTool.prototype = {
 			scope.intersects = new paper.Group();
 		}, 
 		onMouseDrag: function(event, scope){
+			$('#canvas-check').removeClass('btn-primary');
+			$('#pad-check').addClass('btn-primary');
 			var trace_scope = trace;
 			if(_.isNull(trace)) return;
 
@@ -228,6 +236,7 @@ TracePathTool.prototype = {
 
 		}, 
 		onMouseUp: function(event, scope){
+			$('#pad-check').removeClass('btn-primary');
 			if(_.isNull(trace)) return;
 			var polarity = TracePathTool.detectPolarity(trace);
 

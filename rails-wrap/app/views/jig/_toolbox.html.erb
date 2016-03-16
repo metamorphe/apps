@@ -104,7 +104,12 @@
     </div>
 </div>
 
-
+<div id="on-it">
+  <div class="btn-group">
+    <button id="pad-check" class="btn btn-default"> TRACE/PAD </button>
+    <button id="canvas-check" class="btn btn-default"> CANVAS </button>
+  </div>
+</div>
 <style>
 #dev-toolbox {
   position: absolute;
@@ -172,7 +177,17 @@
   #calibration-toolbox #sheet-resistance{
     text-align: left;
   }
-
+#on-it {
+  position: absolute;
+  top: 60px;
+  left: 5px;
+  background: none;
+  border: none;
+  box-shadow: none;
+  z-index: 1000000;
+  /*calc(34% + 98px + 10px);*/
+  width: 200px;
+}
 #export-toolbox {
   position: absolute;
   top: 280px;
