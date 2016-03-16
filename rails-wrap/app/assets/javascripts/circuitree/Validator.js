@@ -182,10 +182,14 @@ Validator.prototype = {
 		var scope = this;
 		console.log("Checking LEDS: " + this.diodes.length)
 		
+
+		console.log("Checking Power");
 		var powered = _.map(this.diodes, function(diode, i){
 			return diode.getPathsToPower();
 		});
 
+
+		console.log("Checking Grounded");
 		var grounded = _.map(this.diodes, function(diode, i){
 			return diode.getPathsToGround();
 		});

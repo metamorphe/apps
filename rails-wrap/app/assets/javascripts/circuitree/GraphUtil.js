@@ -119,7 +119,7 @@ Graph.printAllPaths = function(s, d){
 }
 
 Graph.printAllPathsUtil = function(u, d, level, results, head){
-	// console.log(level, u.self.id, d.self.id);
+	console.log(level, u.self.id, d.self.id);
 	if(head == "") head = u.self.id;
 	else head = [head, u.self.id].join('-');
 	u.visited = true;
@@ -134,20 +134,20 @@ Graph.printAllPathsUtil = function(u, d, level, results, head){
 		var children = _.map(u.getChildren(), function(el){ return GETN(el).node; });
 		children = _.reject(children, function(el){ return el.visited});
 		
-		children = _.reject(children, function(el){ 
-			var path_polarity = _.map(el.paths, function(subpath){
-				return TracePathTool.readPolarity(subpath);
-			});	
-			var avg_polarity = "N";
-			if(_.contains(path_polarity, "G")) avg_polarity = "G";
-			if(_.contains(path_polarity, "V")) avg_polarity = "V";
+		// children = _.reject(children, function(el){ 
+		// 	var path_polarity = _.map(el.paths, function(subpath){
+		// 		return TracePathTool.readPolarity(subpath);
+		// 	});	
+		// 	var avg_polarity = "N";
+		// 	if(_.contains(path_polarity, "G")) avg_polarity = "G";
+		// 	if(_.contains(path_polarity, "V")) avg_polarity = "V";
 			
-			// console.log("Path polarity", path_polarity.join(','), avg_polarity)
-			// var path_polarity = TracePathTool.readPolarity(el.paths[0]);
-			// console.log("CHILD", avg_polarity, "REJECT", !_.contains([polarity, "N"], avg_polarity));
-			// return !_.contains([polarity, "N"], avg_polarity);
-			return false;
-		});
+		// 	// console.log("Path polarity", path_polarity.join(','), avg_polarity)
+		// 	// var path_polarity = TracePathTool.readPolarity(el.paths[0]);
+		// 	// console.log("CHILD", avg_polarity, "REJECT", !_.contains([polarity, "N"], avg_polarity));
+		// 	// return !_.contains([polarity, "N"], avg_polarity);
+		// 	return false;
+		// });
 
 		for(var i in children){
 			var child = children[i];
