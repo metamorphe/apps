@@ -108,6 +108,7 @@
   <div class="btn-group">
     <button id="pad-check" class="btn btn-default"> TRACE/PAD </button>
     <button id="canvas-check" class="btn btn-default"> CANVAS </button>
+    <button id="connection-check" class="btn btn-info"> CONNECTION </button>
   </div>
 </div>
 <style>
@@ -186,7 +187,7 @@
   box-shadow: none;
   z-index: 1000000;
   /*calc(34% + 98px + 10px);*/
-  width: 200px;
+  width: 400px;
 }
 #export-toolbox {
   position: absolute;
@@ -355,6 +356,14 @@
 </style> 
 <script type="text/javascript">
 // CANVAS - TRANSFORM, PAN, CANVAS_PAN
+$(function(){
+  $('#connection-check').hover(function(){
+    designer.circuit_layer.connect_view();
+  }, function(){
+    designer.circuit_layer.unconnect_view();
+  })
+
+});
 var tool_config = [
   {
     name: "pathtool",

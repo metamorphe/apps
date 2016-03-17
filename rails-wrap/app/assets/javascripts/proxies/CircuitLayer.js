@@ -121,6 +121,7 @@ function CircuitLayer(paper, parent, material){
 	var legendPosition = paper.view.bounds.topRight.clone();
 	this.legend = CircuitLayer.legend(this.layer, legendPosition);
 	this.legend.remove();
+	this.connections;
 }
 
 CircuitLayer.prototype = {
@@ -176,8 +177,82 @@ CircuitLayer.prototype = {
 			  shadowOffset: new paper.Point(0, 0)
 			});
 
+
 		paper.view.update();
 	},
+	connect_view: function(){
+		
+		var elements = EllustrateSVG.match(this.layer, { prefix: ["CNP", "CGP", "CVP"] });
+		style = {strokeColor: "black", strokeWidth: 1}
+		this.pre_connection = _.map(elements, function(el, i, arr){
+			prevColor = el.style.strokeColor;
+			prevWidth = el.style.strokeWidth;
+			el.style = style;
+			// el.polarity = polarity;
+			return {el: el, strokeColor: prevColor, strokeWidth: prevWidth}
+		});
+
+		// ALL CONDUCTIVE PATHS
+		var conductive = ["CGP", "CNP", "CVP", "CGB", "CVB", "CNB", "CVTB", "CGTB"];
+		var conductive = EllustrateSVG.get({ prefix: conductive });
+		var conductiveIDs = _.map(conductive, function(el){ return el.id; });
+		
+		// GET PAIR TRAVERSAL
+		var pairs = _.map(conductiveIDs, function(id){
+			return _.compact(_.map(conductiveIDs, function(id2){
+				if(id == id2) return false;
+				return _.sortBy([id, id2]);
+			}));
+		});
+		pairs = _.flatten(pairs, true);
+		pairs =  _.uniq(pairs, function(el){
+			return el[0] * 100 + el[1];
+		});
+		clusters = _.groupBy(pairs, function(el){
+			return el[0];
+		});
+		this.connections = new paper.Group({
+			name: "NC: Connections", 
+			terminal_helper: true
+		})
+		var scope = this;
+		_.each(clusters, function(cluster, key){
+			condA = Node.get(parseInt(key));
+			comps = _.map(cluster, function(el, i){
+				return Node.get(el[1]);
+			});
+			ixts = TracePathTool.getAllIntersections(condA, comps);
+			// console.log(key, ixts.length);
+			_.each(ixts, function(el, i, arr){
+				var c = new paper.Path.Circle({
+					parent: scope.connections,
+					radius: 4, 
+					fillColor: "blue", 
+					position: el.point, 
+					strokeColor: "#00A8E1", 
+					strokeWidth: 1
+				});
+				// c.remove();
+				// scope.connections.addChild(c);
+			});
+		});
+		// this.connections.remove();
+		paper.view.update();
+	},
+	unconnect_view: function(){
+		this.connections.remove();
+
+		 _.each(this.pre_connection, function(item, i, arr){
+		 	console.log(item);
+			item.el.style.strokeColor = item.strokeColor;
+			item.el.style.strokeWidth = item.strokeWidth;
+			// item.el.style.strokeColor = item.style.strokeColor;
+			// item.el.polarity = polarity;
+		});
+		paper.view.update();
+		 
+
+	},	
 	resetLegend: function(){
 		
 		this.legend.position = artboard.bounds.topRight.clone();

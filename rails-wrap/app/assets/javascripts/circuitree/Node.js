@@ -55,6 +55,12 @@ Node.allChildren = function(nodes, nodeIDs){
 	});
 	return children;
 }
+Node.toPaths = function(ids){
+	return _.map(ids, function(node){
+		var n = Node.get(node);
+		return n;
+	});
+}
 Node.toNodes = function(nodeIDs){
 	return _.map(nodeIDs, function(node){
 		var n = Node.get(node);
