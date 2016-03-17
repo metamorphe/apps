@@ -243,7 +243,7 @@ CircuitLayer.prototype = {
 		this.connections.remove();
 
 		 _.each(this.pre_connection, function(item, i, arr){
-		 	console.log(item);
+		 	// console.log(item);
 			item.el.style.strokeColor = item.strokeColor;
 			item.el.style.strokeWidth = item.strokeWidth;
 			// item.el.style.strokeColor = item.style.strokeColor;
