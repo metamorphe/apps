@@ -193,7 +193,7 @@ CircuitLayer.prototype = {
 		});
 
 		// ALL CONDUCTIVE PATHS
-		var conductive = ["CGP", "CNP", "CVP", "CGB", "CVB", "CNB", "CVTB", "CGTB"];
+		var conductive = ["CGP", "CNP", "CVP", "CGB", "CVB", "CNB", "CGT", "CVT", "CNT", "CVTB", "CGTB"];
 		var conductive = EllustrateSVG.get({ prefix: conductive });
 		var conductiveIDs = _.map(conductive, function(el){ return el.id; });
 		
