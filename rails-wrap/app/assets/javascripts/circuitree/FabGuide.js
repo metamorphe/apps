@@ -118,6 +118,11 @@ FabGuide.prototype = {
 				);
 			}
 
+			
+			var timer_updatedfied = DOM.tag("span").addClass("timer-uf").html(dryingtime);
+			var timer_html = timer_updatedfied.wrap("<div>").parent().html();
+
+			// new Timer(seconds, updatefield);
 			guide.push(
 				[
 				{level: 1, 
@@ -131,7 +136,7 @@ FabGuide.prototype = {
 				{level: 2, 
 					icon: "clock",
 					elements: [el.powered.solution.id, el.grounded.solution.id], 
-					message: "Let these traces dry for <b>"+ dryingtime +" seconds</b>.", 
+					message: "Let these traces dry for <b>"+ timer_html +" seconds</b>.", 
 					time: dryingtime },
 				{level: 3,
 					icon: "multimeter", 
@@ -181,6 +186,7 @@ FabGuide.prototype = {
 				
 				]
 			);
+		timer_updatedfied.unwrap();
 		// 	// LEAVE BATTERY ON IF ITS THE LAST ONE
 		// 	// if(arr.length - 1 == i) guide = guide.slice(0, guide.length - 1);
 			return _.flatten(guide);
@@ -192,7 +198,19 @@ FabGuide.prototype = {
 		var scope = this;
 		_.each(guides, function(el, i, arr){
 			guides = Validator.generateSidePanelNode(el);
+
 			scope.dom.append(guides)
+		});
+		$('.timer').each(function(i, el){
+			console.log(i, el);
+			$(el).click(function(e){
+				var uf = $(this).parent().parent().find('.timer-uf');
+				var t =  parseInt($(this).attr('data-time'));
+				console.log("Starting timer for", t, uf);
+				
+				var timer = new Timer(t, uf);
+				timer.start();
+			});
 		});
 	}
 }

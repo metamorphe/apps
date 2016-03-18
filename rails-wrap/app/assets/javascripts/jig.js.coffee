@@ -34,5 +34,6 @@
 //= require circuitree/EllustrateSVG
 //= require circuitree/EllustratePath
 //= require circuitree/Validator
+//= require circuitree/Timer
 //= require circuitree/FabGuide
 //= require hammer

@@ -294,6 +294,7 @@ Validator.prototype = {
 
 
 Validator.generateSidePanelNode =  function(el){
+
 				if(el.level == 1) level = "active";
 				if(el.level == 2) level = "list-group-item";
 				if(el.level == 3) level = "list-group-item-warning";
@@ -313,9 +314,16 @@ Validator.generateSidePanelNode =  function(el){
 		    	}else
 			    	row.append([col_a, col_b]);
 		    	guide_dom.append(row);
+
 		    	if(el.icon){
 			    	var icon = "icon-" + el.icon;
-			    	col_a.prepend("<span class='"+ icon +" guide-icon'></span>");
+			    	icon = $("<span class='"+ icon +" guide-icon'></span>");
+			    	if(el.icon == "clock"){
+			    		icon.addClass('timer').attr('id', "timer");
+			    		icon.addClass('timer').attr('data-time', el.time);
+			    	}
+
+			    	col_a.prepend(icon);
 			    }
 			    if(el.glyph){
 			    	var glyph = "glyphicon glyphicon-" + el.glyph;
@@ -412,5 +420,8 @@ Validator.generateSidePanelNode =  function(el){
 			    		});
 			    	}
 			    );
+
+
+				
 		    	return guide_dom;
     }
