@@ -5,8 +5,9 @@ Graph.getPathsFromID = function(source, sink){
 
 	
 	results = Graph.printAllPaths(s, d);
+	results = EllustratePath.sortAndMake(results);
 	console.log("PATH FROM", s.id, d.id, results)
-	debug = EllustratePath.sortAndMake(results);
+	
 	return debug ;
 }
 var GETN = function(id){
@@ -119,7 +120,7 @@ Graph.printAllPaths = function(s, d){
 }
 
 Graph.printAllPathsUtil = function(u, d, level, results, head){
-	console.log(level, u.self.id, d.self.id);
+	// console.log(level, u.self.id, d.self.id);
 	if(head == "") head = u.self.id;
 	else head = [head, u.self.id].join('-');
 	u.visited = true;

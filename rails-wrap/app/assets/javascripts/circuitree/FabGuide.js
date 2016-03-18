@@ -62,14 +62,24 @@ FabGuide.prototype = {
 			return diode.getPathsToGround();
 		});
 
+		var all_paths = _.map(this.diodes, function(diode, i){
+			var all_paths = [diode.getAllPathsToFromPowerPad(), diode.getAllPathsToFromGroundPad()];
+			all_paths = _.flatten(all_paths);
+			return _.map(all_paths, function(el){ return el.mini_solution.id });
+			// return [];
+		});
+		console.log("ALL PATHS", all_paths);
+
 		var ptgs = _.map(this.diodes, function(diode, i){
 			powered_path = powered[i][0];
 			grounded_path = grounded[i][0];
-			return {length: powered_path.length + grounded_path.length, powered: powered_path, grounded: grounded_path, diode: diode};
+			return {length: powered_path.length + grounded_path.length, powered: powered_path, grounded: grounded_path, diode: diode, all_paths: all_paths[i]};
 		});
 		
 		ptgs = _.sortBy(ptgs, function(el){ return el.length;})
-		console.log(ptgs);
+		// console.log(ptgs);
+
+
 		var guides = _.map(ptgs, function(el, i, arr){
 			dryingtime = 60;
 			p_ohmage = sr_model.apply(el.powered.solution);
@@ -82,7 +92,9 @@ FabGuide.prototype = {
 
 			var sourceNode = Node.get(graph.getSourceNode()).sourceNode;
 			var sinkNode = Node.get(graph.getSinkNode()).sourceNode;
-		// 	led_terminals = scope.leds[i];
+
+			
+					// 	led_terminals = scope.leds[i];
 		// 	// console.log("HGO", scope.ledIDs, scope.leds, led_terminals);
 			var guide = [];
 			if(i == 0){
@@ -123,6 +135,7 @@ FabGuide.prototype = {
 			var timer_html = timer_updatedfied.wrap("<div>").parent().html();
 
 			// new Timer(seconds, updatefield);
+			var drawable_paths = _.flatten([el.powered.solution.id, el.grounded.solution.id, el.all_paths]);
 			guide.push(
 				[
 				{level: 1, 
@@ -131,11 +144,11 @@ FabGuide.prototype = {
 					message: "<b>STEP #" + (i+ 2) + ": DRAW BRANCH </b>"},
 				{level: 2, 
 					icon: "pen",
-					elements: [el.powered.solution.id, el.grounded.solution.id], 
+					elements: drawable_paths, 
 					message: "Draw Trace #" + (i+ 1) + " with your silver ink pen."},
 				{level: 2, 
 					icon: "clock",
-					elements: [el.powered.solution.id, el.grounded.solution.id], 
+					elements: drawable_paths, 
 					message: "Let these traces dry for <b>"+ timer_html +" seconds</b>.", 
 					time: dryingtime },
 				{level: 3,

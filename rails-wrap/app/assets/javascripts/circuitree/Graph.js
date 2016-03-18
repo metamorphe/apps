@@ -427,7 +427,7 @@ Graph.prototype = {
 		_.each(cuts, function(el, pathID, arr){
 			var pathID = parseInt(pathID);
 			var offsets = _.sortBy(_.pluck(el, "offset"));
-			console.log(pathID, offsets)
+			// console.log(pathID, offsets)
 			scope.splitPathAtOffsets(Node.get(pathID), offsets);
 			
 		});

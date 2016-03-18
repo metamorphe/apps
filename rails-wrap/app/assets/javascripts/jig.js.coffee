@@ -33,6 +33,7 @@
 //= require circuitree/GraphUtil
 //= require circuitree/EllustrateSVG
 //= require circuitree/EllustratePath
+//= require circuitree/Diode
 //= require circuitree/Validator
 //= require circuitree/Timer
 //= require circuitree/FabGuide

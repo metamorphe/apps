@@ -12,10 +12,11 @@ EllustratePath.sortAndMake = function(results){
 
 	sorted = _.sortBy(ptgs, function(ptg){ 
 		// console.log(ptg.length);
-		return ptg.length;});
+		return ptg.length;
+	});
 
 	
-	sorted = _.uniq(ptgs, function(ptg){ 
+	sorted = _.uniq(sorted, function(ptg){ 
 		return (ptg.length / 20).toFixed(0);
 	});
 	
@@ -54,9 +55,29 @@ function EllustratePath(str, color){
 }
 EllustratePath.prototype = {
 	generate_small: function(){
-		for(var i = 0; i < 50 ; i++)
-			this.mini_solution.add(this.solution.getPointAt(i));
-		this.mini_solution.opacity = 0;
+		// console.log(this.solution.length
+		var MAX_MINI_SOLUTION_LENGTH = 40;
+		if(this.solution.length <= 0) return;
+		var start = this.solution.getPointAt(0);
+		var end = this.solution.getPointAt(this.solution.length);
+		var startNode = Node.get(this.nodes[0]).position;
+		var startDistance = start.getDistance(startNode);
+		var endDistance = end.getDistance(startNode);
+		
+
+		orientation_forward = startDistance < endDistance;
+		// console.log("ORIENT FORWARD", orientation_forward);
+		if(orientation_forward){
+			for(var i = 0; i < this.solution.length && this.mini_solution.length < MAX_MINI_SOLUTION_LENGTH ; i++)
+				this.mini_solution.add(this.solution.getPointAt(i));
+			this.mini_solution.opacity = 0;
+		}else{
+			for(var i = this.solution.length; this.mini_solution.length < MAX_MINI_SOLUTION_LENGTH && i >= 0 ; i--){
+				// console.log(i);
+				this.mini_solution.add(this.solution.getPointAt(i));
+			}
+			this.mini_solution.opacity = 0;
+		}
 	},
 	init: function(){
 		var scope = this;
