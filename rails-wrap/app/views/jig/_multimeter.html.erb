@@ -6,6 +6,9 @@ Multimeter.modes = {
 	voltage: {"image": "/voltageMode.png"},
 	continuity: {"image": "/continuityMode.png"},
 }
+Multimeter.getSrc = function(mode){
+		return Multimeter.modes[mode].image;
+	}
 
 function Multimeter(dom){
 	this.dom = dom;
@@ -73,7 +76,9 @@ Multimeter.prototype = {
 		// this.probes.a.dot.sendToBack();
 		// this.probes.b.dot.sendToBack();
 		paper.view.update();
+		return modeImage;
 	}, 
+	
 	hide: function(){
 		this.dom.fadeOut();
 		if(this.probes.a.tri) this.probes.a.tri.remove();

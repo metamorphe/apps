@@ -252,16 +252,27 @@ Validator.generateSidePanelNode =  function(el){
 			    	yesButton.click(yesBehavior);
 			    	noButton.click(noBehavior);
 			    }
-			    var msg = DOM.tag("p").html(el.message);
+
+			     var msg = DOM.tag("p").html(el.message);
+
 			    col_b.append([msg, btnGroup]); 
-			    // console.log("ELEMENT", el);
-		    	guide_dom.attr('data-highlight', el.elements.join(','));
-		    	
+			   
 		    	if(el.multimeter){	
 			    	guide_dom.attr('data-multimeter', el.multimeter);
 			    	guide_dom.attr('data-probe-a', el.probeA);
 			    	guide_dom.attr('data-probe-b', el.probeB);
-				}		    	
+		    		src = Multimeter.getSrc(el.multimeter);
+
+	    			console.log(src);
+    				var img = DOM.tag("img", true).attr('src', src).css({
+    					width: "80%"
+    				});
+			    	msg.append(img);
+				}		
+				
+			    // console.log("ELEMENT", el);
+		    	guide_dom.attr('data-highlight', el.elements.join(','));
+		        	
 
 		    	guide_dom.hover(
 		    		function(){
@@ -274,8 +285,11 @@ Validator.generateSidePanelNode =  function(el){
 			    			posA = graph.find(probeA).getPosition();
 			    			posB = graph.find(probeB).getPosition();
 			    			
-			    			multimeter.show(mm, posA, posB);
-			 	   			
+			    		
+			    			
+			    			// console.log(src);
+		    				// var img = DOM.tag("img", true).attr('src', src);
+		    				// col_b.append(img);
 					    }	
 					    else multimeter.hide();
 

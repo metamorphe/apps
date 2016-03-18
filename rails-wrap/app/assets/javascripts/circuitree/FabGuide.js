@@ -116,7 +116,7 @@ FabGuide.prototype = {
 						icon: "multimeter",
 						multimeter: "voltage", 
 						probeA: sourceNode, probeB: sinkNode, elements: alltracesoutofbattery, 
-						message: "<b class='check'>Power Check</b>: For all paths, position your probes on the dots. Is the reading approximately <b>3.3 V</b>?  ",
+						message: "<b class='check'>Power Check</b>: For all paths, position and <em>match</em> your probes to the dots. Is the reading approximately <b>3.3 V</b>?  ",
 						debug: [
 							{level: 4,
 								icon: "", 
@@ -157,7 +157,7 @@ FabGuide.prototype = {
 					probeA: el.powered.nodes[0], 
 					probeB: el.diode.positive_terminal,  
 					elements: [el.powered.solution.id], 
-					message: "<b class='check'>Resistance Check</b>: Position your probes on the dots. Is the reading <b>less than " + p_ohmage_upperbound + " Ω</b>? ",
+					message: "<b class='check'>Resistance Check</b>: Position and <em>match</em> your probes to the dots. Is the reading <b>less than " + p_ohmage_upperbound + " Ω</b>? ",
 					debug: [
 							{level: 4,
 								icon: "eye", 
@@ -172,7 +172,7 @@ FabGuide.prototype = {
 					probeA: el.grounded.nodes[0], 
 					probeB: el.diode.negative_terminal,  
 					elements: [el.grounded.solution.id], 
-					message: "<b class='check'>Resistance Check</b>: Position your probes on the dots. Is the reading <b>less than " + n_ohmage_upperbound + " Ω</b>? ",
+					message: "<b class='check'>Resistance Check</b>: Position and <em>match</em> your probes to the dots. Is the reading <b>less than " + n_ohmage_upperbound + " Ω</b>? ",
 					debug: [
 							{level: 4,
 								icon: "eye", 
@@ -184,7 +184,7 @@ FabGuide.prototype = {
 				{level: 2, 
 					icon: "place",
 					elements: [el.diode.id], 
-					message: "Place the following LED."},
+					message: "Place the following LED. Pay attention to orientation."},
 				{level: 3, 
 					icon: "eye",
 					elements: [el.diode.id], 
