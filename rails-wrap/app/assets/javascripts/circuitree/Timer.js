@@ -1,5 +1,5 @@
 function Timer(seconds, updatefield){
-  console.log("Creating a timer", seconds, updatefield);
+  // console.log("Creating a timer", seconds, updatefield);
   this.time_remaining = seconds;
   this.dom = updatefield;
 }

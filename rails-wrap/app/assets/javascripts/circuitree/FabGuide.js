@@ -202,11 +202,11 @@ FabGuide.prototype = {
 			scope.dom.append(guides)
 		});
 		$('.timer').each(function(i, el){
-			console.log(i, el);
+			// console.log(i, el);
 			$(el).click(function(e){
 				var uf = $(this).parent().parent().find('.timer-uf');
 				var t =  parseInt($(this).attr('data-time'));
-				console.log("Starting timer for", t, uf);
+				// console.log("Starting timer for", t, uf);
 				
 				var timer = new Timer(t, uf);
 				timer.start();
