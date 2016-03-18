@@ -139,7 +139,7 @@ FabGuide.prototype = {
 					probeA: el.powered.nodes[0], 
 					probeB: el.diode.positive_terminal,  
 					elements: [el.powered.solution.id], 
-					message: "<b class='check'>Resistance Check</b>: Position your probes on the dots. Is the reading less than <b>" + p_ohmage_upperbound + " Ω</b>? ",
+					message: "<b class='check'>Resistance Check</b>: Position your probes on the dots. Is the reading <b>less than " + p_ohmage_upperbound + " Ω</b>? ",
 					debug: [
 							{level: 4,
 								icon: "eye", 
@@ -154,7 +154,7 @@ FabGuide.prototype = {
 					probeA: el.grounded.nodes[0], 
 					probeB: el.diode.negative_terminal,  
 					elements: [el.grounded.solution.id], 
-					message: "<b class='check'>Resistance Check</b>: Position your probes on the dots. Is the reading less than <b>" + n_ohmage_upperbound + " Ω</b>? ",
+					message: "<b class='check'>Resistance Check</b>: Position your probes on the dots. Is the reading <b>less than " + n_ohmage_upperbound + " Ω</b>? ",
 					debug: [
 							{level: 4,
 								icon: "eye", 
