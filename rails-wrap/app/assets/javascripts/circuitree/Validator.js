@@ -285,7 +285,7 @@ Validator.generateSidePanelNode =  function(el){
 			    			posA = graph.find(probeA).getPosition();
 			    			posB = graph.find(probeB).getPosition();
 			    			
-			    		
+				    		multimeter.show(mm, posA, posB);
 			    			
 			    			// console.log(src);
 		    				// var img = DOM.tag("img", true).attr('src', src);
