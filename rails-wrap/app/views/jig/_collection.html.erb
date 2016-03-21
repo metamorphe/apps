@@ -48,10 +48,19 @@ Collection.prototype = {
 
       // Tablet click to add function
       dom.click(function(){
-        console.log("Adding element", "/primitives/" + el.filename);
+        var file_type = el.filename.split('.');
+        file_type = file_type[file_type.length - 1].toLowerCase();
+        console.log("Adding", file_type, "element", "/primitives/" + el.filename);
         var position = paper.view.center.clone();
         position.y -= 100;
-        designer.addSVG("/primitives/" + el.filename, position);
+        if(_.contains(["png", "jpg", "jpeg", "gif"], file_type)){
+          designer.addRaster("/primitives/" + el.filename, position);
+
+        } else if (_.contains(["svg"], file_type)){           
+          designer.addSVG("/primitives/" + el.filename, position);
+        }
+
+       
          $('#transform-tool').click();
       });
 

@@ -61,13 +61,39 @@ CircuitDesigner.prototype = {
 		this.makeLayers();
 		this.update();
 	},
+	addRaster: function(filename, position, callback){
+		var scope = this;
+		var scale = 0.35;
+		var rasterImage = $('<img></img>')
+			.attr({
+				src: filename, 
+			}).css({
+				position: "absolute", 
+				bottom: 0, 
+				left:  0, 
+				width: "100px", 
+				display: "none",
+				"z-index": 100000
+			}).load(function(){
+				var raster = new paper.Raster({
+					parent: designer.art_layer.layer,
+					image: this, 
+					position: paper.view.center, 
+					canvasItem: true, 
+					layerClass: "ArtworkLayer"
+				});
+				var w = raster.size.width * scale;
+				var h = raster.size.height * scale;
+				raster.size = new paper.Size(w, h);
+			
+				paper.view.update();			
+			});
+
+		$('#sandbox').append(rasterImage);	
+	}, 
 	addSVG: function(filename, position, callback){
 		var scope = this;
-		var fileType = filename.split('/');
-		fileType = fileType[fileType.length - 1];
-		fileType = fileType.split('_');
-		fileType = fileType[0].toLowerCase();
-		console.log("addSVG: filename", fileType, filename);
+		
 		this.paper.project.importSVG(filename, {
 	    	onLoad: function(item) { 
 		    	item.position = position;
