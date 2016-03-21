@@ -16,12 +16,14 @@ function DeleteTool(paper){
 	this.tool = new paper.Tool();
 	this.tool.distanceThreshold = 10;
 	this.sm = new SelectionManager(paper);
+	this.circles = []
 
 	var scope = this;
 
 	var whatDidIHit = function(positionOnCanvas){
 		hitResult = scope.paper.project.hitTest(positionOnCanvas, hitOptions);	
 		if(_.isNull(hitResult)) return {type: "canvas", result: hitResult}
+		else if(hitResult.item.name == "brush") return {type: "canvas", result: hitResult}
 		else if(hitResult.item.name == "NCB: artboard") return {type: "canvas", result: hitResult}
 		else{ return {type: "element", result: hitResult} }
 	}
@@ -35,7 +37,7 @@ function DeleteTool(paper){
 			var positionOnCanvas = scope.paper.view.viewToProject(new paper.Point(event.center.x, event.center.y));
 		}
 		// START
-		if(["mousedown", "mousedrag"].indexOf(event.type) != -1){
+		if(["mousedown", "mousedrag", "mouseup"].indexOf(event.type) != -1){
 			var hit = whatDidIHit(positionOnCanvas);
 			var hitType = hit.type;
 			var hitResult = hit.result;
@@ -48,10 +50,14 @@ function DeleteTool(paper){
 	}
 	
 	this.tool.onMouseDown = function(event){
-		route(event, ["element"], "onMouseDown");
+		route(event, ["element", "canvas"], "onMouseDown");
+	}
+
+	this.tool.onMouseUp = function(event){
+		route(event, ["element", "canvas"], "onMouseDown");
 	}
 	this.tool.onMouseDrag = function(event){
-		route(event, ["element"], "onMouseDrag")
+		route(event, ["element", "canvas"], "onMouseDrag")
 	}
 }
 
@@ -81,6 +87,10 @@ DeleteTool.prototype = {
  	}, 
 	element: {
 		onMouseDrag: function(event, hitResult, scope){
+			// _.each(scope.circles, function(circle){
+			// 	circle.position = event.getPoint();
+			// });
+			
 			var cluster = hitResult.item;
 			while(_.isUndefined(cluster.canvasItem))
 				cluster = cluster.parent;
@@ -89,7 +99,15 @@ DeleteTool.prototype = {
 			hm.save();
 		},
 		onMouseDown: function(event, hitResult, scope){
-			console.log("onMouseDown");
+			// var hitCircle = new paper.Path.Circle({
+			// 	strokeColor: "black",
+			// 	strokeWidth: 1,
+			// 	radius: 15,
+			// 	terminal_helper: true,
+			// 	position: event.getPoint(), 
+			// 	name: "brush"
+			// });
+			// scope.circles.push(hitCircle);
 
 			var cluster = hitResult.item;
 			while(_.isUndefined(cluster.canvasItem))
@@ -97,11 +115,39 @@ DeleteTool.prototype = {
 			scope.sm.add(cluster, event.event.shiftKey);
 			scope.sm.remove();
 			hm.save();
+		},
+		onMouseUp: function(){
+			// _.each(scope.circles, function(circle){
+			// 	circle.remove();
+			// });
+			// paper.view.update();
 		}
 	},
 	transform: {
 	},
 	canvas: {
+		onMouseDrag: function(event, hitResult, scope){
+			// _.each(scope.circles, function(circle){
+			// 	circle.position = event.getPoint();
+			// });
+		},
+		onMouseDown: function(event, hitResult, scope){
+			// var hitCircle = new paper.Path.Circle({
+			// 	strokeColor: "black",
+			// 	strokeWidth: 1,
+			// 	radius: 15,
+			// 	terminal_helper: true,
+			// 	position: event.getPoint(), 
+			// 	name: "brush"
+			// });
+			// scope.circles.push(hitCircle);			
+		}, 
+		onMouseUp: function(){
+			// _.each(scope.circles, function(circle){
+			// 	circle.remove();
+			// });
+			// paper.view.update();
+		}
 	},
 	pan:  {
 	}
