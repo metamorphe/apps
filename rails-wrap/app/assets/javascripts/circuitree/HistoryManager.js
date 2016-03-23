@@ -87,7 +87,7 @@ HistoryManager.prototype = {
 		
 		var s = Math.floor(Date.now() / 1000);
 		var key = "saveevent_" + s;
-	
+		console.log(key);
 		// PRUNE THE TREE
 		if(this.current_save != this.getHead()){
 			// If you are not at head of the list, then remove. 

@@ -32,7 +32,7 @@ function TransformTool2(paper){
 
 	var whatDidIHit = function(positionOnCanvas){
 		hitResult = scope.paper.project.hitTest(positionOnCanvas, hitOptions);	
-		console.log(hitResult.item.name);
+		// console.log(hitResult.item.name);
 		if(_.isNull(hitResult)) return {type: "canvas", result: hitResult}
 		else if(hitResult.item.name == "NCB: artboard") return {type: "canvas", result: hitResult}
 		else{ return {type: "element", result: hitResult} }
@@ -203,6 +203,7 @@ TransformTool2.prototype = {
 		onPinchEnd: function(event, scope){
 			// console.log("pEnd");
 			scope.pinching = false;
+			hm.save();
 		},
 		onRotateStart: function(event, hitResult, scope){
 			console.log("rStart");
@@ -216,6 +217,7 @@ TransformTool2.prototype = {
 		onRotateEnd: function(event, scope){
 			console.log("rEnd");
 			scope.rotating = false;
+			hm.save();
 		},
 		onMouseDrag: function(event, scope){	
 			if(scope.pinching || scope.rotating) return;
@@ -226,6 +228,7 @@ TransformTool2.prototype = {
 			scope.dragged = true;
 		},
 		onMouseUp: function(event, scope){
+			hm.save();
 			// if(scope.dragged){
 			// 	hm.save();
 			// 	scope.dragged = false;
@@ -245,6 +248,7 @@ TransformTool2.prototype = {
 		onPinchEnd: function(event, scope){
 			// console.log("pEnd");
 			scope.pinching = false;
+			hm.save();
 		},
 		onRotateStart: function(event, hitResult, scope){
 			console.log("Canvas rStart");
@@ -258,6 +262,7 @@ TransformTool2.prototype = {
 		onRotateEnd: function(event, scope){
 			console.log("Canvas rEnd");
 			scope.rotating = false;
+			hm.save();
 		},
 		onMouseDown: function(event, hitResult, scope){
 			console.log("c_mDown");
@@ -304,6 +309,7 @@ TransformTool2.prototype = {
 			scope.dragged = true;
 		},
 		onMouseUp: function(event, scope){
+			hm.save();
 			// if(scope.dragged){
 			// 	hm.save();
 			// 	scope.dragged = false;

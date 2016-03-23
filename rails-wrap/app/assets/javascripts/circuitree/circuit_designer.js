@@ -85,7 +85,7 @@ CircuitDesigner.prototype = {
 				var w = raster.size.width * scale;
 				var h = raster.size.height * scale;
 				raster.size = new paper.Size(w, h);
-				hm.save();
+				// hm.save();
 				paper.view.update();			
 			});
 
