@@ -47,6 +47,9 @@ $(function(){
   $('#print').click(function(){
     window.location = "/jig/generator";
    });
+   $('#raster_save').click(function(){
+      designer.saveRasters();
+   });
   calibrationScripts();
   // MOBILE FIX
 
@@ -119,6 +122,10 @@ function calibrationScripts(){
 			<%= button_tag :id=>"save-json", :class=>"btn btn-norm btn-ellustrator" do %>
 	      		<span class="glyphicon glyphicon-floppy-disk"></span>
 	      		Save to Server
+	    	<% end %>
+	    	<%= button_tag :id=>"raster_save", :class=>"btn btn-norm btn-ellustrator" do %>
+	      		<span class="glyphicon glyphicon-picture"></span>
+	      		Save Raster
 	    	<% end %>
 	    </div>
 
