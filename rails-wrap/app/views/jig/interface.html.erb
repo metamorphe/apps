@@ -20,8 +20,14 @@
   };
 
   var current_mode = "draw";
+  $(window).bind('beforeunload', function(event) {
+    designer.saveRasters();
+  });
   function modify(){
-    // $('#make-design, #validate-design, #draw-design').click(function(){
+    $('#make-design, #validate-design, #draw-design').click(function(){
+      designer.saveRasters();
+    });
+    
       // var id = window.location.pathname.split('/');
       // id = id[id.length - 1];
       
@@ -64,7 +70,7 @@
       }
      
       current_mode = mode;
-     
+      designer.loadRasters();
   }
   $(function(){
     attachHandlers();

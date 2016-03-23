@@ -25,22 +25,31 @@ CircuitDesigner.prototype = {
 	getRasters: function(){
 		rasters = EllustrateSVG.get({prefix: ["RST"]});
 		rasters = _.map(rasters, function(el){
-			return {filename: el.filename, position_x: el.position.x, position_y: el.position_y}
+			if(current_mode == "draw"){
+				return {filename: el.filename, x: el.position.x, y: el.position.y, w: el.width, h: el.height}
+			}
+			return {filename: el.filename, x: el.position.x + 145, y: el.position.y, w: el.width, h: el.height}
 		});
+
 		return rasters;
 	},
 	saveRasters: function(){
-		key = "raster_cache";
-		rasters = JSON.stringify(this.getRasters());
-		storage.set(key, getRasters);
+		key = "raster_cache_" + design.id;
+		rasters = this.getRasters()
+		rasters = JSON.stringify(rasters);
+		storage.set(key, rasters);
 	},
 	loadRasters: function(rasters){
-		key = "raster_cache";
-		rasters = storage.get(key, getRasters);
-		console.log(rasters);
-		// _.each(rasters, function(el, i, arr){
-		// 	this.addRaster(el.filename, new paper.Point(el.position_x, el.position_y));
-		// });
+		var scope = this;
+		key = "raster_cache_" + design.id;
+		rasters = eval(storage.get(key));
+		_.each(rasters, function(el, i, arr){
+			if(current_mode == "draw"){
+				scope.addRaster(el.filename, new paper.Point(el.x, el.y), el.w, el.h);
+			}else{
+				scope.addRaster(el.filename, new paper.Point(el.x - 145, el.y), el.w, el.h);
+			}
+		});
 	},
 	makeLayers: function(){
 		while(paper.project.layers.length > 0) paper.project.layers[0].remove();
@@ -83,7 +92,7 @@ CircuitDesigner.prototype = {
 		this.makeLayers();
 		this.update();
 	},
-	addRaster: function(filename, position, callback){
+	addRaster: function(filename, position, dWidth, dHeight){
 		var scope = this;
 		var scale = 0.35;
 		var rasterImage = $('<img></img>')
@@ -101,14 +110,20 @@ CircuitDesigner.prototype = {
 					name: "RST:" + filename,
 					parent: designer.art_layer.layer,
 					image: this, 
-					position: paper.view.center, 
+					position: position, 
 					canvasItem: true, 
 					layerClass: "ArtworkLayer", 
 					filename: filename
 				});
-				var w = raster.size.width * scale;
-				var h = raster.size.height * scale;
-				raster.size = new paper.Size(w, h);
+				if(_.isUndefined(dWidth)){
+					var w = raster.size.width * scale;
+					var h = raster.size.height * scale;
+					raster.size = new paper.Size(w, h);
+				}
+				else{
+					raster.size = new paper.Size(dWidth, dHeight);
+				}
+				
 
 				// hm.save();
 				paper.view.update();		
