@@ -23,6 +23,12 @@
   $(window).bind('beforeunload', function(event) {
     designer.saveRasters();
   });
+
+  $(document).on("pagehide", function(){
+     designer.saveRasters();
+  });
+
+
   function modify(){
     $('#make-design, #validate-design, #draw-design').click(function(){
       designer.saveRasters();
