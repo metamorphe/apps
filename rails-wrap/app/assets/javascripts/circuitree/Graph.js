@@ -49,7 +49,15 @@ Graph.prototype = {
 	enable: function(){
 		_.each(this.nodes, function(node){
 			node.enable();
-			// node.self.position.x -= 145/6;
+			// node.self.position.x -= 145/6 *;
+		});
+
+		paper.view.update();
+	},
+	enableShift: function(){
+		_.each(this.nodes, function(node){
+			node.enable();
+			node.self.position.x -= 185;
 		});
 
 		paper.view.update();

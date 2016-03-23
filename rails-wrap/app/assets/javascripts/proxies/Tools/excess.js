@@ -1,3 +1,30 @@
+DIODE
+console.log(results);
+		// _.each(results, function(r){
+		// 	path = new EllustratePath(r, "black");
+		// 	nodeIDs = EllustratePath.toNodesArr(path);
+		// 	nodes = Node.toNodes(nodeIDs);
+		// 	de = _.map(nodes, function(el){ 
+		// 		var path_polarity = _.map(el.paths, function(subpath){
+		// 			return TracePathTool.readPolarity(subpath);
+		// 		});	
+		// 		var avg_polarity = "N";
+		// 		if(_.contains(path_polarity, "G")) avg_polarity = "G";
+		// 		if(_.contains(path_polarity, "V")) avg_polarity = "V";
+		// 		return path_polarity.join(',');
+		// 		console.log("Path polarity", path_polarity.join(','), avg_polarity)
+		// 		var path_polarity = TracePathTool.readPolarity(el.paths[0]);
+		// 		console.log("CHILD", avg_polarity, "REJECT", !_.contains([polarity, "N"], avg_polarity));
+		// 		return !_.contains([polarity, "N"], avg_polarity);
+		// 		return false;
+		// 	});
+
+		// 	console.log("Nodes", de);
+		// });
+		// console.log("LOOKING FOR POSITIVE PATH FROM", r.id, p.id, results)
+		// // console.log("PATH FROM", r.id, p.id, results)
+END DIODE
+
 // var raster = new paper.Raster({
 				// 	image: this, 
 				// 	visible: false

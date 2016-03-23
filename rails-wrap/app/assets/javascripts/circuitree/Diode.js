@@ -54,53 +54,31 @@ Diode.prototype = {
 		r = Node.get(r).node;
 
 		p = this.positive_terminal;
-		p = Node.get(p).node;
-		
-		results = Graph.printAllPaths(r, p);
-		// console.log(results);
-		// _.each(results, function(r){
-			// path = new EllustratePath(r, "black");
-			// nodeIDs = EllustratePath.toNodesArr(path);
-			// nodes = Node.toNodes(nodeIDs);
-			// de = _.map(nodes, function(el){ 
-				// var path_polarity = _.map(el.paths, function(subpath){
-				// 	return TracePathTool.readPolarity(subpath);
-				// });	
-				// var avg_polarity = "N";
-				// if(_.contains(path_polarity, "G")) avg_polarity = "G";
-				// if(_.contains(path_polarity, "V")) avg_polarity = "V";
-				// return path_polarity.join(',');
-				// console.log("Path polarity", path_polarity.join(','), avg_polarity)
-				// var path_polarity = TracePathTool.readPolarity(el.paths[0]);
-				// console.log("CHILD", avg_polarity, "REJECT", !_.contains([polarity, "N"], avg_polarity));
-				// return !_.contains([polarity, "N"], avg_polarity);
-				// return false;
-			// });
-
-		// 	console.log("Nodes", de);
-		// });
-		// console.log("LOOKING FOR POSITIVE PATH FROM", r.id, p.id, results)
-		// // console.log("PATH FROM", r.id, p.id, results)
-		debug = EllustratePath.sortAndMake(results);
-		return debug ;
-		// return [];
-	}, 
-	getAllPathsToPower: function(){
-		r = graph.getSourceNode();
-		if(_.isNull(r)) return [];
-		
-		r = Node.get(r).sourceNode;
-		r = Node.get(r).node;
-
-		p = this.positive_terminal;
 		if(_.isNull(p)) return [];
 		p = Node.get(p).node;
 		
 		results = Graph.printAllPaths(r, p);
-		// console.log("PATH FROM", r.id, p.id, results)
-		return EllustratePath.sortAndMake(results);
-		
+		// 
+		debug = EllustratePath.sortAndMake(results);
+		return debug ;
+		// return [];
 	}, 
+	// getAllPathsToPower: function(){
+	// 	r = graph.getSourceNode();
+	// 	if(_.isNull(r)) return [];
+		
+	// 	r = Node.get(r).sourceNode;
+	// 	r = Node.get(r).node;
+
+	// 	p = this.positive_terminal;
+	// 	if(_.isNull(p)) return [];
+	// 	p = Node.get(p).node;
+		
+	// 	results = Graph.printAllPaths(r, p);
+	// 	// console.log("PATH FROM", r.id, p.id, results)
+	// 	return EllustratePath.sortAndMake(results);
+		
+	// }, 
 	getPathsToGround: function(){
 		r = graph.getSinkNode();
 		if(_.isNull(r)) return [];
@@ -138,7 +116,7 @@ Diode.prototype = {
 		
 		// t3 = _.flatten(_.uniq([t3, t2]));
 
-		console.log("TERMINAL SEARCH", this.id, t1, t3);
+		// console.log("TERMINAL SEARCH", this.id, t1, t3);
 		allPaths = _.map(t3, function(nextTerminal, i){
 			a = Node.get(t1).node;
 			b = Node.get(nextTerminal).node;
