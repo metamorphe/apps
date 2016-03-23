@@ -3,24 +3,28 @@
 function HistoryManager(storage){
 	this.storage = storage;
 	this.current_save = this.getHead();
-	// If there is no save history
-	console.log("HISTORY ITEMS" + this.getHistory().length);
-	if(this.getHead() == Number.NEGATIVE_INFINITY){
-		console.log("No history in cache");
-		resp = $.getJSON(design.json.url, function(resp){
-       		designer.loadJSON(resp);
-    	});
-		this.save();
-	}else{
-		this.trimToHead();
-		this.loadEvent(this.current_save);
-	}
-	// If there is, just keep the head
-	this.current_save = this.getHead();	
+	this.init();
 }
 
 
 HistoryManager.prototype = {
+	init: function(){
+		var scope = this;
+		// If there is no save history
+		console.log("HISTORY ITEMS" + this.getHistory().length);
+		if(this.getHead() == Number.NEGATIVE_INFINITY){
+			console.log("No history in cache");
+			resp = $.getJSON(design.json.url, function(resp){
+	       		designer.loadJSON(resp);
+	       		scope.save();
+	    	});
+		}else{
+			this.trimToHead();
+			this.loadEvent(this.current_save);
+		}
+		// If there is, just keep the head
+		this.current_save = this.getHead();	
+	},
 	clear_all: function(){
 		this.clear_history();
 		this.current_save = this.getHead();
