@@ -24,7 +24,23 @@ function CircuitDesigner(container){
 CircuitDesigner.prototype = {
 	getRasters: function(){
 		rasters = EllustrateSVG.get({prefix: ["RST"]});
+		rasters = _.map(rasters, function(el){
+			return {filename: el.filename, position_x: el.position.x, position_y: el.position_y}
+		});
+		return rasters;
+	},
+	saveRasters: function(){
+		key = "raster_cache";
+		rasters = JSON.stringify(this.getRasters());
+		storage.set(key, getRasters);
+	},
+	loadRasters: function(rasters){
+		key = "raster_cache";
+		rasters = storage.get(key, getRasters);
 		console.log(rasters);
+		// _.each(rasters, function(el, i, arr){
+		// 	this.addRaster(el.filename, new paper.Point(el.position_x, el.position_y));
+		// });
 	},
 	makeLayers: function(){
 		while(paper.project.layers.length > 0) paper.project.layers[0].remove();

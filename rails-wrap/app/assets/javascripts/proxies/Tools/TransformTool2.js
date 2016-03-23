@@ -203,7 +203,7 @@ TransformTool2.prototype = {
 		onPinchEnd: function(event, scope){
 			// console.log("pEnd");
 			scope.pinching = false;
-			hm.save();
+			// hm.save();
 		},
 		onRotateStart: function(event, hitResult, scope){
 			console.log("rStart");
@@ -217,7 +217,7 @@ TransformTool2.prototype = {
 		onRotateEnd: function(event, scope){
 			console.log("rEnd");
 			scope.rotating = false;
-			hm.save();
+			// hm.save();
 		},
 		onMouseDrag: function(event, scope){	
 			if(scope.pinching || scope.rotating) return;
@@ -248,7 +248,7 @@ TransformTool2.prototype = {
 		onPinchEnd: function(event, scope){
 			// console.log("pEnd");
 			scope.pinching = false;
-			hm.save();
+			// hm.save();
 		},
 		onRotateStart: function(event, hitResult, scope){
 			console.log("Canvas rStart");
@@ -262,7 +262,7 @@ TransformTool2.prototype = {
 		onRotateEnd: function(event, scope){
 			console.log("Canvas rEnd");
 			scope.rotating = false;
-			hm.save();
+			// hm.save();
 		},
 		onMouseDown: function(event, hitResult, scope){
 			console.log("c_mDown");
