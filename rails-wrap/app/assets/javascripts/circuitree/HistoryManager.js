@@ -14,10 +14,15 @@ HistoryManager.prototype = {
 		console.log("HISTORY ITEMS" + this.getHistory().length);
 		if(this.getHead() == Number.NEGATIVE_INFINITY){
 			console.log("No history in cache");
-			resp = $.getJSON(design.json.url, function(resp){
-	       		designer.loadJSON(resp);
-	       		scope.save();
-	    	});
+			if(_.isNull(design.json.url)){
+				this.clear_all();
+			}
+			else{
+				resp = $.getJSON(design.json.url, function(resp){
+		       		designer.loadJSON(resp);
+		       		scope.save();
+		    	});
+			}
 		}else{
 			this.trimToHead();
 			this.loadEvent(this.current_save);

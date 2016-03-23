@@ -17,9 +17,15 @@ function CircuitDesigner(container){
 	var self = this;
 	this.animation_handler = new AnimationHandler(paper);
 	this.state = {};
+	this.raster_record = []; 
+
 }
 
 CircuitDesigner.prototype = {
+	getRasters: function(){
+		rasters = EllustrateSVG.get({prefix: ["RST"]});
+		console.log(rasters);
+	},
 	makeLayers: function(){
 		while(paper.project.layers.length > 0) paper.project.layers[0].remove();
 		
@@ -76,17 +82,20 @@ CircuitDesigner.prototype = {
 				"z-index": 100000
 			}).load(function(){
 				var raster = new paper.Raster({
+					name: "RST:" + filename,
 					parent: designer.art_layer.layer,
 					image: this, 
 					position: paper.view.center, 
 					canvasItem: true, 
-					layerClass: "ArtworkLayer"
+					layerClass: "ArtworkLayer", 
+					filename: filename
 				});
 				var w = raster.size.width * scale;
 				var h = raster.size.height * scale;
 				raster.size = new paper.Size(w, h);
+
 				// hm.save();
-				paper.view.update();			
+				paper.view.update();		
 			});
 
 		$('#sandbox').append(rasterImage);	

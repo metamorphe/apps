@@ -1,3 +1,40 @@
+// var raster = new paper.Raster({
+				// 	image: this, 
+				// 	visible: false
+				// });
+				// var w = raster.size.width * scale;
+				// var h = raster.size.height * scale;
+				// raster.size = new paper.Size(w, h);
+				
+
+				// var group = new paper.Group({
+				// 	name: "NC: Raster Image",
+				// 	parent: designer.art_layer.layer,
+				// 	position: paper.view.center, 
+				// 	canvasItem: true, 
+				// 	layerClass: "ArtworkLayer"
+				// });
+				// var radius = 3;
+				// var min = raster.bounds.topLeft;
+				// for(var i = min.x; i < raster.width + min.x; i += radius * 2){
+				// 	for(var j = min.y; j < raster.height + min.y; j += radius * 2){
+				// 		var position = new paper.Point(i, j);
+				// 		var color = raster.getAverageColor(position);
+				// 		var c = new paper.Path.Rectangle({
+				// 			parent: group,
+				// 			// radius: radius,
+				// 			size: new paper.Size(radius * 2, radius * 2),
+				// 			point: position,
+				// 			fillColor: color
+				// 		});
+				// 	}
+				// }
+				// group.position = paper.view.center;
+				// hm.save();
+				// paper.view.update();		
+
+
+
 <div id="artwork-toolbox" class="toolbox shadowed">
    <label class="text-shadowed"> ARTWORK </label>
    <div class="btn-group" role="group">

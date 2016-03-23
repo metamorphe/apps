@@ -40,7 +40,7 @@ WebStorage.prototype = {
 		} catch (e) {
 		  if (e.code == DOMException.QUOTA_EXCEEDED_ERR) {
 		    this.clear();
-		    this.set(l, v);
+		    this.set(k, v);
 		  }
 		  else{
 		  	console.log(e);
