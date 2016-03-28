@@ -2,6 +2,9 @@
 function FabGuide(graph){
 	this.dom = $('#fab-guide .list-group');
 	var leds = EllustrateSVG.get({name:"CP:_circuit_x5F_led_1_"});
+	leds2 = EllustrateSVG.get({name:"CP:_LED"});
+	leds = _.flatten([leds ,leds2]);
+
 		this.diodes = _.map(leds, function(led){
 			return new Diode(led.id);
 		});

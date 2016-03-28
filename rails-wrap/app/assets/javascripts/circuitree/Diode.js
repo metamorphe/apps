@@ -9,6 +9,8 @@ function Diode(id){
 var debug;
 Diode.makeDiodes = function(){
 	var leds = EllustrateSVG.get({name:"CP:_circuit_x5F_led_1_"});
+	leds2 = EllustrateSVG.get({name:"CP:_LED"});
+	leds = _.flatten([leds ,leds2]);
 	var diodes = _.map(leds, function(led){
 		return new Diode(led.id);
 	});
