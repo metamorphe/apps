@@ -11,102 +11,102 @@ CircuitLayer.legend = function(parent, pt){
 		parent: parent,
 		name: "NC: artboard"
 	});
-	var positive =  new paper.Path.Rectangle({
-		parent: legend, 
-		fillColor: CircuitLayer.POSITIVE, 
-		width: 15, 
-		height: 15, 
-		// strokeColor: "black", 
-		strokeWidth: 0.5,
-		position: new paper.Point(0, 0)
-	});
-	var ptext = new paper.PointText({
-			parent: legend, 
-			point: new paper.Point(0, 00),
-			content: "POSITIVE",
-			fillColor: 'black', 
-			fontFamily: 'Arial', 
-			// fontWeight: 'bold', 
-			fontSize: 12
-	});
-	ptext.point.x += ptext.bounds.width/4;
-	ptext.point.y += ptext.bounds.height/3;
-	var negative =  new paper.Path.Rectangle({
-		parent: legend, 
-		fillColor: CircuitLayer.NEGATIVE, 
-		width: 15, 
-		height: 15, 
-		// strokeColor: "black", 
-		strokeWidth: 0.5,
-		position: new paper.Point(0, 20)
-	});
-	var netext = new paper.PointText({
-			parent: legend, 
-			point: new paper.Point(0, 20),
-			content: "NEGATIVE",
-			fillColor: 'black', 
-			fontFamily: 'Arial', 
-			// fontWeight: 'bold', 
-			fontSize: 12
-	});
-	netext.point.x += netext.bounds.width/4;
-	netext.point.y += netext.bounds.height/3;
-	var neutral =  new paper.Path.Rectangle({
-		parent: legend, 
-		fillColor: CircuitLayer.NEUTRAL, 
-		width: 15, 
-		height: 15, 
-		// strokeColor: "black", 
-		strokeWidth: 0.5,
-		position: new paper.Point(0, 40)
-	});
-	var ntext = new paper.PointText({
-			parent: legend, 
-			point: new paper.Point(0, 40),
-			content: "NEUTRAL",
-			fillColor: 'black', 
-			fontFamily: 'Arial', 
-			// fontWeight: 'bold', 
-			fontSize: 12
-	});
-	ntext.point.x += ntext.bounds.width/4;
-	ntext.point.y += ntext.bounds.height/3;
+	// var positive =  new paper.Path.Rectangle({
+	// 	parent: legend, 
+	// 	fillColor: CircuitLayer.POSITIVE, 
+	// 	width: 15, 
+	// 	height: 15, 
+	// 	// strokeColor: "black", 
+	// 	strokeWidth: 0.5,
+	// 	position: new paper.Point(0, 0)
+	// });
+	// var ptext = new paper.PointText({
+	// 		parent: legend, 
+	// 		point: new paper.Point(0, 00),
+	// 		content: "POSITIVE",
+	// 		fillColor: 'black', 
+	// 		fontFamily: 'Arial', 
+	// 		// fontWeight: 'bold', 
+	// 		fontSize: 12
+	// });
+	// ptext.point.x += ptext.bounds.width/4;
+	// ptext.point.y += ptext.bounds.height/3;
+	// var negative =  new paper.Path.Rectangle({
+	// 	parent: legend, 
+	// 	fillColor: CircuitLayer.NEGATIVE, 
+	// 	width: 15, 
+	// 	height: 15, 
+	// 	// strokeColor: "black", 
+	// 	strokeWidth: 0.5,
+	// 	position: new paper.Point(0, 20)
+	// });
+	// var netext = new paper.PointText({
+	// 		parent: legend, 
+	// 		point: new paper.Point(0, 20),
+	// 		content: "NEGATIVE",
+	// 		fillColor: 'black', 
+	// 		fontFamily: 'Arial', 
+	// 		// fontWeight: 'bold', 
+	// 		fontSize: 12
+	// });
+	// netext.point.x += netext.bounds.width/4;
+	// netext.point.y += netext.bounds.height/3;
+	// var neutral =  new paper.Path.Rectangle({
+	// 	parent: legend, 
+	// 	fillColor: CircuitLayer.NEUTRAL, 
+	// 	width: 15, 
+	// 	height: 15, 
+	// 	// strokeColor: "black", 
+	// 	strokeWidth: 0.5,
+	// 	position: new paper.Point(0, 40)
+	// });
+	// var ntext = new paper.PointText({
+	// 		parent: legend, 
+	// 		point: new paper.Point(0, 40),
+	// 		content: "NEUTRAL",
+	// 		fillColor: 'black', 
+	// 		fontFamily: 'Arial', 
+	// 		// fontWeight: 'bold', 
+	// 		fontSize: 12
+	// });
+	// ntext.point.x += ntext.bounds.width/4;
+	// ntext.point.y += ntext.bounds.height/3;
 
-	var g =  new paper.Path.Rectangle({
-		parent: legend, 
-		fillColor: "#00A8E1", 
-		width: 15, 
-		height: 15, 
-		// strokeColor: "black", 
-		strokeWidth: 0.5,
-		position: new paper.Point(0, 60)
-	});
-	var gtext = new paper.PointText({
-			parent: legend, 
-			point: new paper.Point(0, 60),
-			content: "GUIDES",
-			fillColor: 'black', 
-			fontFamily: 'Arial', 
-			// fontWeight: 'bold', 
-			fontSize: 12
-	});
-	gtext.point.x += gtext.bounds.width/4;
-	gtext.point.y += gtext.bounds.height/3;
+	// var g =  new paper.Path.Rectangle({
+	// 	parent: legend, 
+	// 	fillColor: "#00A8E1", 
+	// 	width: 15, 
+	// 	height: 15, 
+	// 	// strokeColor: "black", 
+	// 	strokeWidth: 0.5,
+	// 	position: new paper.Point(0, 60)
+	// });
+	// var gtext = new paper.PointText({
+	// 		parent: legend, 
+	// 		point: new paper.Point(0, 60),
+	// 		content: "GUIDES",
+	// 		fillColor: 'black', 
+	// 		fontFamily: 'Arial', 
+	// 		// fontWeight: 'bold', 
+	// 		fontSize: 12
+	// });
+	// gtext.point.x += gtext.bounds.width/4;
+	// gtext.point.y += gtext.bounds.height/3;
 
 
-	var g =  new paper.Path.Rectangle({
-		parent: legend, 
-		rectangle: legend.bounds.expand(15), 
-		fillColor: "white", 
-		radius: 5
-	});
-	g.sendToBack();
+	// var g =  new paper.Path.Rectangle({
+	// 	parent: legend, 
+	// 	rectangle: legend.bounds.expand(15), 
+	// 	fillColor: "white", 
+	// 	radius: 5
+	// });
+	// g.sendToBack();
 
-	legend.position = pt;
-	legend.position.x -= legend.bounds.width + 50;
-	legend.position.y += 100;
-	legend.scaling.x = paper.view.zoom;
-	legend.scaling.y =  paper.view.zoom;
+	// legend.position = pt;
+	// legend.position.x -= legend.bounds.width + 50;
+	// legend.position.y += 100;
+	// legend.scaling.x = paper.view.zoom;
+	// legend.scaling.y =  paper.view.zoom;
 	return legend;
 }
 function CircuitLayer(paper, parent, material){
