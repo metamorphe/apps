@@ -56,8 +56,11 @@ Diode.prototype = {
 		p = this.positive_terminal;
 		if(_.isNull(p)) return [];
 		p = Node.get(p).node;
+
+		
 		
 		results = Graph.printAllPaths(r, p);
+		console.log("POWER", r.id, p.id, results)
 		// 
 		debug = EllustratePath.sortAndMake(results);
 		return debug ;

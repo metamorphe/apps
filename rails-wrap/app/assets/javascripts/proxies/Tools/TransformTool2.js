@@ -188,7 +188,7 @@ TransformTool2.prototype = {
 			var cluster = hitResult.item;
 			while(_.isUndefined(cluster.canvasItem))
 				cluster = cluster.parent;
-			console.log("DOWN ELEMENT");
+			console.log(cluster.name);
 			scope.sm.add(cluster, event.shiftKey);
 		},
 		onPinchStart: function(event, scope){

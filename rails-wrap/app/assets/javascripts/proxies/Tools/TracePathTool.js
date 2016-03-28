@@ -195,13 +195,15 @@ TracePathTool.prototype = {
 			scope.intersects = new paper.Group();
 		}, 
 		onMouseDrag: function(event, scope){
+			console.log("trace/pad drag");
 			$('#canvas-check').removeClass('btn-primary');
 			$('#pad-check').addClass('btn-primary');
-			var trace_scope = trace;
 			if(_.isNull(trace)) return;
-
+			var trace_scope = trace;
+			
 			trace.add(event.point);
 			valid = TracePathTool.isValidPath(trace, scope);
+			
 			if(! valid.connection){
 				// trace.simplify();
 
