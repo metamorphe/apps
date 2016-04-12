@@ -184,11 +184,12 @@ TransformTool2.prototype = {
 		// 	scope.sm.add(cluster, event.srcEvent.shiftKey);
 		// },
 		onMouseDown: function(event, hitResult, scope){
-			// console.log("mDown");
+			// console.log("mDown",);
+
 			var cluster = hitResult.item;
 			while(_.isUndefined(cluster.canvasItem))
 				cluster = cluster.parent;
-			console.log(cluster.name);
+			// console.log(cluster.name, cluster);
 			scope.sm.add(cluster, event.shiftKey);
 		},
 		onPinchStart: function(event, scope){
@@ -265,7 +266,6 @@ TransformTool2.prototype = {
 			// hm.save();
 		},
 		onMouseDown: function(event, hitResult, scope){
-			console.log("c_mDown");
 			scope.canvas_item_type = null;
 
 			var pos = new paper.Point(event.point.x, event.point.y);

@@ -154,3 +154,10 @@ EllustrateSVG.getPrefix = function(item){
 	if(item.name.split(":").length < 2) return "";
 	return item.name.split(":")[0].trim();
 }
+
+EllustrateSVG.getName = function(item){
+	if(_.isUndefined(item)) return "";
+	if(_.isUndefined(item.name)) return "";
+	if(item.name.split(":").length < 2) return "";
+	return item.name.split(":")[1].trim();
+}

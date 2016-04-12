@@ -50,6 +50,7 @@ TracePathTool.prototype = {
 	enable: function(){
 		sys.log("Activated the Circuit Drawing Tool.");
 		designer.circuit_layer.circuit_view();
+		$('#material-palette').animate({width:'toggle',  easing: "easeIn"}, 71);
 	},
 	reenable: function(){
 		// sys.log("Activated the Circuit Drawing Tool.");
@@ -59,6 +60,7 @@ TracePathTool.prototype = {
 		designer.circuit_layer.trace_view();
 		this.selectAll(false);
 	    this.update();
+	   $('#material-palette').animate({width:'toggle', easing: "easeOut"}, 71);
 	},
 	update: function(){
 		this.paper.view.update();
@@ -496,12 +498,13 @@ function pLetterToCLPolarity(char){
 
 // TRACE UPDATE LOGIC
 TracePathTool.traceUpdate = function(path_trace, polarity){
-
 	if(_.isNull(path_trace)) return;
-	path_trace.name = "C" + polarity + "P: trace";
+	path_trace.name = "C" + polarity + "P: " + CircuitLayer.currentMaterial.name;
 	path_trace.polarity = pLetterToCLPolarity(polarity);
+	// path_trace.class = CircuitLayer.currentMaterial.name;
 	if(TracePathTool.isPath(path_trace)) path_trace.style.strokeColor = pLetterToCLPolarity(polarity);
 	else path_trace.style.fillColor = pLetterToCLPolarity(polarity);
+	// console.log(path_trace);
 
 }
 

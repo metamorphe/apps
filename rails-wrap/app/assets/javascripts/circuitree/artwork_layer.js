@@ -61,7 +61,7 @@ ArtworkLayer.prototype = {
 				if(!_.isUndefined(child.name)){
 					child.opacity = 1; 
 					child.style = {
-						fillColor: "white", 
+						fillColor: "black", 
 						strokeColor: "black", 
 						strokeWidth: 1,
 						shadowBlur: 0

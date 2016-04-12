@@ -1,11 +1,123 @@
 CircuitLayer.POSITIVE = new paper.Color("red");
 CircuitLayer.NEGATIVE = new paper.Color("black");
 CircuitLayer.NEUTRAL = new paper.Color("#CCC");
+
+CircuitLayer.GRAPHITE_PAINT = {
+	name: "graphite_paint",
+	img: "/materials/GraphitePaint.png",
+	strokeWidthRange: [1, 10], 
+	strokeWidthFixed: false,
+	defaultStrokeWidth: 6,
+	sheetResistance: 0.5,
+	style: {
+		blob:{
+			fillColor: new paper.Color("#333"), 
+			dashArray:[], 
+			strokeWidth: 0,
+			shadowColor: new paper.Color(0.8),
+			shadowBlur: 0,
+			shadowOffset: new paper.Point(0, 0)
+		}, 
+		stroke:{
+			strokeColor: new paper.Color("#333"), 
+			dashArray:[], 
+			shadowColor: new paper.Color(0.8),
+			shadowBlur: 0,
+			shadowOffset: new paper.Point(0, 0)
+		}
+	}
+}
+
+CircuitLayer.SILVER_INK = {
+	name: "silver_ink",
+	img: "/materials/SilverInk.png",
+	strokeWidthRange: [1, 10], 
+	strokeWidthFixed: false,
+	defaultStrokeWidth: 2,
+	sheetResistance: 0.5,
+	style: {
+		blob:{
+			fillColor: new paper.Color("#839CA5"), 
+			dashArray:[], 
+			strokeWidth: 0,
+			shadowColor: new paper.Color(0.8),
+			shadowBlur: 0,
+			shadowOffset: new paper.Point(0, 0)
+		}, 
+		stroke:{
+			strokeColor: new paper.Color("#839CA5"), 
+			dashArray:[], 
+			shadowColor: new paper.Color(0.8),
+			shadowBlur: 0,
+			shadowOffset: new paper.Point(0, 0)
+		}
+	}
+}
+CircuitLayer.COPPER_TAPE = {
+	name: "copper_tape",
+	img: "/materials/CopperTape.png",
+	strokeWidthRange: [10], 
+	strokeWidthFixed: true,
+	defaultStrokeWidth: Ruler.mm2pts(12),
+	sheetResistance: 0.5,
+	style: {
+		blob:{
+			fillColor: new paper.Color("#B87333"), 
+			dashArray:[], 
+			strokeWidth: 0,
+			shadowColor: new paper.Color(0.8),
+			shadowBlur: 0,
+			shadowOffset: new paper.Point(0, 0)
+		}, 
+		stroke:{
+			strokeColor: new paper.Color("#B87333"), 
+			dashArray:[], 
+			shadowColor: new paper.Color(0.8),
+			shadowBlur: 0,
+			shadowOffset: new paper.Point(0, 0)
+		}
+	}
+}
+
+CircuitLayer.CONDUCTIVE_THREAD= {
+	name: "conductive_thread",
+	img: "/materials/ConductiveThread.png",
+	strokeWidthRange: [2], 
+	strokeWidthFixed: true,
+	sheetResistance: 0.5,
+	defaultStrokeWidth: 1,
+	style: {
+		blob:{
+			fillColor: new paper.Color("#666666"), 
+			// dashArray:[10, 12], 
+			strokeWidth: 0,
+			shadowColor: new paper.Color(0.8),
+			shadowBlur: 0,
+			shadowOffset: new paper.Point(0, 0)
+		}, 
+		stroke:{
+			strokeColor: new paper.Color("#666666"), 
+			dashArray:[10, 12], 
+			shadowColor: new paper.Color(0.8),
+			shadowBlur: 0,
+			shadowOffset: new paper.Point(0, 0)
+		}
+	}
+}
+CircuitLayer.MATERIALS = {
+	silver_ink: CircuitLayer.SILVER_INK,
+	copper_tape: CircuitLayer.COPPER_TAPE, 
+	conductive_thread: CircuitLayer.CONDUCTIVE_THREAD, 
+	graphite_paint: CircuitLayer.GRAPHITE_PAINT
+}
+
+CircuitLayer.currentMaterial = CircuitLayer.MATERIALS.silver_ink;
+
 // CircuitLayer.NEUTRAL.saturation -= 0.5;
 CircuitLayer.scaleable = false;
 CircuitLayer.translateable = true;
 CircuitLayer.rotateable = true;
-CircuitLayer.silver = new paper.Color("#839CA5");
+
 CircuitLayer.legend = function(parent, pt){
 	legend = new paper.Group({
 		parent: parent,
@@ -130,7 +242,7 @@ CircuitLayer.prototype = {
 		if(single){
 			layer.remove();
 			layer.layerClass = scope.className;
-			
+			console.log("ADD", layer);
 			var cp = new paper.Group({
 				parent: scope.layer,
 				name: "CP: Added trace", 
@@ -159,18 +271,20 @@ CircuitLayer.prototype = {
 	},
 	trace_view: function(){
 		this.legend.remove();
-		CircuitLayer.select_and_color_and_code(this.layer, ["CNP", "CGP", "CVP"], 
-			{ 
-				strokeColor:CircuitLayer.silver, 
-				dashArray:[], 
-				shadowColor: new paper.Color(0.8),
-			  	shadowBlur: 0,
-			  	shadowOffset: new paper.Point(0, 0)
-			});
+		// CircuitLayer.select_and_color_and_code(this.layer, ["CNP", "CGP", "CVP"], 
+		// 	{ 
+		// 		strokeColor:CircuitLayer.currentMaterial.style.strokeColor, 
+		// 		dashArray:[], 
+		// 		shadowColor: new paper.Color(0.8),
+		// 	  	shadowBlur: 0,
+		// 	  	shadowOffset: new paper.Point(0, 0)
+		// 	});
+
+		CircuitLayer.revert_to_material(["CNP", "CGP", "CVP"]);
 
 		// console.log("CVT", EllustrateSVG.match(this.layer, {prefix: ["CVT", "CGT", "CNT"]}));
 		CircuitLayer.select_and_color_and_code(this.layer, ["CNT", "CGT", "CVT", "CVTB", "CGTB"], 
-			{ fillColor: CircuitLayer.silver, 
+			{ fillColor: CircuitLayer.currentMaterial.style.fillColor, 
 			  dashArray:[], 
 			  shadowColor: new paper.Color(0.8),
 			  shadowBlur: 0,
@@ -278,10 +392,23 @@ CircuitLayer.prototype = {
 		this.layer.addChild(this.legend);
 		this.resetLegend();
 	}
-
 }
-
-
+CircuitLayer.revert_to_material = function(prefixes){
+	var elements = EllustrateSVG.match(designer.circuit_layer.layer, { prefix: prefixes });
+	_.each(elements, function(el, i, arr){
+		// var pname = el.name;
+		var name = EllustrateSVG.getName(el); 
+		// BACKWARDS COMPATABILITY
+		if(name == ""){ name = "silver_ink"; }
+		
+		var material = CircuitLayer.MATERIALS[name];
+		if(TracePathTool.isPath(el))
+			el.style = material.style.stroke;
+		else
+			el.style = material.style.blob;
+		
+	});
+}
 CircuitLayer.select_and_color_and_code = function(collection, prefixes, style, polarity){
 	var elements = EllustrateSVG.match(collection, { prefix: prefixes });
 	_.each(elements, function(el, i, arr){
