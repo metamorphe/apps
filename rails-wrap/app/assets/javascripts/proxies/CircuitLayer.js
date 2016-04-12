@@ -7,7 +7,7 @@ CircuitLayer.GRAPHITE_PAINT = {
 	img: "/materials/GraphitePaint.png",
 	strokeWidthRange: [1, 10], 
 	strokeWidthFixed: false,
-	defaultStrokeWidth: 6,
+	defaultStrokeWidth: 8,
 	sheetResistance: 0.5,
 	style: {
 		blob:{

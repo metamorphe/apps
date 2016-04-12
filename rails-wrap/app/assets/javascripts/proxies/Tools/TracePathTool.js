@@ -50,17 +50,18 @@ TracePathTool.prototype = {
 	enable: function(){
 		sys.log("Activated the Circuit Drawing Tool.");
 		designer.circuit_layer.circuit_view();
-		$('#material-palette').animate({width:'toggle',  easing: "easeIn"}, 71);
+		$('#material-palette').animate({width: "toggle",  easing: "easeIn"}, 71);
 	},
 	reenable: function(){
 		// sys.log("Activated the Circuit Drawing Tool.");
 		designer.circuit_layer.circuit_view();
+		$('#material-palette').animate({width: "toggle",  easing: "easeIn"}, 0);
 	},
 	disable: function(){
 		designer.circuit_layer.trace_view();
 		this.selectAll(false);
 	    this.update();
-	   $('#material-palette').animate({width:'toggle', easing: "easeOut"}, 71);
+	 	$('#material-palette').animate({width: "toggle",  easing: "easeIn"}, 0);
 	},
 	update: function(){
 		this.paper.view.update();
