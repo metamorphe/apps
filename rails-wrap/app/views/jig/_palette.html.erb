@@ -13,7 +13,7 @@ $(function(){
 			
 			var size = CircuitLayer.MATERIALS[mat].defaultStrokeWidth;
 			TracePathTool.BRUSH_SIZE = size;
-			$("#brush-size-label").html(TracePathTool.BRUSH_SIZE);
+			$("#brush-size-label").html(TracePathTool.BRUSH_SIZE.toFixed(0));
 		});
 		$('#materials-list').append(material);
 	});
