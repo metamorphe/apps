@@ -284,7 +284,7 @@ CircuitLayer.prototype = {
 
 		// console.log("CVT", EllustrateSVG.match(this.layer, {prefix: ["CVT", "CGT", "CNT"]}));
 		CircuitLayer.select_and_color_and_code(this.layer, ["CNT", "CGT", "CVT", "CVTB", "CGTB"], 
-			{ fillColor: CircuitLayer.currentMaterial.style.fillColor, 
+			{ fillColor: CircuitLayer.currentMaterial.style.blob.fillColor, 
 			  dashArray:[], 
 			  shadowColor: new paper.Color(0.8),
 			  shadowBlur: 0,
