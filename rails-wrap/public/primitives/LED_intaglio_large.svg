@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 19.2.1, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="EL:_Ellustrave_SVG_for_circuit_stickerLED"
+	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 59 53"
+	 style="enable-background:new 0 0 59 53;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill:#8D93E7;}
+	.st1{fill:url(#NC:_Baselight_1_);}
+	.st2{fill:url(#NC:_Light_1_);}
+	.st3{fill:#FF0000;}
+</style>
+<g id="CP:_circuit_x5F_led_1_">
+	<polygon id="NC:_Base" class="st0" points="34.3,0 16.2,0 5.6,20.9 10.4,53 40.2,53 44.2,20.9 	"/>
+	
+		<radialGradient id="NC:_Baselight_1_" cx="-56.8205" cy="99.8275" r="23.1666" gradientTransform="matrix(4.489659e-11 1 -1 4.489659e-11 124.7169 83.3205)" gradientUnits="userSpaceOnUse">
+		<stop  offset="0" style="stop-color:#FFFFFF"/>
+		<stop  offset="1" style="stop-color:#FFFFFF;stop-opacity:0"/>
+	</radialGradient>
+	<polygon id="NC:_Baselight" class="st1" points="34.4,0 16.2,0 5.6,20.9 10.4,53 40.2,53 44.2,20.9 	"/>
+	
+		<radialGradient id="NC:_Light_1_" cx="-55.598" cy="99.8752" r="6.3271" gradientTransform="matrix(4.489659e-11 1 -1 4.489659e-11 124.7169 83.3205)" gradientUnits="userSpaceOnUse">
+		<stop  offset="0" style="stop-color:#FFFFFF"/>
+		<stop  offset="0.8587" style="stop-color:#FFFFFF;stop-opacity:0.1413"/>
+		<stop  offset="1" style="stop-color:#FFFFFF;stop-opacity:0"/>
+	</radialGradient>
+	<circle id="NC:_Light" class="st2" cx="24.8" cy="27.7" r="6.3"/>
+	<polygon id="CGT:_negative_x5F_terminal" points="27.5,0 22.5,0 22.5,23.5 27.5,23.5 	"/>
+	<path id="CVT:_positive_x5F_terminal_1_" class="st3" d="M27.8,30.6h-5.6L21.6,53h5.9L27.8,30.6z"/>
+</g>
+</svg>
