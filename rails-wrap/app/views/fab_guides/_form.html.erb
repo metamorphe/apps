@@ -1,0 +1,48 @@
+<%= form_for(@fab_guide) do |f| %>
+  <% if @fab_guide.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@fab_guide.errors.count, "error") %> prohibited this fab_guide from being saved:</h2>
+
+      <ul>
+      <% @fab_guide.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :design_id %><br>
+    <%= select("fab_guide", "design_id", Design.all.collect {|p| [ "#{p.id}: #{p.name}", p.id ] }.reverse, :class=> "form-control") %>
+
+  </div>
+  <div class="field">
+    <%= f.label :instruction_order %><br>
+    <%= f.number_field :instruction_order, :value=> Design.last.fab_guides.length + 1,:class=>"form-control"%>
+  </div>
+  <div class="field">
+    <%= f.label :main_message %><br>
+    <%= f.text_field :main_message, :class=>"form-control"%>
+  </div>
+  <div class="field">
+    <%= f.label :guide_type %><br>
+    <%= select("fab_guide", "guide_type", FabGuide.guide_key, :class=> "form-control") %>
+
+  </div>
+  <div class="field">
+    <%= f.label :highlight_elements %><br>
+    <%= f.text_field :highlight_elements, :class=>"form-control"%>
+  </div>
+  <div class="field">
+    <%= f.label :tips %><br>
+    <%= f.text_field :tips, :class=>"form-control"%>
+  </div>
+  <div class="field">
+    <%= f.label :debug_id %><br>
+    <%= select("fab_guide", "debug_id", Debug.all.collect {|p| [ "#{p.id}: #{p.name}", p.id ] }.reverse, {include_blank: 'None'}) %>
+  </div>
+  <br>
+  <div class="actions">
+    <%= f.submit 'Create', :class => 'btn btn-primary' %>
+  </div>
+<% end %>

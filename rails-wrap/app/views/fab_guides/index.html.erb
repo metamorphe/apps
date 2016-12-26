@@ -1,0 +1,44 @@
+<h1>Listing fab_guides</h1>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Design</th>
+      <th>Instruction order</th>
+      <th>Main message</th>
+      <th>Guide type</th>
+      <th>Highlight elements</th>
+      <th>Tips</th>
+      <th>Debug</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @fab_guides.each do |fab_guide| %>
+      <tr>
+        <td><%= Design.find(fab_guide.design_id).name %></td>
+        <td><%= fab_guide.instruction_order %></td>
+        <td><%= fab_guide.main_message %></td>
+        <td><%= fab_guide.guide_type %></td>
+        <td><%= fab_guide.highlight_elements %></td>
+        <td><%= fab_guide.tips %></td>
+        <td>
+          <% if fab_guide.debug_id.nil? %> 
+           None
+          <% else %>
+            <%= Debug.find(fab_guide.debug_id).name %>
+           
+          <% end %>
+        </td>
+        <td><%= link_to 'Show', fab_guide %></td>
+        <td><%= link_to 'Edit', edit_fab_guide_path(fab_guide) %></td>
+        <td><%= link_to 'Destroy', fab_guide, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Fab guide', new_fab_guide_path %>

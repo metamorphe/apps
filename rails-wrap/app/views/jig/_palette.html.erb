@@ -1,0 +1,79 @@
+<script>
+CircuitLayer.MATERIALS;
+$(function(){
+	_.each(CircuitLayer.MATERIALS, function(v, k, hash){
+		var material = DOM.tag("li").addClass("list-group-item").attr("data-name", k);
+		var img = DOM.tag("img", true).attr('src', v.img).appendTo(material);
+
+		material.click(function(){
+			$('#materials-list li').removeClass("selected");
+			$(this).addClass("selected");
+			var mat = $(this).attr('data-name');
+			CircuitLayer.currentMaterial = CircuitLayer.MATERIALS[mat];
+			
+			var size = CircuitLayer.MATERIALS[mat].defaultStrokeWidth;
+			TracePathTool.BRUSH_SIZE = size;
+			$("#brush-size-label").html(TracePathTool.BRUSH_SIZE.toFixed(0));
+		});
+		$('#materials-list').append(material);
+	});
+	$('#material-palette').animate({width:'toggle'}, 71);
+});
+</script>
+<div id="material-palette" class="panel panel-default">
+  <!-- Default panel contents -->
+  <div class="panel-heading">MATERIALS</div>
+
+  <!-- List group -->
+  <ul id="materials-list" class="list-group">
+  </ul>
+</div>
+
+
+<style type="text/css">
+	#material-palette{
+		position: absolute;
+		width: 90px;
+		right: 0px;
+		top: 180px;
+		z-index: 10000;
+		border: none;
+		border-radius: 10px;
+		/*border-top-left-radius: 10px;
+		border-top-right-radius: 10px;*/
+	}
+	#material-palette .panel-heading{
+		font-size: 8pt;
+		background: #333;
+		color: white;
+		font-weight: bold;	
+		border: none;
+		padding: 8px 15px;
+		border-top-left-radius: 10px;
+		/*border-top-right-radius: 10px;*/
+	}
+	#material-palette ul.list-group{
+		background: #5D5D5D;
+		padding: 4px;
+		/*border-bottom-right-radius: 10px;*/
+		border-bottom-left-radius: 10px;
+		
+	}
+	#materials-list li{
+		border-radius: 10px;
+		margin: 5px;
+		width: 71px;
+		padding: 8px;
+		background: DADADA;
+		cursor: hand;
+	}
+	#materials-list li.selected{
+		background: #5cb85c;
+		border-color: #4cae4c;
+	}
+	#materials-list li img{
+		height: 50px;
+		cursor: hand;
+	}
+	
+</style>

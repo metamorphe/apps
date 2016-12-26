@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 19.2.1, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="EL:_Ellustrate" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px"
+	 y="0px" viewBox="0 0 130.7 64.1" style="enable-background:new 0 0 130.7 64.1;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill:#D1D3D4;}
+	.st1{fill:#333333;}
+	.st2{fill:#ED462F;}
+</style>
+<g id="CP:_Battery">
+	<path id="NC:_base" class="st0" d="M130.7,32c0,17.7-14.2,32-31.8,32H31.8C14.2,64.1,0,49.7,0,32l0,0C0,14.3,14.2,0,31.8,0H99
+		C116.5,0,130.7,14.3,130.7,32L130.7,32z"/>
+	<path id="CGTB:_ground_pad" class="st1" d="M97.4,3.1c15.7,0,28.3,12.7,28.3,28.3s-12.7,28.3-28.3,28.3s-27-12-27-27.7
+		S81.8,3.1,97.4,3.1z"/>
+	<path id="CVTB:_power_pad" class="st2" d="M34.3,3.1c15.7,0,27.1,12.7,27.1,28.3S49.9,59.7,34.3,59.7S5.9,47.1,5.9,31.4
+		S18.6,3.1,34.3,3.1z"/>
+</g>
+</svg>

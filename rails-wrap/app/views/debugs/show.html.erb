@@ -1,0 +1,14 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @debug.name %>
+</p>
+
+<p>
+  <strong>Steps:</strong>
+  <%= markdown(@debug.steps) %>
+</p>
+
+<%= link_to 'Edit', edit_debug_path(@debug) %> |
+<%= link_to 'Back', debugs_path %>
