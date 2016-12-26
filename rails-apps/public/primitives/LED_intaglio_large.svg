@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 19.2.1, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="EL:_Ellustrave_SVG_for_circuit_stickerLED"
+	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 71.7 98.6"
+	 style="enable-background:new 0 0 71.7 98.6;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill:#8D93E7;}
+	.st1{fill:#B7CDE5;}
+	.st2{fill:#FFFFFF;}
+	.st3{fill:#FF0000;}
+</style>
+<g id="CP:_circuit_x5F_led_1_">
+	<polygon id="NC:_Base" class="st0" points="53.4,0 19.8,0 0,38.9 8.9,98.6 64.4,98.6 71.7,38.9 	"/>
+	<path id="NC:_Base_1_" class="st1" d="M45.6,13.3H26.3c-1.7,0-3.3,1-4.1,2.5l-12.7,25c-0.4,0.9-0.6,1.8-0.5,2.8l5.8,39
+		c0.3,2.3,2.3,3.9,4.6,3.9h33.1c2.3,0,4.3-1.7,4.6-4l4.8-39c0.1-0.9,0-1.7-0.4-2.5l-11.8-25C49,14.3,47.4,13.3,45.6,13.3z"/>
+	<circle id="NC:_Light" class="st2" cx="35.8" cy="51.6" r="11.8"/>
+	<polygon id="CGT:_negative_x5F_terminal" points="40.8,0 31.5,0 31.5,43.7 40.8,43.7 	"/>
+	<path id="CVT:_positive_x5F_terminal_1_" class="st3" d="M41.2,56.9H30.8l-1,41.8h11L41.2,56.9z"/>
+</g>
+</svg>

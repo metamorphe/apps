@@ -1,0 +1,231 @@
+<script type="text/javascript">
+var ux, ws;
+$(function(){
+  ux = new Interaction($('#interact-mode'));
+});
+
+$(document).ready(function() {
+    ws = new WebSocket("ws://localhost:3015");
+    ws.onopen = function() {
+      console.log("CONNECTED!");
+    };
+    ws.onclose = function() {};
+    ws.onmessage = function(evt) {
+        if(evt.data){
+          try{
+            // console.log(evt.data);
+          }
+          catch(e){
+            console.log("ERROR", e, evt.data);
+          }
+        }
+    }
+});
+
+var automatic = true;
+
+function Interaction(dom){
+  this.dom = dom;
+ 
+  this.id_path = PaperUtil.query(paper.project, {name: "ART:_ID_path"})[0];
+  this.id_path.style.fillColor = null;
+  this.lights = PaperUtil.query(paper.project, {name: "ART:_Lights"})[0].children;
+  this.light_group = PaperUtil.query(paper.project, {name: "ART:_Lights"})[0];
+  this.medial_axis =  PaperUtil.query(paper.project, {name: "ART:_Gestalt_path"})[0];
+  this.medial_axis.style.fillColor = null;
+  this.octo = new Octopulpo();
+  this.init();
+}
+
+Interaction.prototype = {
+  init: function(){
+    var self = this;
+    var mapping = _.map(this.lights, function(light, i, arr){
+      // console.log(light)
+      var loc = light.position;
+      var pt = self.id_path.getNearestPoint(loc);
+      var offset = self.id_path.getOffsetOf(pt);
+      return {light: light, offset: offset}
+    });
+   mapping =  _.sortBy(mapping, 'offset');
+   _.each(mapping, function(el, i, arr){
+      el.light.stripID = i;
+   });
+   // console.log();
+   this.medial_axis = this.medial_axis.children[0]
+   var mapping = _.map(this.lights, function(light, i, arr){
+      // console.log(light)
+      var loc = light.position;
+      var pt = self.medial_axis.getNearestPoint(loc);
+      var offset = self.medial_axis.getOffsetOf(pt);
+      return {light: light, offset: offset}
+    });
+   mapping =  _.sortBy(mapping, 'offset');
+   _.each(mapping, function(el, i, arr){
+      el.light.medialID = i;
+   });
+
+   _.each(this.lights, function(light, i, arr){
+      var idText = new paper.PointText({
+            // parent: self.light_group, 
+            point: light.position,
+            content: light.stripID + ":" + light.medialID,
+            fillColor: 'gray', 
+            fontFamily: 'Arial', 
+            fontWeight: 'bold', 
+            fontSize: 20, 
+            terminal_helper: true,
+            name: "NCB: ID"
+        });
+      
+        var gtext_adj = idText.bounds;
+        idText.point.x -= gtext_adj.width/2;
+        idText.point.y += gtext_adj.height/2;
+   })
+
+
+    $('.all-command').click(function(){
+      var color = $(this).attr('data-color');
+       lights =  _.sortBy(self.lights, 'medialID');
+      _.each(lights, function(light, i, arr){
+        self.octo.setColor(light, color);
+      });
+    });
+    $('#set-color').click(function(){
+      var color = $("#led-color").val();
+       lights =  _.sortBy(self.lights, 'medialID');
+      _.each(self.lights, function(light, i, arr){
+       self.octo.setColor(light, color);
+      });
+    });
+    $("#led-color").change(function(){
+      var color = $(this).val();
+       lights =  _.sortBy(self.lights, 'medialID');
+      _.each(self.lights, function(light, i, arr){
+        self.octo.setColor(light, color);
+      });
+      self.octo.send();
+    });
+
+    $('#perlin').click(function(){
+      var color = $(this).attr('data-color');
+       lights =  _.sortBy(self.lights, 'medialID');
+      _.each(lights, function(light, i, arr){
+        var rand = (Math.random() * 0.1) - 0.05;
+        var randHue = (Math.random() * 20) - 10;
+
+        var currentColor = light.style.fillColor;
+        currentColor.brightness += rand; 
+        currentColor.hue += randHue; 
+        if(currentColor.brightness > 1) currentColor.brightness = 1;
+        if(currentColor.brightness < 0) currentColor.brightness = 0;
+         if(currentColor.hue > 360) currentColor.hue = 0;
+        if(currentColor.hue < 0) currentColor.hue = 360;
+        currentColor = currentColor.convert('rgb')
+        // console.log(currentColor.toCSS(true));
+        self.octo.setColor(light, currentColor.toCSS(true));
+      });
+      self.octo.send();
+    });
+    var auto =  function(){
+      if(!automatic) return;
+      setTimeout(function(){
+        $('#perlin').click();
+        $('#auto-perlin').click();
+      }, Math.random() * 1000);
+    };
+
+    $('#auto-perlin').attr('data-bind', true).click(auto);
+
+    $('#toggle-auto-perlin').click(function(){
+      automatic = !automatic;
+      $(this).html(automatic);
+    });
+
+    $('#send-commands').click(function(){
+      self.octo.send();
+    });
+
+  },
+  update: function(){
+  },
+  show: function() {
+    this.dom.show();
+    return this;
+  }, 
+  hide: function() {
+    this.dom.hide();
+    return this;
+  }
+}
+
+
+function Octopulpo(){
+  this.commands = [];
+}
+Octopulpo.prototype = {
+  setColor: function(light, hex){
+    var rgb = Octopulpo.hex2rgb(hex);
+    var command = "c," + light.stripID + "," + rgb.join(",");
+    light.style.fillColor = hex;
+    this.commands.push(command);
+  },
+  send: function(){
+    if(this.commands.length == 0) return;
+    ws.send(this.commands.join('\n'));
+    this.commands = [];
+  }
+}
+Octopulpo.hex2rgb = function(hex){
+   var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result ? [
+        parseInt(result[1], 16),
+        parseInt(result[2], 16),
+        parseInt(result[3], 16)
+    ] : null;
+}
+</script>
+
+
+<style>
+#interact-mode{
+    padding: 10px 10px;
+  }
+</style>
+<div id="interact-mode" class="guide-container col-xs-3 pull-right">
+  <h5 class="text-center"> INTERACTIONS </h5>
+  <ul class="list-group">
+  <li class="list-group-item">
+    <div class="btn-group">
+      <button data-color="#0F0000" class="all-command btn btn-sm btn-danger"> RED </button>
+      <button data-color="#000F00" class="all-command btn btn-sm btn-success"> GREEN </button>
+      <button data-color="#00000F" class="all-command btn btn-sm btn-info"> BLUE </button>
+    </div>
+  </li>
+
+  <li class="list-group-item">
+    <div class="input-group">
+       <input id="led-color" class="form-control"  type="color" />
+      <span class="input-group-btn">
+        <button id="set-color" class="btn btn-default" type="button">Set</button>
+      </span> 
+    </div>
+  </li>
+  <li class="list-group-item">
+        <button id="send-commands" class="btn btn-sm btn-primary pull-right" type="button">
+          <span class="glyphicon glyphicon-send"></span>
+          Send
+        </button>  
+        <br class="clearfix"/>
+  </li>
+  <li class="list-group-item">
+    <div class="btn-group">
+      <button id="perlin" class="btn btn-default"> Perlinize </button>
+      <button id="toggle-auto-perlin" class="btn btn-default"> True </button>
+      <button id="auto-perlin" class="btn btn-default"> Auto-Perlinize </button>
+    </div>
+    <br class="clearfix"/>
+  </li>
+  </ul>
+</div>
+

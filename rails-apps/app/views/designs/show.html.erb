@@ -1,0 +1,95 @@
+<script>
+$(function(){
+	$('#download_count').click(function(){
+		$.get("/designs/" + <%= @design.id %> + "/download_count");
+		var count = parseInt($('#download_counter').html());
+		$("#download_counter").html(count + 1);
+	});
+})
+</script>
+<!-- TITLE -->
+<h2><%= @design.name == "" ? "Circuit Sketch Design ##{@design.id}" : @design.name%></h2>
+<p> By <%= link_to @design.author.name, member_path(@design.author) %> <em><%= @design.created_at.strftime("Created on %m/%d/%Y")%></em></p>
+
+<div class="row">
+	<!-- IMAGE COLUMN -->
+	<div class="col-xs-12 col-sm-8">
+		<% if @design.image.present? %>
+			<%= image_tag(@design.image_url(:standard), :width => "100%", :class=> "design") %>
+		<% else %>
+			<%= image_tag("/ellustrate.png", :width => "100%") %>
+		<% end %>
+	</div>
+	<!-- INFORMATION COLUMN -->
+	<div class="col-xs-12 col-sm-4">
+		<%= link_to circuit_interface_path(@design, :mode => "DRAW"), :class => "btn btn-lg btn-danger btn-block" do %> 
+			<!-- <span class="glyphicon glyphicon-edit"></span>   -->
+			VIEW CIRCUIT
+		<% end %>
+		<%= link_to @design.svg_url, :id=> "download_count", :class => "btn btn-default btn-block", :download => @design.name.underscore.gsub(' ', '_')    do %>
+				DOWNLOAD FILES
+		<% end %>
+		<% if user_signed_in? and (current_user.member.id == @design.author.id || current_user.admin)%>
+			<%= link_to edit_design_path(@design), :class => "btn btn-default btn-block"   do %> 
+				EDIT INFO
+			<% end %>
+		<% end %>
+
+		<br>
+		
+		<ul class="list-group">
+		  <li class="list-group-item">
+		    <span class="badge"><%= @design.views %></span>
+		    Views
+		  </li>
+		  <li class="list-group-item">
+		    <span id="download_counter" class="badge"><%= @design.downloads %></span>
+		    Downloads
+		  </li>
+		  <li class="list-group-item">
+		    <span class="badge"><%= @design.makes %></span>
+		    Makes
+		  </li>
+		</ul>
+	</div>
+</div>
+<hr>
+<!-- INFO -->
+<div class="row">
+	<div class="col-xs-12 col-sm-4">
+		<h3> License </h3>
+		<p > 
+			<%= link_to @design.name, designs_path(@design) %> by  
+			<%= link_to @design.author.name, members_path(@design.author) %>
+			is licensed under the <b><%= to_license(@design.license) %></b> license. 
+		</p>
+	</div>
+	<div class="col-xs-12 col-sm-8">
+		<h3> Summary </h3>
+		<p class="lead"> <%= @design.description %></p>
+	</div>
+</div>
+<div class="row">
+	<h3> Files </h3>
+	<% @design.digital_models.each do |model| %>
+		<%= link_to digital_model_path(model) do %>
+			<div class="file col-xs-3">
+				<%= image_tag model.thumbnail.thumbnail.url, :width => "100%" %>
+				<h4 class="text-center"><%= model.name %></h4><br>
+			</div>
+		<% end %>
+	<% end %>
+</div>
+<br>
+
+</div>
+</div>
+
+<style>
+.file img{
+	background: #294743;
+	padding: 3px;
+}
+
+</style>
+

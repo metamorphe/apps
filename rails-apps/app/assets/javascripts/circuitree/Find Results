@@ -1,0 +1,43 @@
+Searching 575 files for "scope.paper"
+
+/Users/cearto/Repos/ellustrate-tool/rails-sketch/app/assets/javascripts/circuitree/overflow.js:
+  141:     				var w  = new WirePath(scope.paper, value);
+  166: 		var w  = new WirePath(scope.paper, value);
+
+/Users/cearto/Repos/ellustrate-tool/rails-sketch/app/assets/javascripts/proxies/Tools/AnchorPointTool.js:
+   23: 		hitResult = scope.paper.project.hitTest(event.point, hitOptions);
+
+/Users/cearto/Repos/ellustrate-tool/rails-sketch/app/assets/javascripts/proxies/Tools/DebugTool.js:
+   23: 		hitResult = scope.paper.project.hitTest(event.point, hitOptions);
+
+/Users/cearto/Repos/ellustrate-tool/rails-sketch/app/assets/javascripts/proxies/Tools/DeleteTool.js:
+   44: 			var positionOnCanvas = scope.paper.view.viewToProject(new paper.Point(event.center.x, event.center.y));
+
+/Users/cearto/Repos/ellustrate-tool/rails-sketch/app/assets/javascripts/proxies/Tools/excess.js:
+  124: 			var pos = scope.paper.view.viewToProject(new paper.Point(event.center.x, event.center.y));
+  498: 			hitResult = scope.paper.project.hitTest(event.point, hitOptions);
+
+/Users/cearto/Repos/ellustrate-tool/rails-sketch/app/assets/javascripts/proxies/Tools/FabTool.js:
+   23: 		hitResult = scope.paper.project.hitTest(event.point, hitOptions);
+
+/Users/cearto/Repos/ellustrate-tool/rails-sketch/app/assets/javascripts/proxies/Tools/OhmTool.js:
+   26: 		hitResult = scope.paper.project.hitTest(event.point, hitOptions);
+   54: 		hitResult = scope.paper.project.hitTest(event.point, hitOptions);
+
+/Users/cearto/Repos/ellustrate-tool/rails-sketch/app/assets/javascripts/proxies/Tools/PanTool.js:
+   30: 		hitResult = scope.paper.project.hitTest(event.point, hitOptions);
+  179: 				scope.paper.project.activeLayer.addChild(scope.activeSelectionRectangle);
+
+/Users/cearto/Repos/ellustrate-tool/rails-sketch/app/assets/javascripts/proxies/Tools/RunTool.js:
+   23: 		hitResult = scope.paper.project.hitTest(event.point, hitOptions);
+
+/Users/cearto/Repos/ellustrate-tool/rails-sketch/app/assets/javascripts/proxies/Tools/TracePathTool.js:
+   21: 		hitResult = scope.paper.project.hitTest(event.point, hitOptions);
+
+/Users/cearto/Repos/ellustrate-tool/rails-sketch/app/assets/javascripts/proxies/Tools/TransformTool.js:
+   70: 				scope.paper.project.activeLayer.addChild(scope.activeSelectionRectangle);
+
+/Users/cearto/Repos/ellustrate-tool/rails-sketch/app/assets/javascripts/proxies/Tools/VectorTool.js:
+   13: 		hitResult = scope.paper.project.hitTest(event.point, {stroke: true});
+
+16 matches across 12 files

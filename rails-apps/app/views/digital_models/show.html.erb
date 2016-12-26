@@ -1,0 +1,92 @@
+<p id="notice"><%= notice %></p>
+
+<!-- BREADCRUMBS -->
+
+<div class="col-xs-12">
+  <!-- BREADCRUMBS -->
+    <ol class="breadcrumb">
+      <li>
+        <%= link_to designs_path do %>
+          <%= glyph "arrow-left" %>
+        <% end%>
+      </li>
+      <li><%= link_to @digital_model.design.name.humanize, design_path(@digital_model.design) %></li>
+      <li class="active"> <%= @digital_model.name.humanize %> </li>
+    </ol>
+  <!-- END BREADCRUMBS -->
+  <div class="pull-right">
+    <span>
+      <%= link_to edit_digital_model_path(@digital_model) do %>
+        <%= glyph "edit" %> Edit
+      <% end %>
+    </span>
+    <span>
+      <%= link_to  @digital_model, method: :delete, data: { confirm: 'Are you sure?' }  do %>
+        <%= glyph "remove" %> Destroy
+        <% end %>
+    </span>
+  </div>
+
+</div>
+
+<% link_to 'Edit', edit_digital_model_path(@digital_model) %> 
+<% link_to 'Back', digital_models_path %>
+
+
+
+
+<!-- IMAGE COLUMN -->
+<div class='col-xs-5'>
+  <div class="img-wrapper-large">
+    <%= image_tag(@digital_model.thumbnail_url(:standard), :width => "100%", :class=>"file") if @digital_model.thumbnail.present? %>
+  </div>
+</div>
+
+
+
+<!-- INFORMATION COLUMN -->
+<div class="col-xs-7">
+  <div class="col-xs-6">
+    <h2>
+      <em><%= @digital_model.design.name %></em><br>
+      <%= @digital_model.name %> 
+    </h2>
+    <p> <em> author </em> <%= link_to @digital_model.design.author.name, user_path(@digital_model.design.author)%></p>
+
+  </div>
+  <div class="col-xs-6">
+    <div class="img-wrapper">
+      <%= image_tag(@digital_model.bump_map_url(:thumbnail)) if @digital_model.bump_map.present? %>
+    </div>
+  </div>
+
+
+  <!-- DIMENSIONS TABLE -->
+  <h3> Dimensions </h3>
+  <table class="table">
+    <tr>
+      <th>W x H x D (mm)</th>
+      <th>&Delta;</th>
+      <th>BH</th>
+    </tr>
+    <tr>
+      <td><code><%="#{@digital_model.width} x #{@digital_model.height} x #{@digital_model.displacement + @digital_model.base_height}"%></code></td>
+      <td><code><%=@digital_model.displacement%></code></td>
+      <td><code><%=@digital_model.base_height%></code></td> 
+    </tr>
+  </table>
+  <%= link_to "VIEW", tactile_generator_path(@digital_model), :class=>"btn-lg btn-danger"%> 
+
+</div>
+
+
+
+<style>
+  th, td{
+    text-align: center;
+  }
+  img{
+    padding: 3px;
+  background: #294743;
+}
+</style>

@@ -1,0 +1,62 @@
+<div class="panel panel-default">
+  <div class="panel-body">
+  <%= form_for @design, :html => {:multipart => true} do |f| %>
+    <% if @design.errors.any? %>
+      <div id="error_explanation">
+        <h2><%= pluralize(@design.errors.count, "error") %> prohibited this design from being saved:</h2>
+
+        <ul>
+        <% @design.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+        </ul>
+      </div>
+    <% end %>
+<div class='row'>
+    <div class="col-xs-12 col-sm-6">
+        <div class="field">
+          <%= f.label :name %><br>
+          <%= f.text_field :name, :class=>"form-control" %>
+        </div>
+        <div class="field">
+          <% if @design.image.present? %>
+            <%= image_tag(@design.image_url(:large_thumbnail), :width => "100%") %>
+          <% else %>
+            <%= image_tag("/ellustrate.png", :width => "100%") %>
+          <% end %>
+          <label> Sketch Image </label><br>
+          <%= f.file_field :image, :class => "form-control" %>
+        </div>
+        
+      <div class="field">
+        <%= f.label "Description" %><br>
+        <%= f.text_area :description, :class=>"form-control" %>
+      </div>
+    </div>
+    <div class="col-xs-12 col-sm-6">
+
+      <div class="field">
+        <%= f.label :license %><br>
+        <%= select("design", "license", get_licenses, {}, :class => "form-control", :value => @design.author.default_license) %>
+        <br>
+      </div>
+      <!-- PUBLISH -->
+      <div class="field">
+        <label> Privacy Settings </label><br>
+        <%= select("design", "publish", ["Public", "Private"], {}, :class => "form-control") %>
+      </div>
+      <!-- END PUBLISH -->
+    </div>
+</div>
+
+   
+
+  <br>
+
+
+    <div class="actions">
+      <%= f.submit "#{params[:action] == 'new'? 'Create':'Update'} Design", :class => "btn btn-block btn-danger"%>
+    </div>
+  <% end %>
+  </div>
+</div>

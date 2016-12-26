@@ -1,0 +1,80 @@
+<script type="text/javascript">
+var storage, tg, env, hm;
+var model = <%= @digital_model.to_json.html_safe %>;
+var depthMap;
+$(function(){
+	$('#shade').hide();
+	storage = new WebStorage();
+	hm = new HeightMap("/text_heightmap.png");
+	// hm = new HeightMap(model.bump_map.original.url);
+	hm.load(function(pixels){
+		env = new WebEnv($("#ThreeJS"));
+
+		tg = new TactileGenerator({
+			name: model.name.toLowerCase().replace(/ /g, "_"),
+			heightmap: hm,
+			height: model.height, 
+			width: model.width, 
+			base_height: model.base_height, 
+			magnitude: model.displacement, 
+			resolution: 3, 
+			storage: storage, 
+			env: env
+		});
+
+		// // Get depth map
+		var faces = tg.mesh.geometry.faces;
+		var faceVertexUvs = tg.mesh.geometry.faceVertexUvs;
+		depthMap = extractDepthMap(pixels, faces, faceVertexUvs);
+
+		tg.raise(depthMap, model.displacement );
+
+	});
+
+});
+
+</script>
+
+<style type="text/css">
+	#texture-render{
+		display: none;
+		position: absolute;
+		top: 0;
+		left: 0;
+		z-index: 100;
+	}
+	html, body{
+		height: 100% !important;
+		width: 100% !important;
+		overflow: hidden;
+		margin-bottom: 0 !important;
+	}
+	.threejs_container{
+		width: 100%;
+		height: 100%;
+	}
+	#texture-container{
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		z-index: 300;
+	}
+	#texture-preview{
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 150px;
+		z-index: 300;
+	}
+</style>
+
+<div class="threejs_container">
+	<div id="ThreeJS" ></div>
+</div>
+<canvas id="texture-render">
+</canvas>
+<div id="texture-container">
+</div>
+<div id="texture-preview">
+<% image_tag @digital_model.bump_map.thumbnail.url, :width=> "100%"%>
+</div>

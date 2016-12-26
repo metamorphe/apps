@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 19.2.1, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 21.1 20.5" style="enable-background:new 0 0 21.1 20.5;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill:#00000C;}
+	.st1{fill:#0C00FF;}
+	.st2{fill:#00FF06;}
+</style>
+<g id="EL:_5050_Package">
+	<g id="CP:_5050_AP102C">
+		<rect id="NC:_Footprint" x="3.4" y="3.2" class="st0" width="14.2" height="14.2"/>
+		<polygon id="CNB:_DO" class="st1" points="20.1,7 13.9,7 13.9,5.1 16,5.1 20.1,5.1 		"/>
+		<polygon id="CNB:_CO" class="st1" points="20.2,11.4 14,11.4 14,9.6 16.3,9.6 20.2,9.6 		"/>
+		<polygon id="CNB:_CI" class="st1" points="7.3,11.4 1,11.4 1,9.6 5.6,9.6 7.3,9.6 		"/>
+		<polygon id="CVB:_PWR" class="st1" points="11.4,14 11.4,1.8 20.1,1.8 20.1,0 0.9,0 0.9,1.8 9.6,1.8 9.6,15.9 10.9,15.9 
+			11.4,15.9 20.2,15.9 20.2,14 		"/>
+		<polygon id="CGB:_GND" class="st1" points="20.2,18.7 7.3,18.7 7.3,15.9 7.3,14 5.5,14 0.9,14 0.9,15.9 5.5,15.9 5.5,18.7 
+			0.9,18.7 0.9,20.5 5.5,20.5 5.5,20.5 7.3,20.5 7.3,20.5 20.2,20.5 		"/>
+		<polygon id="CNB:_DI_1_" class="st1" points="7.3,7 1.1,7 1.1,5.1 5.8,5.1 7.3,5.1 		"/>
+		<circle id="CVT:_VCCO" class="st2" cx="20.1" cy="0.9" r="0.9"/>
+		<circle id="CNT:_DO" class="st2" cx="20.1" cy="6" r="0.9"/>
+		<circle id="CNT:_CO" class="st2" cx="20.2" cy="10.5" r="0.9"/>
+		<circle id="CGT:_GNDO" class="st2" cx="20.2" cy="19.6" r="0.9"/>
+		<circle id="CGT:_GNDI" class="st2" cx="0.9" cy="19.6" r="0.9"/>
+		<circle id="CVT:_VCCI" class="st2" cx="0.9" cy="0.9" r="0.9"/>
+		<circle id="CNT:_CI" class="st2" cx="1" cy="10.5" r="0.9"/>
+		<circle id="CNT:_DI" class="st2" cx="1.1" cy="6" r="0.9"/>
+	</g>
+</g>
+</svg>

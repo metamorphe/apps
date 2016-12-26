@@ -1,0 +1,413 @@
+var fg;
+$(function(){
+  // fg = new FabricationGuide($('#fab-guide'), $('#item-template'));
+});
+
+
+function FabricationGuide(dom, item_template){
+  this.dom = dom;
+  this.template = item_template;
+  this.position = 0;
+  this.guides = [];
+  this.guidesDOM = [];
+  this.init();
+  // this.hide();
+}
+
+FabricationGuide.prototype = {
+  init: function(){
+
+    var self = this;
+    _.each(self.guides, function(el, i, arr){
+      // TYPES OF GUIDES
+      var isCheckpoint = el.guide_type == "Checkpoint";
+      var isConfirmation = el.guide_type == "Confirmation";
+      var isTimed = el.main_message.indexOf("second") > -1;
+
+      // GENERATE AND ADJUST DOM FOR GUIDES
+      var cloned = self.template.clone().attr('id', '')
+        .removeClass('template');
+      
+      cloned.find('.body-text')
+            .html(el.main_message);
+
+      if(isConfirmation) cloned.find('.checkpoint').remove();
+      if(isCheckpoint) cloned.find('.confirm').remove();
+      if(!isTimed){
+        cloned.find('.timer').remove();
+      }else{
+        cloned.find('.timer').find('button').click(function(){
+          console.log("Counting down!");
+          var countdown = cloned.find('.timer').find('input');
+          var t = new Timer(countdown.val(), countdown);
+          t.start();
+        });
+      }
+
+
+      // Interactive properties
+        // cloned.find('.checkpoint, .confirm.check').click(function(){
+        //   self.position++;
+        //   self.update();
+        // });
+        // cloned.find('.history-next').click(function(){
+        //   self.position++;
+        //   self.update();
+        //   console.log(self.position);
+        // });
+
+        // cloned.find('.history-prev').click(function(){
+        //   self.position--;
+        //   self.update();
+        //   console.log(self.position);
+        // });
+        cloned = self.interact(cloned);
+
+        self.guidesDOM.push(cloned);
+    });
+    this.update();
+    return this;
+  },
+  interact: function(el){
+    var self = this;
+    el.find('.checkpoint, .confirm.check').unbind().click(function(){
+          self.position++;
+          self.update();
+        });
+    el.find('.confirm.error').unbind().click(function(){
+      $('#debug-tool').click();
+    });
+    el.find('.history-next').unbind().click(function(){
+      self.position++;
+      self.update();
+      console.log(self.position);
+    });
+
+    el.find('.history-prev').unbind().click(function(){
+      self.position--;
+      self.update();
+      console.log(self.position);
+    });
+    return el;
+  },
+  update: function(){
+    if(this.position < 0){
+      console.log("First step");
+      this.position = 0;
+      return;
+    } else if(this.position >= this.guides.length){
+      this.dom.find("#steps").html($('#end-item-template').clone().removeClass('template').attr('id', ''));
+    } else{
+      console.log("Setting to ", this.guidesDOM[this.position]);
+      var stepToDisplay = this.guidesDOM[this.position];
+      if(!_.isUndefined(stepToDisplay)) stepToDisplay = this.interact(stepToDisplay);
+      this.dom.find("#steps").html(stepToDisplay);
+    }
+    return this;
+  },
+  show: function() {
+    this.dom.show();
+    return this;
+  }, 
+  hide: function() {
+    this.dom.hide();
+    return this;
+  }
+}
+
+
+  // scope.solution = new paper.Group({
+  //          closed: false, 
+  //          children: this.nodes, 
+  //        });
+  // PaperUtil.set(_.reject(scope.solution.children, function(child){return child.closed}), {strokeColor: "purple", strokeWidth: 5});
+  // PaperUtil.set(_.filter(scope.solution.children, function(child){return child.closed}), {fillColor: "purple", strokeWidth: 0});
+  
+
+
+
+  // getAllPathsToPower: function(){
+  //  r = graph.getSourceNode();
+  //  if(_.isNull(r)) return [];
+    
+  //  r = Node.get(r).sourceNode;
+  //  r = Node.get(r).node;
+
+  //  p = this.positive_terminal;
+  //  if(_.isNull(p)) return [];
+  //  p = Node.get(p).node;
+    
+  //  results = Graph.printAllPaths(r, p);
+  //  // console.log("PATH FROM", r.id, p.id, results)
+  //  return EllustratePath.sortAndMake(results);
+    
+  // }, 
+
+  // var polarity = TracePathTool.readPolarity(u.paths[0]);
+    // console.log('PATH', polarity);
+    
+    // children = _.reject(children, function(el){ 
+    //  var path_polarity = _.map(el.paths, function(subpath){
+    //    return TracePathTool.readPolarity(subpath);
+    //  }); 
+    //  var avg_polarity = "N";
+    //  if(_.contains(path_polarity, "G")) avg_polarity = "G";
+    //  if(_.contains(path_polarity, "V")) avg_polarity = "V";
+      
+    //  // console.log("Path polarity", path_polarity.join(','), avg_polarity)
+    //  // var path_polarity = TracePathTool.readPolarity(el.paths[0]);
+    //  // console.log("CHILD", avg_polarity, "REJECT", !_.contains([polarity, "N"], avg_polarity));
+    //  // return !_.contains([polarity, "N"], avg_polarity);
+    //  return false;
+    // });
+
+    addNode: function(node){
+    this.nodes.push(node);
+  },
+  
+  blobConsolidation: function(){
+    var scope = this;
+    var blobs = ["CGB", "CVB", "CNB", "CGT", "CVT", "CNT", "CNTB", "CVTB", "CGTB"];
+    blobs = PaperUtil.query(paper.project, { prefix: blobs });
+    
+    _.each(blobs, function(blob){
+      g = _.map(blob.paths, function(p){
+        return p.terminals[0];
+      });
+      // console.log(blob.id, g);
+      newNode = Node.join(g);
+      if(!_.isNull(newNode)){
+        n = new Node(newNode.paths, newNode.position);
+        blob.sourceNode = n.id;
+        // nodes.push(n);
+        // console.log(g, "-->", n.id);
+        
+        scope.addNode(n);
+        
+
+        newNode.children.push(n.id);
+        _.each(newNode.children, function(child, i, arr){
+          // console.log("HMM", child, n.id);
+          var x = Node.get(child).node;
+          // console.log(n.id);
+          x.children.push(n.id);
+        });
+        scope.removeNodes(g);
+        n.setChildren(newNode.children);
+      }
+      
+    });
+  },
+getNodeIntersections: function(nodeID){
+    var nodePath = Node.get(nodeID);
+    var nodeCs = paper.project.getItems({is_node: true});
+
+    nodeCs = _.reject(nodeCs, function(n){ return n.id == nodeID});
+
+    inside = _.filter(nodeCs, function(el, i, arr){
+      return nodePath.position.isInside(el.bounds) || el.position.isInside(nodePath.bounds);
+    });
+    inside = _.map(inside, function(el, i, arr){
+      return el.id;
+    });
+    nodeCs = _.map(nodeCs, function(el, i, arr){
+      return el.id;
+    });
+
+    return inside;
+  },
+
+// EXTRACT EDGES
+    var nodeSet = _.map(nodes, function(n){ return n.self });
+    _.each(nodes, function(node, i, arr){
+      var nodeC = node.self;
+      var edges = scope.getNodeIntersections(node.self.id);
+      // console.log(nodeC.id, "P_EDGES", edges)
+      // compare = _.reject(nodeSet, function(n){ return n.id == nodeC.id});
+      // var edges = TracePathTool.getAllIntersections(nodeC, compare);
+      // edges = _.map(edges, function(edge, i, arr){ return edge._curve2.path.id});
+      // var pathID = nodeC.parent.id;
+      
+      terminals = _.reduce(nodeC.paths, function(memo, path){
+        memo.push(path.terminals);
+        return memo;
+      }, []);
+      terminals = _.flatten(terminals);
+
+      pathBrother = _.reject(terminals, function(term){
+        return nodeC.id == term;
+      });
+      edges = _.flatten([pathBrother, edges]);
+      // console.log(nodeC.id, "EDGES", edges);
+      nodeC.node.setChildren(_.uniq(edges));
+    });
+
+    // IDENTIFY CLUSTER NODES
+    // console.log("CLUSTERS");
+    groups = _.map(nodes, function(node, i, arr){
+      var nodeC = node.self;
+      var edges = scope.getNodeIntersections(node.self.id);
+      edges.push(nodeC.id);
+      edges = _.sortBy(edges);
+      // console.log(edges);
+      return edges;
+    });
+
+    groups = _.groupBy(groups);
+    // groups = 
+    _.each(groups, function(value, key){
+      var ids = key.split(",");
+      for(var i in ids) ids[i] = parseInt(ids[i]);
+      // return ids;
+    });
+
+    groups2 = {};
+    var getOverlaps = function(i, keys){
+      return _.filter(keys, function(el){
+        if(el == i) return;
+        a = el.split(',');
+        b = i.split(',');
+        return _.intersection(a, b).length > 3;
+      });
+    }
+    var keys = _.keys(groups);
+    for(var key in groups){
+      overlaps = getOverlaps(key, keys);
+      // console.log(overlaps);
+      if(overlaps.length > 0){
+        var key = _.reduce(overlaps, function(memo, overlap){
+          return _.intersection(memo, overlap.split(','));
+        }, key.split(','))
+        groups2[key.join(',')] = true;
+      }
+      else if(key.split(',').length > 3){
+        groups2[key] = true;
+      }
+    }
+    groups2 = _.map(_.keys(groups2), function(key){
+      return _.map(key.split(','), function(el){
+        return parseInt(el);
+      });
+    });
+    // console.log("END CLUSTERS");
+
+
+
+    // // CONSOLIDATE nodes
+    _.each(groups2, function(g, i, arr){
+      // if(i > 2) return;
+      
+      // console.log(g);
+      // console.log(i.split(","));
+      test = Node.join(g);
+      if(!_.isNull(test)){
+        n = new Node(test.paths, test.position);
+        nodes.push(n);
+        // console.log(g, "-->", n.id);
+        
+        scope.addNode(n);
+        
+
+        test.children.push(n.id);
+        _.each(test.children, function(child, i, arr){
+          // console.log("HMM", child, n.id);
+          var x = Node.get(child).node;
+          // console.log(n.id);
+          x.children.push(n.id);
+        });
+        scope.removeNodes(g);
+        n.setChildren(test.children);
+      }
+    });
+
+
+
+<!--  -->
+
+if(intersects.length == 0){
+        var near = blob.position.clone();
+        near.y -= 5;
+        near.x += 5;
+        b = TracePathTool.readPolarity(blob);
+        var path = new paper.Path({
+          blob: blob.id,
+          name: "C"+ b +"P: temporary",
+          segments: [blob.position.clone(), near], 
+          strokeColor: "yellow", 
+          strokeWidth: 2,
+          terminal_helper: true
+        });
+        blob.paths.push(path);
+      } 
+
+<!-- <div id="on-it">
+  <div class="btn-group">
+    <button id="pad-check" class="btn btn-default"> TRACE/PAD </button>
+    <button id="canvas-check" class="btn btn-default"> CANVAS </button>
+    <button id="connection-check" class="btn btn-info"> CONNECTION </button>
+  </div>
+</div> -->
+
+
+<script type="text/javascript">
+var tool_config = [
+  {
+    name: "pathtool",
+    dom: "path-tool",
+    js: "TracePathTool"
+  },
+
+];
+</script>
+
+
+<div id="dev-toolbox" class="toolbox shadowed">
+   <label class="text-shadowed"> DEV TOOLS </label>
+      <div class="btn-group" role="group" aria-label="pen-tools">
+      
+      <%= button_tag :id => "dev-tool-1", :class => "btn btn-ellustrator" do %>
+        <span class="glyphicon glyphicon-backward"></span>
+      <% end %>
+
+      <%= button_tag :id => "dev-tool-2", :class => "btn btn-ellustrator" do %>
+        <span class="glyphicon glyphicon-cog"></span>
+      <% end %>
+
+      <%= button_tag :id => "dev-tool-3", :class => "btn btn-ellustrator" do %>
+         <span class="glyphicon glyphicon-forward"></span>
+      <% end %>   
+      <%= button_tag :id => "dev-tool-4", :class => "btn btn-ellustrator" do %>
+         <span class="glyphicon glyphicon-record"></span>
+      <% end %>
+      </div>
+      <div class='btn-group'>
+      <%= button_tag :id=>"zoom-out", :class=>"btn btn-md btn-ellustrator" do %>
+          <span class="glyphicon glyphicon-zoom-out"></span>
+        <% end %>
+
+          
+        
+        <%= button_tag :id=>"zoom-in", :class=>"btn btn-md btn-ellustrator" do %>
+            <span class="glyphicon glyphicon-zoom-in"></span>
+        <% end %>
+    </div>
+</div>
+<div id="calibration-toolbox" class="toolbox shadowed">
+   <div class="row">
+   <div class="col-xs-8">
+      <label class="text-shadowed"> CALIBRATE MATERIAL SHEET RESISTANCE</label>
+    </div>
+    <div class="col-xs-4">
+     <label class="info pull-right text-shadowed"> 
+      <!-- Button trigger modal -->
+      <span id="calibration-info" data-toggle="modal" data-target="#myModal" class="glyphicon glyphicon-info-sign" title="How do I measure sheet resistance?"></span>
+     </label>
+   </div>
+   </div>
+    <form id="sheet-resistance" class="input-group">
+      <input type="text" class="form-control" placeholder="Measure Ω of 0.25 inch square (default 0.5).">
+      <span class="input-group-btn">
+        <button type="submit" class="btn btn-primary" type="button">SAVE</button>
+      </span>
+    </form>
+</div>

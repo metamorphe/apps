@@ -1,0 +1,90 @@
+<script type="text/javascript">
+var bend;
+$(function(){
+	bend = new Bender();
+	bend.import("/bending/contours.json");
+})
+
+Bender.DEFAULT_PATH_STYLE = {
+	fillColor: "#00A8E1", 
+	strokeColor: "black", 
+	strokeWidth: 1
+}
+// Parameters specific to the Medial Axis Transform (MAT)
+Bender.MAT = {
+	OMEGA_SIZE: 100
+}
+
+function Bender(){	
+	this.paths = [];	
+}
+
+Bender.prototype = {
+	import: function(file){
+		var scope = this;
+		$.getJSON(file, function(json){
+			var paths = json.data.paths;
+			console.log("Importing")
+			scope.paths = _.compact(_.map(paths, function(path, i, arr){
+				console.log("Path #", i, ":", path.segments.length, "segments");
+				// EXTRACT SEGMENTS
+				var segments = _.map(path.segments, function(s){
+					return new paper.Point(s[0], s[1]);
+				});
+				
+				var p = new paper.Path({
+					terminal_helper: true,
+					parent: designer.art_layer.layer,
+					canvasItem: true, 
+					layerClass: "ArtworkLayer", 
+					segments: segments,
+					closed: true
+				});
+				p.style = Bender.DEFAULT_PATH_STYLE;
+
+				// RESCALE AND POSITION
+				var scale = _.max([paper.view.size.height / json.data.height, paper.view.size.width / json.data.width])
+
+				p.scaling.x = scale;
+				p.scaling.y = scale;
+				p.position = paper.view.center;
+				p.opacity = 0.8;
+				// FILTER
+
+				if(p.bounds.area < 100){
+					p.remove();
+					return null;
+				}
+				p.reduce();
+				scope.computeMedialAxis(p.id);
+				return p.id;
+			}));
+
+		});
+	}, 
+	computeMedialAxis: function(pathID){
+		path = paper.project.getItem({id: pathID});
+		var w = path.bounds.width;
+		var h = path.bounds.height;
+		var pt, ixt;
+		for(var i = 0; i < path.length; i+= Bender.MAT.OMEGA_SIZE){
+			var pt = path.getPointAt(i);
+		
+			var c = new paper.Path.Circle({
+				strokeColor: "magenta", 
+				strokeWidth: 1, 
+				center: pt, 
+				radius: 60
+			});
+
+		}
+		// query scene graph for pathID
+		// random circles in blob
+		// expand circles until collission
+		// remove circles from scene graph
+		// return a path
+	}
+}
+
+
+</script>

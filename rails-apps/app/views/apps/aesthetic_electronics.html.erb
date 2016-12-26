@@ -1,0 +1,54 @@
+<div class="row">
+	<!-- DESCRIPTION -->
+	<div class="col-xs-6 col-sm-4">
+		<%= image_tag "/ellustrate.png", :width => "100%" %>
+		<p class='lead'>
+			<address>
+			  <strong>Joanne Lo, Cesar Torres, Isabel Yang, Jasper O'Leary, Danny Kaufman, Wilmot Li, Mira Dontcheva, Eric Paulos</strong><br>
+			  <code>[jlo, cearto, isabelyang, j.oleary, paulos]@berkeley.edu </code><br>
+			  <code>[kaufman, wilmotli, mirad]@adobe.com </code>
+			</address>
+		</p>
+	</div>
+	<div class="col-xs-6 col-sm-">
+		<h2> Ellustrate </h2>
+		<p><em> Designing, Sketching, and Fabricating Circuits through Digital Exploration </em></p>
+		<p>
+			As interactive electronics become increasingly intimate and personal, the design of the circuitry is correspondingly developing a more playful and creative aesthetic. Circuit sketching and design is a multidimensional activity combining the arts, crafts, and engineering that broadens participation of electronic creation to include makers of diverse backgrounds. In order to support this design ecology, we present Ellustrate, a digital design tool that enables the functional and aesthetic design of electronic circuits with multiple conductive and dielectric materials. Ellustrate guides users through the fabrication and debugging process, easing the task of practical circuit creation while supporting designers’ aesthetic decisions throughout the circuit authoring workflow. In a formal user study, we demonstrate how Ellustrate enables a new electronic design conversation that combines electronics, materials, and visual aesthetic considerations.
+		</p>
+		
+		<p class="lead">
+			<h3> Web Application </h3>
+			<p class="lead"> Try out the <em>Ellustrate</em> Circuit Sketching and Fabrication Tool. </p>
+			<%= link_to circuit_interface_path(6, {mode: "draw"}), :class=> "btn btn-primary" do %>
+				<span class="glyphicon glyphicon-edit"></span>
+				Ellustrate Circuit Design Tool
+			<% end %>
+			<br/>
+			<br/>
+			<div class="well">
+				At this time, the Ellustrate web application has been tested on iPad Pro devices using the Chrome v53 browser.
+			</div>
+		</p> 
+
+		<p class="lead">
+			<h3> Links </h3>
+			<ul>
+				<% if true %>
+					<li><%= link_to "PDF (1.9MB) [Available Oct 19]", "#", :disabled => true %></li>
+					<li><%= link_to "Video (1.9MB) [Available Oct 19]", "#", :disabled => true%></li>
+				<% else %>
+					<li><%= link_to "PDF (1.9MB)", "/Lo_Ellustrate.pdf" %></li>
+					<li><%= link_to "Video (18.9MB)", "/Lo_Ellustrate.mp4" %></li>
+				<% end %>	
+				<li><%= link_to "Berkeley Project Site", "http://www.hybrid-ecologies.org/projects/15-ellustrate" %></li>
+				<li><%= link_to "Github Repo", "https://github.com/joannecylo/Ellustrate" %></li>
+				<li><%= link_to "ACM Library DOI", "http://dx.doi.org/10.1145/2984511.2984579" %></li>
+			</ul>
+		</p> 
+	</div>
+
+
+	
+</div>
+

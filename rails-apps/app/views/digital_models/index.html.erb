@@ -1,0 +1,41 @@
+<h1>Listing digital_models</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Design</th>
+      <th>Name</th>
+      <th>Base height</th>
+      <th>Displacement</th>
+      <th>Height</th>
+      <th>Width</th>
+      <th>Depth</th>
+      <th>Thumbnail</th>
+      <th>Bump map</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @digital_models.each do |digital_model| %>
+      <tr>
+        <td><%= digital_model.design_id %></td>
+        <td><%= digital_model.name %></td>
+        <td><%= digital_model.base_height %></td>
+        <td><%= digital_model.displacement %></td>
+        <td><%= digital_model.height %></td>
+        <td><%= digital_model.width %></td>
+        <td><%= digital_model.depth %></td>
+        <td><%= digital_model.thumbnail %></td>
+        <td><%= digital_model.bump_map %></td>
+        <td><%= link_to 'Show', digital_model %></td>
+        <td><%= link_to 'Edit', edit_digital_model_path(digital_model) %></td>
+        <td><%= link_to 'Destroy', digital_model, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Digital model', new_digital_model_path %>

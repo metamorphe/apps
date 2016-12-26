@@ -1,0 +1,63 @@
+<style type="text/css">
+	#redo{
+		height: 30px;
+		width: 30px;
+		border: 1px white solid;
+		position: absolute;
+		bottom: 90px;
+		left: 90px;
+		z-index: 1000000;
+		padding: 2px 4px;
+    	font-size: 16px;
+    	line-height: 1.33;
+    	border-radius: 100px;
+	}
+	#redo img{
+		margin:  0;
+		width: 80%;
+	}
+	#big-undo{
+		position: absolute;
+		bottom: 5px;
+		left: 5px;
+		z-index: 1000000;
+		padding: 20px 20px;
+    	font-size: 16px;
+    	line-height: 1.33;
+    	border-radius: 100px;
+    	height: 100px;
+    	width: 100px;
+	}
+	#redo:focus, #big-undo:focus{
+		/*border: 3px solid #f0ad4e;*/
+		outline: none;
+	}
+	#redo:active, #big-undo:active{
+		background: #f0ad4e;
+	}
+	#big-undo img{
+		margin-bottom: 8px;
+		width: 60%;
+		margin-left: 20%;
+	}
+</style>
+<button id="big-undo" class="btn btn-ellustrator">
+	<img src="/undo-01.svg"/>
+	<br/>
+	UNDO
+</button>
+
+<button id="redo" class="btn btn-ellustrator">
+	<img src="/redo.png"/>
+	<br/>
+</button>
+<script type="text/javascript">
+$(function(){
+	$("#big-undo").mousedown(function(){
+		hm.undo();
+	});
+	$("#redo").mousedown(function(){
+		hm.redo();
+	});
+});
+</script>

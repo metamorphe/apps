@@ -1,0 +1,118 @@
+
+<script type="text/javascript">                                                  
+  var design = <%= @design %>;
+  var designer, sys, zoom, materials, storage, 
+        alerter, guide, debug, graph, sm, vm;
+
+  $(function(){
+    sys = new SystemMessageManager($('#system-messages'));
+    alerter = new Alerter($("#alerter"));
+    storage = new WebStorage();
+    designer = new CircuitDesigner($("#sandbox"));
+    hm = new HistoryManager(storage);
+    sm = new SelectionManager();
+    vm = new ViewManager($("#interface-container"));
+    toolbox = new Toolbox();
+    $('#shade').hide();
+    vm.update();
+    attachHandlers();
+  });
+
+  getActiveTool = function(){ return paper.tool.toolholder; }
+  
+  function attachHandlers(){
+    // BRUSH CONTROLS
+    $('#brush-size-increase').click(function(){
+      if(TracePathTool.BRUSH_SIZE + 1 > TracePathTool.MAX_BRUSH_SIZE){
+        sys.show("The maximum brush size ("+TracePathTool.MAX_BRUSH_SIZE+") has been reached!")
+        return;
+      }
+      TracePathTool.BRUSH_SIZE ++;
+      $("#brush-size-label").html(TracePathTool.BRUSH_SIZE);
+      sys.show("Brush size set to: " + TracePathTool.BRUSH_SIZE);
+    });  
+
+    $('#brush-size-decrease').click(function(){
+      if(TracePathTool.BRUSH_SIZE - 1  < TracePathTool.MIN_BRUSH_SIZE){
+        sys.show("The minumum brush size ("+TracePathTool.MIN_BRUSH_SIZE+") has been reached!")
+        return;
+      }
+      TracePathTool.BRUSH_SIZE --;
+      $("#brush-size-label").html(TracePathTool.BRUSH_SIZE);
+      sys.show("Brush size set to: " + TracePathTool.BRUSH_SIZE);
+    });  
+
+
+    $('#ghost').click(function(){
+      if($(this).hasClass("btn-warning"))
+        sys.log("Deghosting the artwork!");
+      else
+        sys.log("Ghosting the artwork!");
+
+      $(this).toggleClass("btn-warning");
+      // GHOST VIEW
+    });
+    $('#lock').click(function(){
+      if($(this).hasClass("btn-warning")){
+        PaperUtil.set(PaperUtil.queryPrefix("CP"), {scaleable: false, translateable: false, rotateable: false})
+      }else{
+         PaperUtil.set(PaperUtil.queryPrefix("CP"), {scaleable: true, translateable: true, rotateable: true})
+      }
+      $(this).toggleClass("btn-warning");
+    });
+     $('#save-progress').click(function(){
+      hm.save();
+     });
+     $('#revert').click(function(){
+      hm.revert();
+     });
+     $('#fast-forward').click(function(){
+      hm.fast_forward();
+     });
+     $('#clear-history').click(function(){
+      // hm.clear_history();
+     });      
+  }
+
+
+
+
+</script>
+
+
+
+<div id="interface-container" class="row">    
+  <%= render :partial => "toolbox" %>
+  <div id="alert-container" class="col-xs-3 pull-right">
+    <div id="alerter" class="alert alert-danger alert-dismissible fade in" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+        <h4>Watch out!</h4>
+        <p id='message'> Message here.</p>
+        <p>
+          <button id="action" type="button" class="btn btn-block btn-xs btn-danger" data-dismiss="alert"> Take this action </button>
+        </p>
+        <p>
+          <div class="btn-group">
+          <button id="auto" type="button" class="btn btn-xs btn-default">Dismiss</button>
+       
+          <button id="silence" type="button" class="btn btn-xs btn-default">Silence
+          </button>
+        </div>
+      </div>
+  </div>
+  <%= render :partial => "toolbar" %>
+  <% render :partial => "toolbox" %>
+  <%= render :partial => "debug" %>
+  <%= render :partial => "fab_guide" %>
+  <% render :partial => "calibration_modal" %>
+  <% render :partial => "conductivity_modal" %>
+  <%= render :partial => "system_dialog" %>
+  <%= render :partial => "thumbui"%>
+  <%= render :partial => "multimeter"%>
+  <% render :partial => "bender"%>
+  <%= render :partial => "palette"%>
+  <div id="sandbox" class="col-xs-12">
+    <!-- <canvas id="sandboxy" resize></canvas> -->
+  </div>
+  <% render :partial => "sidebar" %>
+<%= render 'collection'%>

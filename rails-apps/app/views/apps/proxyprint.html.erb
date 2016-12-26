@@ -1,0 +1,56 @@
+<div class="row">
+	<!-- DESCRIPTION -->
+	<div class="col-xs-6 col-sm-4">
+		<br>
+		<br>
+		<%= image_tag "/proxyprint.png", :width => "100%" %>
+		<p class='lead'>
+			<address>
+			  <strong>Cesar Torres, Wilmot Li, Eric Paulos</strong><br>
+			  <code>[cearto, paulos]@berkeley.edu </code><br>
+			  <code>wilmotli@adobe.com </code>
+			</address>
+		</p>
+	</div>
+	<div class="col-xs-6 col-sm-">
+		<h2> ProxyPrint </h2>
+		<p><em> Supporting Crafting Practice through Physical Computational Proxies </em></p>
+		<p>
+			Advances in digital fabrication (DF) technologies are making it easier to produce high-fidelity replicas of digital designs. However, this push-to-print paradigm limits the creative opportunities that arise from “working through a material” which involves risk, uncertainty, and serendipitous discovery. We investigate how DF artifacts can function as static intermediary tools, which we term proxies, to support crafting practice. We focus on the wire-wrapping process, where physical wire is bent into complex shapes, and build DF fixtures to aid with construction and fabrication and explore how these proxies can provide users with different levels-of-assistance. In a user study, we evaluated how these proxies affect the making process and uncovered methodological distinctions between novices and experts. We discuss how approaches such as ProxyPrint that are designed aware of the medium can create more engaging making tools that embed tacit knowledge, encourage creativity, and engage users in ways that can sustain crafting practice.
+		</p>
+		
+		<p class="lead">
+			<h3> Web Application </h3>
+			<p class="lead"> Try out the <em>ProxyPrint</em> Wirewrapping Sketching and Fabrication Tool. </p>
+			<%= link_to "#", :class=> "btn btn-primary" do %>
+				<span class="glyphicon glyphicon-edit"></span>
+				ProxyPrint WireWrap Design Tool
+			<% end %>
+			<br/>
+			<br/>
+			<div class="well">
+				At this time, the ProxyPrint web application has been tested on using the Chrome v53 browser.
+			</div>
+		</p> 
+
+		<p class="lead">
+			<h3> Links </h3>
+			<ul>
+				<% if true %>
+					<li><%= link_to "PDF (1.9MB) [Available Oct 19]", "#", :disabled => true %></li>
+					<li><%= link_to "Video (1.9MB) [Available Oct 19]", "#", :disabled => true%></li>
+				<% else %>
+					<li><%= link_to "PDF (1.9MB)", "/Lo_Ellustrate.pdf" %></li>
+					<li><%= link_to "Video (18.9MB)", "/Lo_Ellustrate.mp4" %></li>
+				<% end %>	
+				<li><%= link_to "Berkeley Project Site", "http://www.hybrid-ecologies.org/projects/15-ellustrate" %></li>
+				<li><%= link_to "Github Repo", "https://github.com/joannecylo/Ellustrate" %></li>
+				<li><%= link_to "ACM Library DOI", "http://dx.doi.org/10.1145/2984511.2984579" %></li>
+			</ul>
+		</p> 
+	</div>
+
+
+	
+</div>
+
