@@ -5,8 +5,8 @@ var depthMap;
 $(function(){
 	$('#shade').hide();
 	storage = new WebStorage();
-	hm = new HeightMap("/text_heightmap.png");
-	// hm = new HeightMap(model.bump_map.original.url);
+	// hm = new HeightMap("/text_heightmap.png");
+	hm = new HeightMap(model.bump_map.original.url);
 	hm.load(function(pixels){
 		env = new WebEnv($("#ThreeJS"));
 
