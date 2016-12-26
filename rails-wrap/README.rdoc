@@ -1,3 +1,0 @@
-== README
-
-This contains the code to create a pretty circuits.
