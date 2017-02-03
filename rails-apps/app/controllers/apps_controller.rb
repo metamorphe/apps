@@ -6,5 +6,4 @@ class AppsController < ApplicationController
   end
   def light_as_material
   end
-  
 end

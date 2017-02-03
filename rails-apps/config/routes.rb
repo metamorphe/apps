@@ -23,6 +23,7 @@ Rails.application.routes.draw do
   get 'apps/aesthetic_electronics', :as => "ellustrate"
   get 'apps/proxyprint', :as => "proxyprint"
   get 'apps/light_as_material', :as => "light_as_material"
+  get 'apps/criticon', :as => "criticon"
   resources :members
 
   resources :designs do
